@@ -3,8 +3,6 @@ package enruta.soges_engie;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import enruta.soges_engie.R;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
@@ -18,7 +16,7 @@ import android.widget.TextView;
  * Esta clase crea las validaciones y los campos a mostrar
  **/
 
-public class TomaDeLecturasDemo extends TomaDeLecturasGenerica {
+public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
 
     public final static int MEDIDOR_ANTERIOR = 0;
@@ -48,7 +46,7 @@ public class TomaDeLecturasDemo extends TomaDeLecturasGenerica {
 
     //int versionAnom=0;
 
-    public TomaDeLecturasDemo(Context context) {
+    public TomaDeLecturasEngie(Context context) {
         super(context);
         long_registro = 649;
 

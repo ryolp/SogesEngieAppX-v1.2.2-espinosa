@@ -387,6 +387,8 @@ public class LoginActivity extends Activity {
 
         usuario = "";
         password = "";
+        limpiarVariables();
+
         try {
             usuario = getUsuario();
             password = getPassword();
@@ -607,7 +609,7 @@ public class LoginActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        limpiarVariables();
+
     }
 
     /* ====================================================================================

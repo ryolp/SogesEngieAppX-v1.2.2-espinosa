@@ -15,8 +15,10 @@ public class Globales extends Application {
 	final static int ARGENTINA=3;
 	final static int BRASIL=4;
 	final static int PANAMA=6;
-	final static int DEMO=7;
-	
+	final static int ENGIE=7;
+	final static int DEMO=8;
+
+
 	final static int USUARIO=0;
 	final static int CONTRASEÑA=1;
 	final static int AMBAS=2;
@@ -61,7 +63,7 @@ public class Globales extends Application {
 	/**
 	 * Cambia el pais actual
 	 */
-	public int ii_pais=this.DEMO;
+	public int ii_pais=this.ENGIE;
 	
 	int modoDeCierreDeLecturas=FORZADO;
 	
@@ -184,7 +186,7 @@ public class Globales extends Application {
 	int anomaliasPorMostrar=12;
 	int orden=USO;
 	
-	int logo=R.drawable.logo;
+	int logo=R.drawable.logo_engie;
 	
 	boolean multiplesAnomalias=false;
 	boolean convertirAnomalias=false;

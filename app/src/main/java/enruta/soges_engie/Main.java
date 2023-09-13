@@ -134,33 +134,37 @@ public class Main extends FragmentActivity implements TabListener {
     private PuntosGpsMgr mPuntosGpsMgr = null;
     private Thread mThreadPuntosGps = null;
 
+    private DialogoMensaje mDialogoMsg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.);
 
-        setContentView(R.layout.main_tabs);
-        globales = ((Globales) getApplicationContext());
+        try {
+            setContentView(R.layout.main_tabs);
 
-        porcentaje = globales.porcentaje_main;
-        porcentaje2 = globales.porcentaje_main2;
+            globales = ((Globales) getApplicationContext());
 
-        mHandler = new Handler();
+            porcentaje = globales.porcentaje_main;
+            porcentaje2 = globales.porcentaje_main2;
+
+            mHandler = new Handler();
+
 //		
 //		openDatabase();
 //		db.execSQL("update ruta set verDatos=0");
 //		closeDatabase();
 
-        b_lecturas = (Button) this.findViewById(R.id.b_lecturas);
+            b_lecturas = (Button) this.findViewById(R.id.b_lecturas);
 
-        b_lecturas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inicia_tdl(view);
-            }
-        });
-        //setTabs();
+            b_lecturas.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    inicia_tdl(view);
+                }
+            });
+            //setTabs();
 
 //		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 //        actionBar = getActionBar();
@@ -176,16 +180,16 @@ public class Main extends FragmentActivity implements TabListener {
 //                    .setTabListener(this));
 //        }
 
-        setTitle("");
+            setTitle("");
 
-        Bundle bu_params = this.getIntent().getExtras();
+            Bundle bu_params = this.getIntent().getExtras();
 
-        ii_rol = bu_params.getInt("rol");
-        esSuperUsuario = bu_params.getBoolean("esSuperUsuario");
-        if (CPL.LECTURISTA == ii_rol) {
-            is_nombre_Lect = bu_params.getString("nombre");
+            ii_rol = bu_params.getInt("rol");
+            esSuperUsuario = bu_params.getBoolean("esSuperUsuario");
+            if (CPL.LECTURISTA == ii_rol) {
+                is_nombre_Lect = bu_params.getString("nombre");
 
-            String ruta = getStringValue("ruta_descarga");
+                String ruta = getStringValue("ruta_descarga");
 //		if (ruta.endsWith("Pruebas")){
 ////			globales.usuarioBD="u1003479_pruebas";
 ////			globales.serverBD= "db1003479_prueba";
@@ -204,32 +208,32 @@ public class Main extends FragmentActivity implements TabListener {
 //			globales.passwordBD= "Sotixe_69";
 //		}
 //		else{
-            globales.usuarioBD = "u1007397_webapp2";
-            globales.serverBD = "db1007397_CortrexDemoDev";
-            globales.passwordBD = "Sis#web#apps@2022";
+                globales.usuarioBD = "u1007397_webapp2";
+                globales.serverBD = "db1007397_CortrexDemoDev";
+                globales.passwordBD = "Sis#web#apps@2022";
 //		}
-        }
+            }
 
 
-        //actualizaResumen();
-        agregaRegistrosConfig();
+            //actualizaResumen();
+            agregaRegistrosConfig();
 
-        globales.calidadDeLaFoto = getIntValue("calidad_foto", globales.calidadDeLaFoto);
-        globales.sonidos = getIntValue("sonidos", 0) == 0;
+            globales.calidadDeLaFoto = getIntValue("calidad_foto", globales.calidadDeLaFoto);
+            globales.sonidos = getIntValue("sonidos", 0) == 0;
 
 
-        tv_versionNum = (TextView) findViewById(R.id.tv_version);
+            tv_versionNum = (TextView) findViewById(R.id.tv_version);
 
-        try {
-            versionNum = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            tv_versionNum.setText(tv_versionNum.getText().toString() + " " + versionNum + "\n(" + version + ")");
+            try {
+                versionNum = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+                version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                tv_versionNum.setText(tv_versionNum.getText().toString() + " " + versionNum + "\n(" + version + ")");
 
-        } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        //prueba();
+            } catch (NameNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //prueba();
 
 //		versionFontSize=getIntValue( "versionFontSize",  versionFontSize);
 //		infoFontSize=getIntValue( "infoFontSize",  infoFontSize);
@@ -238,45 +242,48 @@ public class Main extends FragmentActivity implements TabListener {
 //		
 //		tv_versionNum.setTextSize(versionFontSize);
 //		tv_resumen.setTextSize(infoFontSize);
-        porcentaje = getDoubleValue("porcentaje_main", porcentaje);
-        porcentaje2 = getDoubleValue("porcentaje2_main", porcentaje2);
+            porcentaje = getDoubleValue("porcentaje_main", porcentaje);
+            porcentaje2 = getDoubleValue("porcentaje2_main", porcentaje2);
 
-        setSizes();
+            setSizes();
 
-        //Quiero ver si existen los parametros... los agregamos si no
-        openDatabase();
+            //Quiero ver si existen los parametros... los agregamos si no
+            openDatabase();
 
-        Cursor c = db.rawQuery("Select * from config where key='server_gprs'", null);
-        int canti = c.getCount();
-        c.close();
-        closeDatabase();
-        if (canti == 0) {
-            //Abrimos y cerramos
-            Intent intent = new Intent(this, Configuracion.class);
-            intent.putExtra("guardar", 1);
-            intent.putExtra("rol", ii_rol);
-            startActivityForResult(intent, CONFIG);
+            Cursor c = db.rawQuery("Select * from config where key='server_gprs'", null);
+            int canti = c.getCount();
+            c.close();
+            closeDatabase();
+            if (canti == 0) {
+                //Abrimos y cerramos
+                Intent intent = new Intent(this, Configuracion.class);
+                intent.putExtra("guardar", 1);
+                intent.putExtra("rol", ii_rol);
+                startActivityForResult(intent, CONFIG);
 
-            cargarDespuesDeConfig = true;
+                cargarDespuesDeConfig = true;
 
-        } else {
-            estableceVariablesDeClave();
-        }
+            } else {
+                estableceVariablesDeClave();
+            }
 
-        cargarOrdenes();
+            cargarOrdenes();
 
 
-        actualizaTabs();
+            actualizaTabs();
 		/*View customNav = LayoutInflater.from(this).inflate(R.layout.configuracion, null);
 		getActionBar().setCustomView(customNav);*/
 
-        //invalidateOptionsMenu();
+            //invalidateOptionsMenu();
 
-        //GrabarSDCard();
+            //GrabarSDCard();
 
-        enciendeGPS();
-        rutinaDeEnvioDePuntos();
-        activaEnvioPuntosRuta();
+            enciendeGPS();
+            rutinaDeEnvioDePuntos();
+            activaEnvioPuntosRuta();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public void actualizaTabs() {
@@ -1794,14 +1801,23 @@ public class Main extends FragmentActivity implements TabListener {
         //Ahora si abrimos
         if (globales.tdlg == null) {
             super.onResume();
-            Intent i = getBaseContext().getPackageManager()
-                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-            System.exit(0);
-            return;
+
+            mostrarMensaje("Error", "No se pudieron inicializar las variables", "", new DialogoMensaje.Resultado() {
+                @Override
+                public void Aceptar(boolean EsOk) {
+//                    Intent i = getBaseContext().getPackageManager()
+//                            .getLaunchIntentForPackage(getBaseContext().getPackageName());
+//                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    cancelar();
+                }
+            });
         }
         super.onResume();
+    }
+
+    private void cancelar() {
+        setResult(Activity.RESULT_CANCELED);
+        this.finish();
     }
 
     private void estableceVariablesDeClave() {
@@ -2359,6 +2375,23 @@ public class Main extends FragmentActivity implements TabListener {
     public void onBackPressed() {
         finalizarActivity();
 		finish();
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje, String detalleError, DialogoMensaje.Resultado resultado) {
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
+        mDialogoMsg.setOnResultado(resultado);
+        mDialogoMsg.mostrarMensaje(titulo, mensaje, detalleError);
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje) {
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
+        mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
     }
 }
 
