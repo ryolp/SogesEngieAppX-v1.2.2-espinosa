@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" ><item android:id="@+id/m_gps" android:enabled="false" android:showAsAction="always" android:title="@string/m_str_gpsOn" android:visible="false" android:icon="@drawable/gps_satelite" android:orderInCategory="1"></item><item
+        android:id="@+id/m_correccion"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/m_str_correccion" android:icon="@drawable/ic_action_correccion"/>
+<item android:id="@+id/m_orden" android:title="@string/m_str_desendente" android:orderInCategory="3" android:icon="@drawable/ic_action_descendente" android:showAsAction="always"></item>
+<item android:id="@+id/m_noRegistrados" android:title="@string/m_str_noregistrados" android:icon="@drawable/ic_action_nuevo" android:showAsAction="always" android:orderInCategory="2"></item>
+<item android:id="@+id/m_font_informacion" android:title="@string/str_ajustar_fuente_informacion"></item><item android:id="@+id/m_font_areaCaptura" android:title="@string/str_ajustar_fuente_areaCaptura"></item>
+<item android:id="@+id/m_cambiarFuente" android:title="@string/m_strCambiarFuente" android:visible="false"></item>
+
+<item android:id="@+id/m_Impresion" android:title="@string/m_str_habilita_Impresion" android:showAsAction="never" android:icon="@drawable/ic_deshabilita_impr"></item>
+
+
+    
+    
+
+</menu>

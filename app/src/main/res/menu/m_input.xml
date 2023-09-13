@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/m_borrar_lect" android:title="@string/str_m_borrar_lect" android:showAsAction="always" android:icon="@drawable/ic_action_borrar"></item>
+    
+
+</menu>

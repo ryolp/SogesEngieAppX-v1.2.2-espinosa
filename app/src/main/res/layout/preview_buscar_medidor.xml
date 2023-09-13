@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75"
+        android:text="Large Text"
+        android:paddingLeft="15dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <LinearLayout 
+        android:id="@+id/ll_indicadores"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight=".25"
+    android:paddingRight="5dp"
+    android:visibility="gone"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="horizontal" >
+        
+            <TextView
+                android:id="@+id/tv_leido_lectura"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:text="E"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+		    
+		    <TextView
+		        android:id="@+id/tv_leido_anomalia"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:gravity="center_vertical"
+		        android:text="N"
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textSize="50dp"
+		        android:textStyle="bold" />
+
+    </LinearLayout>
+
+    
+
+</LinearLayout>

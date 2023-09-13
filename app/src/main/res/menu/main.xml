@@ -1,0 +1,71 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/m_importar"
+        android:showAsAction="always"
+        android:title="@string/m_str_importar"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_action_importar" />
+    <item
+        android:id="@+id/m_exportar"
+        android:title="@string/m_str_exportar"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_action_exportar"
+        android:showAsAction="always"></item>
+    <item
+        android:id="@+id/m_lecturas"
+        android:title="@string/m_str_lecturas"
+        android:orderInCategory="3"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_lecturas"></item>
+    <item
+        android:id="@+id/m_filtrar"
+        android:title="@string/m_str_filtrar"
+        android:visible="false"
+        android:orderInCategory="3"></item>
+    <item
+        android:id="@+id/m_exportarTodo"
+        android:title="@string/m_str_exportarTodo"
+        android:visible="false"></item>
+
+
+    <item
+        android:id="@+id/m_configuracion"
+        android:title="@string/str_configuracion"
+        android:orderInCategory="4"
+        android:icon="@drawable/ic_action_configuracion"
+        android:showAsAction="always"></item>
+    <item
+        android:id="@+id/m_borrarruta"
+        android:title="@string/m_str_borrarRuta"
+        android:orderInCategory="5"
+        android:visible="true"></item>
+    <item
+        android:id="@+id/m_salir"
+        android:title="@string/Salir"
+        android:orderInCategory="6"></item>
+    <item
+        android:id="@+id/probar_bt"
+        android:title="Probar bt"
+        android:visible="false"></item>
+    <item
+        android:id="@+id/m_cambiarUsuario"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_cambiausr"
+        android:title="@string/lbl_cambiarUsuario"></item>
+    <item
+        android:id="@+id/m_acercaDe"
+        android:title="@string/m_str_acercade"></item>
+    <item
+        android:id="@+id/m_verTamanosLetra"
+        android:title="Tamaños de Fuente"></item>
+    <item
+        android:id="@+id/m_grabarEnSD"
+        android:title="Grabar en SDCard"></item>
+    <item
+        android:id="@+id/m_cierreForzado"
+        android:title="Cierre Forzado"></item>
+
+
+</menu>

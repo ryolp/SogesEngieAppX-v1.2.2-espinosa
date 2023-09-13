@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tv_cantidad"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:layout_weight=".20"
+        android:background="#8dbdea"
+        android:text="0000"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/tv_descripcion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".60"
+        android:layout_margin="3dp"
+        android:background="#eaeaea"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/tv_porcentaje"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:layout_weight=".20"
+        android:background="#8dbdea"
+        android:text="000%"
+        android:gravity="right"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

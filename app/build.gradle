@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+
+android {
+    useLibrary 'org.apache.http.legacy'
+    compileSdk 31
+    buildToolsVersion "33.0.0"
+
+    defaultConfig {
+        applicationId "enruta.soges_engie"
+        minSdkVersion 25
+        targetSdkVersion 31
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            buildConfigField "String", 'BASE_URL', '"http://192.168.2.123:8182"'
+        }
+        staging {
+            initWith debug
+            applicationIdSuffix ".staging"
+            debuggable true
+            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+        }
+        pre_prod {
+            initWith debug
+            applicationIdSuffix ".pre_prod"
+            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+        }
+    }
+
+
+}
+
+dependencies {
+    implementation 'com.android.support:gridlayout-v7:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.android.support:design:28.0.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.google.zxing:core:3.3.2'
+    implementation 'com.github.gcacace:signature-pad:1.3.1'
+}

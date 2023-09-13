@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<LinearLayout 
+    	android:id="@+id/info_ll_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" 
+	    android:scrollbars="horizontal">
+	
+	    <TextView
+	        android:id="@+id/info_tv_centro"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_centro"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_centro"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:inputType="number"
+	        android:hint="1160"
+	        android:maxLength="4" />
+	
+	    <TextView
+	        android:id="@+id/info_tv_lote"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_lote"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_lote"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:inputType="number"
+	        android:maxLength="2"
+	        android:hint="03"  />
+	    
+	     <TextView
+	        android:id="@+id/info_tc_CPL"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_CPL"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	
+	    <EditText
+	        android:id="@+id/info_et_CPL"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:inputType="number"
+	        android:maxLength="5"
+	        android:hint="4480"/>
+	
+	    <TextView
+	        android:id="@+id/info_tv_pais"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_Pais"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_pais"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:maxLength="1"
+	        android:hint="E" />
+	
+	    <TextView
+	        android:id="@+id/info_tv_numBluetooth"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_numBluetooth"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_numBluetooth"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:inputType="number"
+	        android:maxLength="3"
+	        android:hint="299" />
+	
+	    <TextView
+	        android:id="@+id/info_tv_macBluetooth"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_macBluetooth"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_macBluetooth"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="17" 
+	        android:maxLength="17"
+	        android:hint="00025b00c762"/>
+	
+	    <TextView
+	        android:id="@+id/info_tv_macImpresora"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_macImpresora"
+	        android:textAppearance="?android:attr/textAppearanceMedium"/>
+	
+	    <EditText
+	        android:id="@+id/info_et_macImpresora"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:maxLength="50"
+	        android:inputType="text">"
+	
+	    </EditText>
+	
+	    <TextView
+	        android:id="@+id/info_info_tv_tamanoFoto"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_tamanoFoto"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_tamanofoto"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:inputType="number"
+	        android:maxLength="4"
+	        android:hint="320"
+	        />
+	    
+	    <TextView
+	        android:id="@+id/info_info_tv_rutaDescarga"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/info_rutaDescarga"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <EditText
+	        android:id="@+id/info_et_rutaDescarga"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10"
+	        android:maxLength="50"
+	        android:inputType="text"/>"
+	
+	</LinearLayout>
+
+</ScrollView>

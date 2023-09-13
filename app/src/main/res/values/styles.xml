@@ -1,0 +1,69 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="CPL_PrincipalTheme" parent="android:Theme.Light">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="CPL_PrincipalTheme_Labels" parent="android:Theme.Light">
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">#8dbdea</item>
+    </style>
+
+    <style name="Estilo_Boton_Lectura" parent="android:Theme.Light">
+        <item name="android:background">@color/LawnGreen</item>
+        <item name="android:backgroundTint">@color/LawnGreen</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Estilo_Boton_Anomalia" parent="android:Theme.Light">
+        <item name="android:background">@color/Red</item>
+        <item name="android:backgroundTint">@color/Red</item>
+        <item name="android:textColor">@color/White</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Estilo_Texto_Estatus_Conectividad" parent="android:Theme.Light">
+        <item name="android:textSize">18sp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:padding">1dp</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_normal</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton.Red" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_red</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+    <style name="AppTheme.RoundedCornerMaterialButton.Green" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_green</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton.Keyboard" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_normal</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+</resources>

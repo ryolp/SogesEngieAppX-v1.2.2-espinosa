@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SOGES</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="de"> "de"</string>
+    <string name="registros"> registros</string>
+    <string name="version"> versión</string>
+    <string name="lbl_esferas">esferas</string>
+    <string name="m_str_lecturas">Ordenes</string>
+    <string name="m_str_importar">Importar</string>
+    <string name="m_str_exportar">Exportar</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="continuar">Continuar</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="Salir">Salir</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="borrar">Borrar</string>
+    <string name="msj_error">"Ocurrio un error %s."</string>
+    <string name="msj_error_descripcion">"Ocurrio un error %s. Mensaje de error:"</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="guardar">Grabar</string>
+    <string name="capturar">Capturar</string>
+    <string name="str_lectura">Ejecutar</string>
+    <string name="str_presion">Presión</string>
+    <string name="str_lectura_verifique">VERIFIQUE Lectura:</string>
+    <string name="str_presion_verifique">VERIFIQUE Presión:</string>
+    <string name="str_fotos">Fotos</string>
+    <string name="title_activity_toma_de_lecturas">Ejecucion de Ordenes</string>
+    <string name="str_modoCorreccion">(MODO DE CORRECCIÓN) Lectura:</string>
+    <string name="str_comentarios">Comentar</string>
+    <string name="str_problemas">Problemas:</string>
+    <string name="m_str_comentarios">Comentarios</string>
+    <string name="msj_warning_importar">Se remplazaran los datos en memoria con los datos en el servidor, ¿Desea continuar?</string>
+    <string name="msj_lotecargar">Escriba el nombre del archivo a cargar.</string>
+    <string name="str_emptyField">El nombre del archivo no puede estar vacio.</string>
+    <string name="m_str_correccion">Corrección</string>
+    <string name="m_str_siguiente">Sig.</string>
+    <string name="m_str_anterior">Ant.</string>
+    <string name="m_str_exportarTodo">Exportar Todo</string>
+    <string name="str_caseta">Caseta</string>
+    <string name="str_intcial">Cial</string>
+    <string name="str_min">Min</string>
+    <string name="str_max">Max</string>
+    <string name="str_lecturaAnterior">Ord. Ant</string>
+    <string name="str_lect">Orden</string>
+    <string name="str_modo">Modo</string>
+    <string name="str_ciudad">Ciudad</string>
+    <string name="str_cliente">Cliente</string>
+    <string name="str_direccion">Direccion</string>
+    <string name="msj_str_brincarComentarios">Brincar orden con comentarios</string>
+    <string name="title_activity_filtrado">Filtrado</string>
+
+    <string name="capturayanomalia">Captura y Anomalia</string>
+    <string name="capturayregresa">Captura y Regresa</string>
+    <string name="capturaysiguiente">Captura y Siguiente</string>
+
+    <string name="str_exportar_lowercase">exportar</string>
+    <string name="str_importar_lowercase">importar</string>
+
+    <string name="info_centro">Unicom</string>
+    <string name="info_lote">Lote</string>
+    <string name="info_CPL">CPL</string>
+    <string name="info_Pais">Pais</string>
+    <string name="info_numBluetooth">Número de Bluetooth</string>
+    <string name="info_macBluetooth">MAC Bluetooth</string>
+    <string name="info_macImpresora">MAC Impresora</string>
+    <string name="info_servidorGPRS">Servidor GPRS</string>
+    <string name="info_tamanoFoto">Tamaño de la Foto</string>
+    <string name="info_rutaDescarga">Ruta de Descarga</string>
+    <string name="info_modo">Modo</string>
+    <string name="info_modo_normal">Normal</string>
+    <string name="info_modo_sin_fotos">Sin Fotos</string>
+    <string name="info_modo_fotos">Fotos</string>
+    <string name="info_modo_fotos_cc">Fotos CC</string>
+    <string name="info_calidad_foto">Calidad de la Foto</string>
+    <string name="info_sonidos">Sonido</string>
+    <string name="info_encendido">Encendido</string>
+    <string name="info_apagado">Apagado</string>
+
+    <string name="str_medidor">Medidor</string>
+    <string name="str_titulo2">Desarrollado para</string>
+    <string name="str_titulo">Sistema de Cortes y Reconexiones</string>
+    <string name="str_nosotros">por</string>
+    <string name="lbl_lecturista">Técnico</string>
+    <string name="lbl_admon">Administrador</string>
+    <string name="lbl_cambiarUsuario">Cambiar Usuario</string>
+    <string name="str_login_msj_admon">\nEscriba la contraseña del administrador y presione \'Entrar\'</string>
+    <string name="str_login_msj_lecturista">\nEscriba el usuario y la contraseña, despues presione \'Entrar\' para continuar</string>
+    <string name="str_login_msj_lecturista_contrasena">\nEscriba la contraseña, despues presione \'Entrar\' para continuar</string>
+    <string name="str_login_msj_lecturista_contrasena_arg">\nEscriba el PTN asingado, despues presione \'Entrar\' para continuar</string>
+    <string name="str_usuario">Usuario:</string>
+    <string name="str_contrasena">Contraseña:</string>
+    <string name="lbl_entrar">Entrar</string>
+
+    <string-array name="Modo">
+        <item>Normal</item>
+        <item>Corrección</item>
+    </string-array>
+
+    <string name="m_str_filtrar">Filtrar</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="m_str_salirCorreccion">Salir de Correccion</string>
+    <string name="str_captura">Captura</string>
+    <string name="str_servidor">Servidor</string>
+    <string name="lbl_medidor">Medidor</string>
+    <string name="lbl_ic">IC</string>
+    <string name="str_lbl_medidor">Medidor</string>
+    <string name="str_marca">Marca</string>
+    <string name="str_nis">NIS</string>
+    <string name="str_anomalia">Anomalia</string>
+    <string name="str_subanomalia">Subanomalia</string>
+    <string name="str_buscar">Buscar</string>
+    <string name="str_buscar_lowercase">buscar</string>
+    <string name="str_edo">Edo</string>
+    <string name="title_activity_buscar_medidor">Buscar</string>
+    <string name="msj_buscar">Escriba los ultimos digitos del medidor</string>
+    <string name="msj_buscar_direccion">Escriba parte de la dirección</string>
+    <string name="msj_buscar_numero">Escriba el IC</string>
+    <string name="lbl_regresar">Regresar</string>
+    <string name="lbl_seleccionar">Selecc.</string>
+    <string name="m_str_borrarAnom">Borrar Anomalia</string>
+    <string name="m_str_desendente">Desendente</string>
+    <string name="m_str_ascendente">Ascendente</string>
+    <string name="title_activity_configuracion">Configuracion</string>
+    <string name="msj_warning_pendientes">Hay lecturas pendientes. Confirme que desea hacer un cierre forzado.</string>
+    <string name="msj_warning_pendientes_continuar">Hay lecturas pendientes.¿Desea Continuar?</string>
+    <string name="str_configuracion">Configuración</string>
+    <string name="str_m_borrar_lect">Borrar Orden</string>
+    <string name="title_activity_no_registrados">Nuevo Medidor</string>
+    <string name="Si">Si</string>
+    <string name="No">No</string>
+    <string name="msj_tiene_medidor">¿Tiene Medidor?</string>
+    <string name="m_str_noregistrados">Nuevo Medidor</string>
+    <string name="m_strCambiarFuente">Cambiar Fuente</string>
+    <string name="m_str_borrarRuta">Borrar Ruta</string>
+    <string name="str_warning_borrarRuta">Se borrarán todas las ordenes cargadas ¿Desea Continuar?</string>
+    <string name="m_str_ingresarMAC">Ingreso Facil de MAC</string>
+    <string name="m_str_desHabilita_imp">Deshabilita Impresion</string>
+    <string name="m_str_habilita_Impresion">Habilita Impresion</string>
+    <string name="msj_imprimir">Se imprimiran los comprobantes de lecturas</string>
+    <string name="m_str_ingresarMACIMPR">Ingreso Facil de MAC Impresora</string>
+    <string name="m_str_acercade">Acerca de</string>
+    <string name="m_str_sinLectura">Sin Ejecutar</string>
+    <string name="m_str_conLectura">Ejecutadas</string>
+    <string name="m_str_todo">Todas las Ordenes</string>
+    <string name="m_str_gpsOn">GPS Encendido</string>
+    <string name="m_str_gpsOff">GPS Apagado</string>
+    <string name="str_espere">Espere&#8230;</string>
+
+    <string name="lbl_direccion">Dirección</string>
+    <string name="lbl_calles">Calles</string>
+    <string name="lbl_numero">Número</string>
+    <string name="lbl_principal">Principal</string>
+    <string name="lbl_resumen">Resumen</string>
+    <string name="lbl_recientes">Recientes</string>
+    <string name="lbl_mas_usadas">Más usadas</string>
+    <string name="lbl_todas">Catálogo de Anomalias</string>
+    <!-- 
+    <string name="lbl_informacion">"Información"</string>
+    <string name="lbl_area_de_captura">"Area de Captura" </string>
+     -->
+
+    <string name="lbl_informacion">"Cambiar Font Superior"</string>
+    <string name="lbl_area_de_captura">"Cambiar Font Inferior" </string>
+
+    <string name="msj_main_ruta_borrada">La ruta a sido borrada</string>
+
+    <string name="msj_buscar_no_medidores">No hay medidores que contengan este número de serie</string>
+    <string name="msj_buscar_no_medidores_direccion">No hay medidores con esta dirección</string>
+    <string name="msj_buscar_no_medidores_numero">No hay medidores con IC</string>
+    <string name="msj_buscar_no_medidores_calles">No hay medidores con esta calle</string>
+
+    <string name="msj_buscar_cant_med_encontrados">Se encontraron %d medidor(es)</string>
+    <string name="msj_buscar_cant_calles_encontrados">Se encontraron %d calle(s)</string>
+    <string name="msj_campo_vacio">El campo %s no puede estar vacio</string>
+    <string name="msj_campo_vacio_no_persnalizable">El campo no puede estar vacio</string>
+
+    <string name="msj_fotos_cantidad_a_tomar">Se requieren %d foto(s)</string>
+    <string name="msj_fotos">foto(s)</string>
+
+
+    <string name="msj_camara_obtener">"obtener la camara"</string>
+    <string name="msj_camara_volverATomar">"Volver a Tomar"</string>
+    <string name="lbl_camara_otra">Otra Foto</string>
+
+    <string name="lbl_configuracion_modo_trans">Modo de transmisión predeterminado</string>
+    <string name="lbl_configuracion_modo_WIFI">WIFI</string>
+    <string name="lbl_configuracion_modo_GPRS">GPRS</string>
+    <string name="lbl_configuracion_modo_BT">Bluetooth</string>
+    <string name="lbl_configuracion_modo_USB">USB</string>
+    <string name="lbl_configuracion_modo_preguntar">Preguntar Siempre</string>
+
+    <string name="msj_cpl_verifique_contrasena">"Verifique la contraseña. "</string>
+    <string name="msj_cpl_verifique_usuario_contrasena">"Verifique la usuario y la contraseña. "</string>
+
+    <string name="msj_validacion_esferas">El número de esferas no coincide.</string>
+    <string name="msj_validacion_no_hay_lectura">No se ha ejecutado una orden</string>
+
+    <string name="msj_validacion_long_mac">"La MAC ingresada no es valida, verifique que sea de 12 digitos"</string>
+
+    <string name="msj_lecturas_no_hay_mas">"No hay más ordenes"</string>
+    <string name="msj_lecturas_no_hay_ingresadas">"No hay ordenes ingresadas"</string>
+    <string name="msj_lecturas_no_hay_lecturas_cargadas">"No hay ordenes cargadas"</string>
+    <string name="msj_lecturas_verifique">"Verifique la lectura"</string>
+    <string name="msj_lecturas_verifique_1">"Verifique los datos del medidor"</string>
+
+    <string name="msj_main_select_metodo_trans">"Seleccione un metodo de transmisión"</string>
+
+    <string name="msj_main_operacion_cancelada">"La operación ha sido cancelada."</string>
+    <string name="msj_main_total_lecturas">"Ordenes en  la Ruta"</string>
+    <string name="msj_main_medidores_con_lectura">"Ordenes Ejecutadas"</string>
+    <string name="msj_main_medidores_con_anomalias">"Ordenes con Anomalia"</string>
+    <string name="msj_main_lecturas_restantes">"Ordenes Pendientes"</string>
+    <string name="msj_main_fotos_tomadas">"Fotos Tomadas"</string>
+    <string name="msj_main_no_registrados">"No Registrados"</string>
+
+    <string name="msj_main_no_hay_itinerarios">"No hay ordenes cargadas"</string>
+
+    <string name="msj_no_registrados_num_serie">"Número de Serie"</string>
+    <string name="msj_no_registrados_num_esferas">"Número de Diales"</string>
+    <string name="msj_observaciones">"Observaciones"</string>
+    <string name="msj_no_registrados">"No hay itinerarios cargados"</string>
+
+    <string name="msj_anomalias_no_hay">"No se ha seleccionado alguna anomalia.\nSeleccione una anomalia en el listado de 'TODAS' para comenzar a usar esta pantalla."</string>
+    <string name="msj_anomalias_validacion_subavisos">Los subavisos deben tener %s caracteres</string>
+    <string name="msj_anomalias_no_valida">La anomalia capturada no es válida</string>
+    <string name="msj_anomalias_no_compatible">La anomalia capturada no es compatible</string>
+
+    <string name="msj_anomalias_borrada">La anomalia ha sido borrada</string>
+    <string name="msj_anomalias_error_borrado">Ocurrio un error al borrar, la anomalia no ha sido borrada</string>
+
+    <string name="lbl_tdl_indica_lectura">E:</string>
+    <string name="lbl_tdl_indica_anomalia">A:</string>
+    <string name="lbl_tdl_indica_medidor">IC:</string>
+    <string name="lbl_tdl_repetirAnomalia">Repetir Aviso</string>
+
+    <string name="lbl_tdl_mover">Mover</string>
+    <string name="lbl_tdl_primera">Primera</string>
+    <string name="lbl_tdl_ultima">Ultima</string>
+    <string name="lbl_tdl_requiere_lectura">La anomalia seleccionada requiere lectura</string>
+    <string name="msj_tdl_ultima">"No se han ejecutado ordenes"</string>
+    <string name="msj_tdl_que_ajustar">"¿Que fuente desea ajustar?"</string>
+    <string name="msj_tdl_config_fuente">"Puede empezar a configurar la fuente con las teclas de volumen"</string>
+    <string name="msj_tdl_fin_config_fuente">"Se ha terminado de configurar la fuente"</string>
+    <string name="msj_tdl_fin_de_ruta">"Fin de la Ruta"</string>
+
+    <string name="msj_tdl_no_mas_lecturas_antes">"No hay más ordenes antes de esta."</string>
+    <string name="msj_tdl_no_mas_lecturas_despues">"No hay más ordenes después de esta."</string>
+    <string name="msj_tdl_no_mas_lecturas_ingr_antes">"No hay más ordenes ingresadas antes de esta."</string>
+    <string name="msj_tdl_no_mas_lecturas_ingr_despues">"No hay más ordenes ingresadas después de esta."</string>
+
+    <string name="msj_config_no_disponible" formatted="false"> "No se ha configurado alguna %s.\nConfigure el %s en la pantalla '%s' que se en cuentra en el menu de la pantalla principal."</string>
+    <string name="msj_config_no_guardada" formatted="false"> "No se ha guardado una %s en configuracion."</string>
+
+    <string name="msj_gps_no_disponible"> "No se pudo localizar el punto GPS, ¿Desea volver a intentarlo?"</string>
+    <string name="msj_trans_no_hay_datos"> "No hay datos que exportar"</string>
+    <string name="msj_trans_ruta_no_descargada"> "La ruta no ha sido descargada"</string>
+    <string name="msj_trans_cancelada_por_usuario"> "Cancelada por usuario"</string>
+    <string name="msj_trans_forzando"> "Forzando lecturas incompletas"</string>
+    <string name="msj_trans_generando"> "Generando datos a exportar"</string>
+    <string name="msj_trans_generando_no_registrados"> Generando No Registrados</string>
+    <string name="msj_trans_generando_fotos"> "Generando fotos a exportar"</string>
+    <string name="msj_trans_error">"Ocurrio un problema al %s.\n Verifique que se encuentre conectado a internet y que el servidor se encuentre disponible. Error:"</string>
+    <string name="msj_trans_correcta">"La informacion ha sido %s con exito"</string>
+    <string name="msj_trans_recibiendo">"Recibiendo datos."</string>
+    <string name="msj_trans_file_not_found">"No se encontro el archivo especificado"</string>
+    <string name="msj_trans_connection_problem">"Ocurrio un problema con la red, verifique que cuente con internet y vuelva a intentarlo."</string>
+    <string name="msj_trans_file_doesnt_match">"El archivo recibido no fué el esperado."</string>
+    <string name="msj_trans_bt_not_found">"Bluetooth no disponible."</string>
+    <string name="msj_trans_bt_off">"El bluetooth esta apagado, Enciendalo e intentelo de nuevo."</string>
+    <string name="msj_trans_bytes_sent">"bytes enviados"</string>
+
+    <string name="str_importado"> "importada"</string>
+    <string name="str_exportado"> "exportada"</string>
+
+    <string name="msj_correccion_ultima">"Ya no hay más ordenes pendientes. Se entrará en 'Modo Corrección'"</string>
+    <!-- string name="msj_correccion_ultima">"No hay más lecturas pendientes, no puede salir del modo de corrección"</string> -->
+
+
+    <string name="str_lbl_supervisor">Supervisor</string>
+    <string name="str_lbl_emergencia">Emergencia</string>
+    <string name="str_lbl_autenticar">Autenticar</string>
+    <string name="lbl_comentarios_ingrese_esferas">"Escriba la Cantidad de Esferas"</string>
+    <string name="lbl_comentarios_ingrese_direccion">"Escriba la Dirección"</string>
+    <string name="lbl_comentarios_ingrese_ubicacion">"Escriba la Ubicación"</string>
+    <string name="lbl_comentarios_ingrese_entrecalles">"Escriba las Entre Calles"</string>
+    <string name="lbl_comentarios_ingrese_nombre">"Escriba el Nombre"</string>
+    <string name="lbl_comentarios_ingrese_medidor_antpos">"Escriba el Medidor Anterior y Posterior"</string>
+    <string name="lbl_comentarios_ingrese_subAnomalia">"Escriba la SubAnomalia"</string>
+    <string name="lbl_comentarios_ingrese_advertencia">"Escriba la Advertencia al Lector"</string>
+    <string name="lbl_comentarios_ingrese_act_comercial">"Escriba la Actividad Comercial"</string>
+    <!--  <string name="str_ajustar_fuente_informacion">Ajustar fuente Información</string>
+    <string name="str_ajustar_fuente_areaCaptura">Ajustar fuente de Area de Captura</string> -->
+
+    <string name="str_ajustar_fuente_informacion">"Cambiar Font Superior"</string>
+    <string name="str_ajustar_fuente_areaCaptura">"Cambiar Font Inferior"</string>
+
+    <string name="str_pregunta_guardar_cambios">¿Esta seguro de avanzar y borrar lo capturado?</string>
+    <string name="str_pregunta_guardar_cambios_anomalia_ausente">Al ingresar una anomalia se borrará la ejecución. ¿Desea continuar?</string>
+
+
+    <string name="str_nivel_bateria">Nivel de batería: </string>
+    <string name="str_m_borrarEstadisticas">Borrar Estadísticas</string>
+    <string name="str_ejemplo">Ejemplo</string>
+    <string name="str_alerta">Alerta</string>
+
+</resources>

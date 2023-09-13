@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/m_ingresarMAC" android:title="@string/m_str_ingresarMAC"></item><item
+        android:id="@+id/m_guardar"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/guardar" android:icon="@drawable/ic_action_guardar"/>
+    <item android:id="@+id/m_ingresarMACIMPR" android:title="@string/m_str_ingresarMACIMPR"></item>
+    
+
+</menu>

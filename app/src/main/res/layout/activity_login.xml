@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="enruta.soges_engie.LoginActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="413dp">
+
+            <TextView
+                android:id="@+id/tv_msj_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/SteelBlue"
+                android:text="@string/str_login_msj_admon"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/White"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_usuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_msj_login"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="16dp"
+                android:text="@string/str_usuario"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/et_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_usuario"
+                android:layout_alignParentLeft="true"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/tv_contrasena"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_usuario"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="16dp"
+                android:text="@string/str_contrasena"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/et_contrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_contrasena"
+                android:layout_alignParentLeft="true"
+                android:ems="10"
+                android:inputType="number|numberPassword" />
+
+            <Button
+                android:id="@+id/btnAutenticar"
+                style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/et_contrasena"
+                android:layout_weight="1"
+                android:text="@string/lbl_entrar" />
+
+            <TextView
+                android:id="@+id/lblCodigoSMS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnAutenticar"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="16dp"
+                android:text="Código SMS"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/txtCodigoSMS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lblCodigoSMS"
+                android:layout_alignParentStart="true"
+                android:ems="10"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/btnValidarSMS"
+
+                style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCodigoSMS"
+                android:text="Validar SMS" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/b_entrar"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="entrar"
+            android:text="@string/lbl_entrar" />
+    </LinearLayout>
+
+</RelativeLayout>

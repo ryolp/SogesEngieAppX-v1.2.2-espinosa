@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_busquedaManual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/anom_et_anomalia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/im_clearText"
+            android:ems="10"
+            android:imeActionLabel="Capturar"
+            android:imeOptions="actionDone" />
+
+        <Button
+            android:id="@+id/anom_b_capturar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:onClick="getAnomaliaEditText"
+            android:visibility="gone"
+            android:text="@string/capturar" />
+
+        <ImageButton
+            android:id="@+id/im_clearText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/anom_b_capturar"
+            android:background="@android:color/transparent"
+            android:src="@drawable/clear_button_behavior" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold|italic"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/anom_lv_lista"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        >
+    </ListView>
+
+    <GridView
+        android:id="@+id/anom_gv_lista"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="3"
+        android:visibility="gone" >
+    </GridView>
+
+    <TextView
+        android:id="@+id/tv_mensaje"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Large Text"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

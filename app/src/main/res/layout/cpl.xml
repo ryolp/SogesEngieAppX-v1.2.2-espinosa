@@ -1,0 +1,138 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/AzulEngie"
+        android:gravity="center_horizontal"
+        android:text="@string/str_titulo"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:textStyle="normal|bold" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="200dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/tv_titilo2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:adjustViewBounds="true"
+            android:baselineAlignBottom="false"
+            android:src="@drawable/logo_engie" />
+
+        <ImageView
+            android:id="@+id/iv_nosotros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_nosotros"
+            android:layout_alignLeft="@+id/iv_logo"
+            android:layout_alignRight="@+id/iv_logo"
+            android:layout_marginTop="14dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/enruta" />
+
+        <TextView
+            android:id="@+id/tv_titilo2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:text="@string/str_titulo2"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_nosotros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_titilo2"
+            android:layout_below="@+id/iv_logo"
+            android:layout_marginTop="18dp"
+            android:text="@string/str_nosotros"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_telefono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_nosotros"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="+52-81-8298-9980"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/b_admon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/lbl_admon" 
+			style="@style/AppTheme.RoundedCornerMaterialButton"
+              android:layout_marginLeft="-3dip"
+            android:layout_marginRight="-3dip"/>
+
+        <Button
+            android:id="@+id/b_lecturista"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/lbl_lecturista" 
+			style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_marginLeft="-3dip"
+            android:layout_marginRight="-3dip" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_version_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_titulo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:text="@string/version"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/txtMensaje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/Red"
+        android:textStyle="bold" />
+
+</RelativeLayout>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" 
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/str_modo" />
+
+            <CheckBox
+                android:id="@+id/cb_ciudad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/et_ciudad"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_ciudad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_infofotos"
+                android:layout_toRightOf="@+id/TextView01"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/sp_modo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/TextView01" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/et_ciudad"
+                android:text="@string/str_medidor" />
+
+            <EditText
+                android:id="@+id/et_medidor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/textView2"
+                android:layout_toRightOf="@+id/TextView01"
+                android:ems="10" />
+            <CheckBox
+                android:id="@+id/cb_medidor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/et_medidor" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/et_medidor"
+                android:text="@string/str_cliente" />
+
+            <EditText
+                android:id="@+id/et_cliente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/textView3"
+                android:layout_toRightOf="@+id/TextView01"
+                android:ems="10" />
+            
+            <CheckBox
+                android:id="@+id/cb_cliente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/et_cliente" />
+
+            <TextView
+                android:id="@+id/tv_nis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/et_cliente"
+                android:text="@string/str_direccion" />
+
+            <EditText
+                android:id="@+id/et_direccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_nis"
+                android:layout_toRightOf="@+id/TextView01"
+                android:ems="10" />
+
+            <CheckBox
+                android:id="@+id/cb_direccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/et_direccion" />
+
+            <TextView
+                android:id="@+id/tv_infofotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/sp_modo"
+                android:text="@string/str_ciudad"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BuscarMedidor" >
+
+    <EditText
+        android:id="@+id/et_medidor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/im_clearText"
+        android:ems="10"
+        android:imeActionLabel="Buscar"
+        android:inputType="number" >
+
+    </EditText>
+
+    <TextView
+        android:id="@+id/tv_msj_buscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/et_medidor"
+        android:gravity="center"
+        android:text="@string/msj_buscar"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ListView
+        android:id="@+id/lv_medidores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_button_bar1"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/et_medidor"
+        android:visibility="gone" >
+
+    </ListView>
+
+    <ImageButton
+        android:id="@+id/im_clearText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_msj_buscar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/clear_button_behavior" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

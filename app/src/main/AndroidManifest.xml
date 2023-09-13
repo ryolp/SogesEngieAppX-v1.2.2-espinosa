@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="enruta.soges_engie"
+    android:installLocation="preferExternal"
+    android:versionCode="6"
+    android:versionName="SOGES (1.0.0)">
+
+    <uses-sdk android:targetSdkVersion="31" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".Globales"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="enruta.soges_engie.LoginActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="enruta.soges_engie.Main"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.TomaDeLecturas"
+            android:configChanges="keyboardHidden|navigation|orientation|screenSize"
+            android:label="@string/title_activity_toma_de_lecturas"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity
+            android:name="enruta.soges_engie.CamaraActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.trasmisionDatos"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.VerFotos"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.Filtrado"
+            android:label="@string/title_activity_filtrado"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity
+            android:name="enruta.soges_engie.Input"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"></activity>
+        <activity
+            android:name="enruta.soges_engie.PantallaAnomalias"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity
+            android:name="enruta.soges_engie.BuscarMedidor"
+            android:label="@string/title_activity_buscar_medidor"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+        <activity
+            android:name="enruta.soges_engie.Configuracion"
+            android:label="@string/title_activity_configuracion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
+        <activity
+            android:name="enruta.soges_engie.Informacion"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.NoRegistrados"
+            android:label="@string/title_activity_no_registrados"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="enruta.soges_engie.trasmisionDatosBt"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="enruta.soges_engie.CPL"
+            android:configChanges="keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="enruta.soges_engie.InputCamposGenerico"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity
+            android:name="enruta.soges_engie.PantallaCodigos"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="enruta.soges_engie.DescargarTareasActivity"
+            android:exported="false"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="top" >
+
+    <LinearLayout
+         android:id="@+id/tl_teclado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/teclado_b_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="1"
+                android:text="1"
+                android:textSize="50dp" />
+
+            <Button
+                android:id="@+id/teclado_b_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="2"
+                android:text="2"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="3"
+                android:text="3"
+                android:textSize="50sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/teclado_b_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="4"
+                android:text="4"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="5"
+                android:text="5"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="6"
+                android:text="6"
+                android:textSize="50sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/teclado_b_7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="7"
+                android:text="7"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="8"
+                android:text="8"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="9"
+                android:text="9"
+                android:textSize="50sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/teclado_b_borrar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="-1"
+                android:text="@string/borrar" />
+
+            <Button
+                android:id="@+id/teclado_b_0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="0"
+                android:text="0"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/teclado_b_punto"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3333"
+                android:onClick="clickTeclado"
+                android:tag="."
+                android:textSize="50sp"
+                android:enabled="false"
+                android:text="." />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/teclado_capturaysalir"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3333"
+                android:onClick="capturaLectura"
+                android:tag=""
+                android:text="@string/capturayregresa" />
+
+            <Button
+                android:id="@+id/teclado_capturayanomalia"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="capturarYAnomalia"
+                android:text="@string/capturayanomalia"/>
+
+            <Button
+                android:id="@+id/teclado_capturaysiguiente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:onClick="capturarYSiguiente"
+                android:text="@string/capturaysiguiente" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

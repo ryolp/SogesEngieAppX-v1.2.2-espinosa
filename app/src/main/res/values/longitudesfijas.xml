@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="USER_POSI_LOGIN">21</integer>
+    <integer name="USER_POSI_PASSWORD">41</integer>
+    <integer name="USER_POSI_NOMBRE">61</integer>
+    <integer name="USER_LONG_LOGIN">20</integer>
+    <integer name="USER_LONG_PASSWORD">20</integer>
+    <integer name="USER_LONG_NOMBRE">100</integer>
+    <integer name="USER_POSI_FOTOS">485</integer>
+    <integer name="USER_LONG_FOTOS">2</integer>
+    <integer name="ANOM_POSI_PAIS">1</integer>
+    <integer name="ANOM_LONG_PAIS">1</integer>
+    <integer name="ANOM_POSI_TIPO">2</integer>
+    <integer name="ANOM_LONG_TIPO">1</integer>
+    <integer name="ANOM_POSI_ACTIVA">3</integer>
+    <integer name="ANOM_LONG_ACTIVA">1</integer>
+    <integer name="ANOM_POSI_ANOM">4</integer>
+    <integer name="ANOM_POSI_FOTO">7</integer>
+    <integer name="ANOM_LONG_FOTO">1</integer>
+    <integer name="ANOM_POSI_LECT">8</integer>
+    <integer name="ANOM_LONG_LECT">1</integer>
+    <integer name="ANOM_POSI_MENS">9</integer>
+    <integer name="ANOM_LONG_MENS">1</integer>
+    <integer name="ANOM_POSI_AUSENTE">10</integer>
+    <integer name="ANOM_LONG_AUSENTE">1</integer>
+    <integer name="ANOM_POSI_SUBANOM">11</integer>
+    <integer name="ANOM_LONG_SUBANOM">1</integer>
+    <integer name="ANOM_POSI_CAPT">12</integer>
+    <integer name="ANOM_LONG_CAPT">1</integer>
+    <integer name="ANOM_POSI_CONV">13</integer>
+    <integer name="ANOM_LONG_CONV">1</integer>
+    <integer name="ANOM_POSI_DESC">14</integer>
+    <integer name="ANOM_LONG_DESC">54</integer>
+    
+    <integer name="LONG_CAMPO_UNICOM">12</integer>
+    <integer name="POS_DATOS_UNICOM">400</integer>
+    
+</resources>

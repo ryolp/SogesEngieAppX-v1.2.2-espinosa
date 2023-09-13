@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/m_sinLectura" android:checked="false" android:title="@string/m_str_sinLectura" android:checkable="true" android:showAsAction="always" android:icon="@drawable/ic_sin_lectura_unselected" android:visible="false"></item>
+    <item android:id="@+id/m_conLectura" android:checked="false" android:title="@string/m_str_conLectura" android:checkable="true" android:showAsAction="always" android:icon="@drawable/ic_con_lectura_unselected" android:visible="false"></item>
+    <item android:id="@+id/m_todos" android:title="@string/m_str_todo" android:checked="false" android:checkable="true" android:showAsAction="always" android:icon="@drawable/ic_todas_las_lecturas_unchecked" android:visible="false"></item>
+    
+
+</menu>

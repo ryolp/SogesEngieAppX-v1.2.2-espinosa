@@ -1,0 +1,6 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
+    </style>
+
+</resources>

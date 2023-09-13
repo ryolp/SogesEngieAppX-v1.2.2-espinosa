@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/seccionConectividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtConectividad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checkmark_green"
+            android:theme="@style/Estilo_Texto_Estatus_Conectividad"
+            android:text="Conectividad"
+            />
+        <TextView
+            android:id="@+id/txtSistoleDisponible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checkmark_green"
+            android:theme="@style/Estilo_Texto_Estatus_Conectividad"
+            android:text="Sistole disponible"
+            />
+        <TextView
+            android:id="@+id/txtSesion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checkmark_green"
+            android:theme="@style/Estilo_Texto_Estatus_Conectividad"
+            android:text="Sesión"
+            />
+        <TextView
+            android:id="@+id/txtGPS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checkmark_green"
+            android:theme="@style/Estilo_Texto_Estatus_Conectividad"
+            android:text="@string/m_str_gpsOn"
+            />
+        <TextView
+            android:id="@+id/txtNivelBateria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checkmark_green"
+            android:theme="@style/Estilo_Texto_Estatus_Conectividad"
+            android:text="@string/str_nivel_bateria"
+            />
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnAceptar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        style="@style/AppTheme.RoundedCornerMaterialButton"
+        android:gravity="center"
+        android:text="@string/aceptar" />
+</LinearLayout>
