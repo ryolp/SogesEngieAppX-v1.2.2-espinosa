@@ -1477,5 +1477,8 @@ public String getAnomaliasAIngresadas(){
 //		
 //		closeDatabase();
 //	}
+	public String getSerieMedidor() {
+	return is_serieMedidor;
+}
 
 }

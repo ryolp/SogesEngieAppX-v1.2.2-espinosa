@@ -1,42 +1,64 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="enruta.soges_engie.Main">
 
     <TextView
         android:id="@+id/tv_version"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/SteelBlue"
         android:gravity="right"
         android:text="@string/version"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/White"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/b_lecturas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/m_str_lecturas"
-		style="@style/AppTheme.RoundedCornerMaterialButton.Keyboard"
-        android:visibility="gone" />
+        style="@style/Estilo_Titulo_Version" />
 
     <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/b_lecturas"
+
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tv_version" >
+        app:layout_constraintBottom_toTopOf="@+id/botones"
+        app:layout_constraintTop_toBottomOf="@+id/tv_version">
+
     </android.support.v4.view.ViewPager>
-    
-</RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/botones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnOperacion"
+                style="@style/AppTheme.RoundedCornerMaterialButton.Keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:text="Hacer Check..." />
+
+            <Button
+                android:id="@+id/b_lecturas"
+                style="@style/AppTheme.RoundedCornerMaterialButton.Keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/m_str_lecturas" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

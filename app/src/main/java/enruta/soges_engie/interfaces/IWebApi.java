@@ -1,6 +1,7 @@
 package enruta.soges_engie.interfaces;
 
-import enruta.soges_engie.entities.SubirFotoRequest;
+import enruta.soges_engie.clases.OperacionRequest;
+import enruta.soges_engie.clases.OperacionResponse;
 import enruta.soges_engie.entities.SubirFotoResponse;
 import enruta.soges_engie.entities.TareasRequest;
 import enruta.soges_engie.entities.TareasResponse;
@@ -13,7 +14,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -34,20 +34,20 @@ public interface IWebApi {
 //    @GET("validarEmpleadoSMS.aspx")
 //    Call<LoginResponseEntity>validarEmpleadoSMS2(@Query("usuario") String usuario, @Query("codigosms") String codigoSMS);
 
-//   @POST("api/operaciones/CheckIn")
-//    Call<OperacionResponse>checkIn(@Body OperacionRequest request);
-//
-//    @POST("api/operaciones/CheckSeguridad")
-//    Call<OperacionResponse>checkSeguridad(@Body OperacionRequest request);
-//
-//    @POST("api/operaciones/CheckOut")
-//    Call<OperacionResponse>checkOut(@Body OperacionRequest request);
+   @POST("api/operaciones/CheckIn")
+    Call<OperacionResponse>checkIn(@Body OperacionRequest request);
+
+    @POST("api/operaciones/CheckSeguridad")
+    Call<OperacionResponse>checkSeguridad(@Body OperacionRequest request);
+
+    @POST("api/operaciones/CheckOut")
+    Call<OperacionResponse>checkOut(@Body OperacionRequest request);
 //
 //    @POST("api/operaciones/CerrarArchivo")
 //    Call<OperacionResponse>cerrarArchivo(@Body OperacionRequest request);
-//
-//    @POST("api/operaciones/SolicitarAyuda2")
-//    Call<OperacionResponse>solicitarAyuda(@Body OperacionRequest request);
+
+    @POST("api/operaciones/SolicitarAyuda2")
+    Call<OperacionResponse>solicitarAyuda(@Body OperacionRequest request);
 
 //    @POST("api/operaciones/marcarArchivoDescargado")
 //    Call<OperacionResponse>marcarArchivoDescargado(@Body OperacionRequest request);

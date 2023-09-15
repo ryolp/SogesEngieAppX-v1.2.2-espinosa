@@ -449,51 +449,55 @@ public class trasmisionDatos extends TransmisionesPadre {
 						for (int i = 0; i < c.getCount(); i++) {
 							context.stop();
 
-							nombreArchivo = Utils.getString(c, "nombre", "");
-							serieMedidor  = Utils.getString(c, "serieMedidor", "");
-							idOrden = Utils.getLong(c, "idOrden",0);
-							
-							String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10 );
+							try {
+								nombreArchivo = Utils.getString(c, "nombre", "");
+								serieMedidor = Utils.getString(c, "serieMedidor", "");
+								idOrden = Utils.getLong(c, "idOrden", 0);
 
-							serial.open(ls_servidor, ls_capertaFotos+ fecha+"/", "",
-									Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
+								String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10);
 
-							long imageSize = Utils.getLong(c, "imageSize", 0);
+								serial.open(ls_servidor, ls_capertaFotos + fecha + "/", "",
+										Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
 
-							// ls_cadena=generaCadenaAEnviar(c);
+								long imageSize = Utils.getLong(c, "imageSize", 0);
 
-							image = fotoMgr.obtenerFoto(db, nombreArchivo, imageSize);
+								// ls_cadena=generaCadenaAEnviar(c);
 
-							// ls_cadena=generaCadenaAEnviar(c);
-							// serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
-							serial.write(nombreArchivo, image);
+								image = fotoMgr.obtenerFoto(db, nombreArchivo, imageSize);
 
-							String bufferLenght;
-							int porcentaje = ((i + 1) * 100) / c.getCount();
-							bufferLenght = String.valueOf(c.getCount());
-							serial.close();
-							openDatabase();
+								// ls_cadena=generaCadenaAEnviar(c);
+								// serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
+								serial.write(nombreArchivo, image);
 
-							String whereClause = "rowid=?";
-							String[] whereArgs = { Utils.getString(c, "rowid", "") };
-							
+								String bufferLenght;
+								int porcentaje = ((i + 1) * 100) / c.getCount();
+								bufferLenght = String.valueOf(c.getCount());
+								serial.close();
+								openDatabase();
 
-							if (!transmitirTodo) {
+								String whereClause = "rowid=?";
+								String[] whereArgs = {Utils.getString(c, "rowid", "")};
+
+
+								if (!transmitirTodo) {
 //								cv_datos.put("envio", TomaDeLecturas.ENVIADA);
 //
 //								int j = db.update("fotos", cv_datos,
 //										whereClause, whereArgs);
-								db.execSQL("delete from fotos where rowid=?", whereArgs);
+									db.execSQL("delete from fotos where rowid=?", whereArgs);
+								}
+								// closeDatabase();
+								// Marcar como enviada
+								c.moveToNext();
+								mostrarMensaje(MENSAJE, (i + 1) + " "
+										+ getString(R.string.de) + " "
+										+ bufferLenght + " "
+										+ getString(R.string.str_fotos) + ".\n"
+										+ String.valueOf(porcentaje) + "%");
+								mostrarMensaje(BARRA, String.valueOf(1));
+							} catch (Throwable t) {
+								t.printStackTrace();
 							}
-							// closeDatabase();
-							// Marcar como enviada
-							c.moveToNext();
-							mostrarMensaje(MENSAJE, (i + 1) + " "
-									+ getString(R.string.de) + " "
-									+ bufferLenght + " "
-									+ getString(R.string.str_fotos) + ".\n"
-									+ String.valueOf(porcentaje) + "%");
-							mostrarMensaje(BARRA, String.valueOf(1));
 						}
 						
 						

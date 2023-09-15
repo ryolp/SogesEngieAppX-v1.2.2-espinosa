@@ -68,6 +68,8 @@ public class Globales extends Application {
 	int modoDeCierreDeLecturas=FORZADO;
 	
 	int flash /* ah-ah! he is a miracle!*/= CamaraActivity.AUTO;
+	int zoom /* ah-ah! he is a miracle!*/ = 0;
+	int camaraFrontal /* ah-ah! he is a miracle!*/ = 0;
 	
 	//public boolean entrarComoSuperUsuario=true;
 	

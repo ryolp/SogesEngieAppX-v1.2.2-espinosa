@@ -3,6 +3,8 @@ package enruta.soges_engie.services;
 import android.content.Context;
 
 import enruta.soges_engie.Globales;
+import enruta.soges_engie.clases.OperacionRequest;
+import enruta.soges_engie.clases.OperacionResponse;
 import enruta.soges_engie.entities.SubirFotoRequest;
 import enruta.soges_engie.entities.SubirFotoResponse;
 import enruta.soges_engie.entities.TareasRequest;
@@ -105,23 +107,23 @@ public class WebApiManager {
 //        call.enqueue(callBack);
 //    }
 
-//    public void checkIn(OperacionRequest request, Callback<OperacionResponse> callBack){
-//        Call<OperacionResponse> call = service.checkIn(request);
-//
-//        call.enqueue(callBack);
-//    }
-//
-//    public void checkOut(OperacionRequest request, Callback<OperacionResponse> callBack){
-//        Call<OperacionResponse> call = service.checkOut(request);
-//
-//        call.enqueue(callBack);
-//    }
-//
-//    public void checkSeguridad(OperacionRequest request, Callback<OperacionResponse> callBack){
-//        Call<OperacionResponse> call = service.checkSeguridad(request);
-//
-//        call.enqueue(callBack);
-//    }
+    public void checkIn(OperacionRequest request, Callback<OperacionResponse> callBack){
+        Call<OperacionResponse> call = service.checkIn(request);
+
+        call.enqueue(callBack);
+    }
+
+    public void checkOut(OperacionRequest request, Callback<OperacionResponse> callBack){
+        Call<OperacionResponse> call = service.checkOut(request);
+
+        call.enqueue(callBack);
+    }
+
+    public void checkSeguridad(OperacionRequest request, Callback<OperacionResponse> callBack){
+        Call<OperacionResponse> call = service.checkSeguridad(request);
+
+        call.enqueue(callBack);
+    }
 //
 //    public void cerrarArchivo(OperacionRequest request, Callback<OperacionResponse> callBack){
 //        Call<OperacionResponse> call = service.cerrarArchivo(request);
@@ -161,12 +163,12 @@ public class WebApiManager {
 //
 //        call.enqueue(callBack);
 //    }
-//
-//    public void solicitarAyuda(OperacionRequest request, Callback<OperacionResponse> callBack){
-//        Call<OperacionResponse> call = service.solicitarAyuda(request);
-//
-//        call.enqueue(callBack);
-//    }
+
+    public void solicitarAyuda(OperacionRequest request, Callback<OperacionResponse> callBack){
+        Call<OperacionResponse> call = service.solicitarAyuda(request);
+
+        call.enqueue(callBack);
+    }
 
     public void verificarConexion(LoginRequestEntity request, Callback<LoginResponseEntity> callBack){
         Call<LoginResponseEntity> call = service.verificarConexion(request);

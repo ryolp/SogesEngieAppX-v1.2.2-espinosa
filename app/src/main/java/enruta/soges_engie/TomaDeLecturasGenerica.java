@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import enruta.soges_engie.entities.DatosEnvioEntity;
+
 /** Esta clase crea las validaciones y los campos a mostrar**/
 public abstract class TomaDeLecturasGenerica {
 	Globales globales;
@@ -69,7 +71,7 @@ public abstract class TomaDeLecturasGenerica {
 	 * @param ls_lectAct
 	 * @return Regresa el mensaje de error
 	 */
-	public abstract String validaLectura(String ls_lectAct);
+	public abstract String validaLectura(String ls_lectAct) throws Exception;
 
 	/**
 	 * Nombra una foto
@@ -442,9 +444,11 @@ public abstract class TomaDeLecturasGenerica {
 		return true;
 	}
 
-	
-	
-	
-	
-	
+	public DatosEnvioEntity getInfoFoto(Globales globales, SQLiteDatabase db, long secuencial, String is_terminacion) throws Exception {
+		return null;
+	}
+
+    public DatosEnvioEntity getInfoFoto(Globales globales, SQLiteDatabase db) throws Exception {
+		return null;
+    }
 }

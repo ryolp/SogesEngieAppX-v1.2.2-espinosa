@@ -14,10 +14,14 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.util.Date;
 
-import enruta.soges_engie.R;
+import enruta.soges_engie.clases.AppException;
+import enruta.soges_engie.clases.OperacionesMgr;
+import enruta.soges_engie.clases.OperacionRequest;
+import enruta.soges_engie.clases.OperacionResponse;
 import enruta.soges_engie.clases.PuntosGpsMgr;
 import enruta.soges_engie.clases.Utils;
-
+import enruta.soges_engie.entities.ResumenEntity;
+import enruta.soges_engie.services.DbLecturasMgr;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -44,7 +48,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -83,6 +86,9 @@ public class Main extends FragmentActivity implements TabListener {
     final static int TRANSMISION = 7;
 
     final static int CAMBIAR_USUARIO = 1;
+
+    final static int FOTO_CHECK_SEGURIDAD = 10;     // RL, 2023-09,
+    final static int FOTO_PROBAR_CAMARA = 11;
 
     //	LocationManager locationManager;
     LocationManager locationManager2;
@@ -131,10 +137,15 @@ public class Main extends FragmentActivity implements TabListener {
 
     boolean primerPunto = true;
 
-    private PuntosGpsMgr mPuntosGpsMgr = null;
-    private Thread mThreadPuntosGps = null;
+    private PuntosGpsMgr mPuntosGpsMgr = null;  // RL, 2023-09, Clase para el envío de los puntos GPS
+    private Thread mThreadPuntosGps = null;     // RL, 2023-09, Thread para registrar periodicamente los puntos GPS
+    private DialogoMensaje mDialogoMsg = null;  // RL, 2023-09, Clase para mostrar un dialogo de mensajes al usuario
+    private Button btnOperacion;                // RL, 2023-09, Botón para Check-In, Check-Out y Check de Seguridad
+    private OperacionesMgr mOperacionesMgr = null;
 
-    private DialogoMensaje mDialogoMsg = null;
+    /* ====================================================================================
+        Creación del activity
+    ==================================================================================== */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,6 +352,7 @@ public class Main extends FragmentActivity implements TabListener {
         viewPager.setCurrentItem(li_tabSelected);
         //getActionBar().setSelectedNavigationItem(li_tabSelected);
 
+        inicializarControlesCheck();
     }
 
     @Override
@@ -458,10 +470,11 @@ public class Main extends FragmentActivity implements TabListener {
         final Main main = this;
         AlertDialog.Builder builder;
 
-        String ls_opciones[] = {getString(R.string.lbl_configuracion_modo_WIFI), getString(R.string.lbl_configuracion_modo_BT)};
-        switch (item.getItemId()) {
-            case R.id.m_importar:
-                hacerImportar();
+        try {
+            String ls_opciones[] = {getString(R.string.lbl_configuracion_modo_WIFI), getString(R.string.lbl_configuracion_modo_BT)};
+            switch (item.getItemId()) {
+                case R.id.m_importar:
+                    hacerImportar();
 //			 switch (tipoDeTransmisionPredeterminada()){
 //			 	case 0: //Mostrar todas
 //			 		builder = new AlertDialog.Builder(this);
@@ -517,28 +530,28 @@ public class Main extends FragmentActivity implements TabListener {
 //
 //			 }
 
-                break;
-            case R.id.m_exportar:
-                openDatabase();
+                    break;
+                case R.id.m_exportar:
+                    openDatabase();
 
-                db.execSQL("delete from fotos where temporal=" + CamaraActivity.TEMPORAL + " or temporal=" + CamaraActivity.ANOMALIA);
+                    db.execSQL("delete from fotos where temporal=" + CamaraActivity.TEMPORAL + " or temporal=" + CamaraActivity.ANOMALIA);
 
 
-                closeDatabase();
+                    closeDatabase();
 
-                //aqui verificamos si hay una transmision predeterminada
-                switch (tipoDeTransmisionPredeterminada()) {
-                    case 0: //Mostrar todas
-                        builder = new AlertDialog.Builder(this);
-                        builder.setTitle(R.string.msj_main_select_metodo_trans)
-                                .setItems(ls_opciones, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        boolean ejecutar = true;
-                                        switch (which) {
-                                            case 0: //Wifi
-                                                lrs = new Intent(main, trasmisionDatos.class);
-                                                break;
-                                            case 1: //bt
+                    //aqui verificamos si hay una transmision predeterminada
+                    switch (tipoDeTransmisionPredeterminada()) {
+                        case 0: //Mostrar todas
+                            builder = new AlertDialog.Builder(this);
+                            builder.setTitle(R.string.msj_main_select_metodo_trans)
+                                    .setItems(ls_opciones, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            boolean ejecutar = true;
+                                            switch (which) {
+                                                case 0: //Wifi
+                                                    lrs = new Intent(main, trasmisionDatos.class);
+                                                    break;
+                                                case 1: //bt
 
 //	     		            		   BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 //	     		            		   if (mBluetoothAdapter != null) {
@@ -557,36 +570,36 @@ public class Main extends FragmentActivity implements TabListener {
 //	     		            			   mensajeOK("Bluetooth no disponible.");
 //	     		            			   return;
 //	     		            		   }
-                                                ejecutar = bluetoothDisponible(REQUEST_ENABLE_BT_EXP);
+                                                    ejecutar = bluetoothDisponible(REQUEST_ENABLE_BT_EXP);
+                                            }
+                                            lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+                                            lrs.putExtra("transmiteFotos", true);
+                                            lrs.putExtra("transmitirTodo", false);
+                                            if (ejecutar)
+                                                startActivityForResult(lrs, EXPORTAR);
+
+
                                         }
-                                        lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
-                                        lrs.putExtra("transmiteFotos", true);
-                                        lrs.putExtra("transmitirTodo", false);
-                                        if (ejecutar)
-                                            startActivityForResult(lrs, EXPORTAR);
-
-
-                                    }
-                                });
-                        builder.show();
-                        break;
-                    case 1: //wifi
-                        lrs = new Intent(main, trasmisionDatos.class);
-                        lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
-                        lrs.putExtra("transmiteFotos", true);
-                        lrs.putExtra("transmitirTodo", false);
-                        startActivityForResult(lrs, EXPORTAR);
-                        break;
-                    case 2: //bt
-                        if (bluetoothDisponible(REQUEST_ENABLE_BT_EXP)) {
+                                    });
+                            builder.show();
+                            break;
+                        case 1: //wifi
+                            lrs = new Intent(main, trasmisionDatos.class);
                             lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
                             lrs.putExtra("transmiteFotos", true);
                             lrs.putExtra("transmitirTodo", false);
                             startActivityForResult(lrs, EXPORTAR);
-                        }
-                        break;
+                            break;
+                        case 2: //bt
+                            if (bluetoothDisponible(REQUEST_ENABLE_BT_EXP)) {
+                                lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+                                lrs.putExtra("transmiteFotos", true);
+                                lrs.putExtra("transmitirTodo", false);
+                                startActivityForResult(lrs, EXPORTAR);
+                            }
+                            break;
 
-                }
+                    }
 			
 			
 			/*lrs = new Intent(this, trasmisionDatos.class);
@@ -594,148 +607,157 @@ public class Main extends FragmentActivity implements TabListener {
     		lrs.putExtra("transmiteFotos", true);
     		lrs.putExtra("transmitirTodo", false);
 			startActivityForResult(lrs, EXPORTAR);*/
-                break;
-            case R.id.m_lecturas:
+                    break;
+                case R.id.m_lecturas:
 //			lrs = new Intent(this, TomaDeLecturas.class);
 //			lrs.putExtra("esSuperUsuario", esSuperUsuario);
 //			lrs.putExtra("nombre", this.is_nombre_Lect);
 //			lrs.putExtra("bHabilitarImpresion", this.bHabilitarImpresion);
 //    		
 //			startActivityForResult(lrs,LECTURAS);
-                inicia_tdl(b_lecturas);
-                break;
-            case R.id.m_filtrar:
-                lrs = new Intent(this, Filtrado.class);
+                    inicia_tdl(b_lecturas);
+                    break;
+                case R.id.m_filtrar:
+                    lrs = new Intent(this, Filtrado.class);
 
-                startActivity(lrs);
-                break;
-            case R.id.m_exportarTodo:
-                lrs = new Intent(this, trasmisionDatos.class);
-                lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
-                lrs.putExtra("transmiteFotos", true);
-                lrs.putExtra("transmitirTodo", true);
-                startActivityForResult(lrs, EXPORTAR);
-                break;
-            case R.id.m_configuracion:
-                lrs = new Intent(this, Configuracion.class);
-                lrs.putExtra("guardar", 0);
-                lrs.putExtra("rol", ii_rol);
-                startActivityForResult(lrs/*, CONFIGURACION*/, CONFIG);
-                break;
-            case R.id.m_salir:
-                finish();
-            case R.id.m_cambiarUsuario:
-                Intent intent = new Intent();
-                intent.putExtra("opcion", CPL.CAMBIAR_USUARIO);
+                    startActivity(lrs);
+                    break;
+                case R.id.m_exportarTodo:
+                    lrs = new Intent(this, trasmisionDatos.class);
+                    lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+                    lrs.putExtra("transmiteFotos", true);
+                    lrs.putExtra("transmitirTodo", true);
+                    startActivityForResult(lrs, EXPORTAR);
+                    break;
+                case R.id.m_configuracion:
+                    lrs = new Intent(this, Configuracion.class);
+                    lrs.putExtra("guardar", 0);
+                    lrs.putExtra("rol", ii_rol);
+                    startActivityForResult(lrs/*, CONFIGURACION*/, CONFIG);
+                    break;
+                case R.id.m_salir:
+                    finish();
+                case R.id.m_cambiarUsuario:
+                    Intent intent = new Intent();
+                    intent.putExtra("opcion", CPL.CAMBIAR_USUARIO);
 
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-                break;
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                    break;
 
-            case R.id.m_borrarruta:
-                builder = new AlertDialog.Builder(this);
-
-
-                builder.setMessage(R.string.str_warning_borrarRuta)
-                        .setCancelable(false).setPositiveButton(R.string.continuar, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                openDatabase();
-                                TransmisionesPadre.borrarRuta(db);
-                                closeDatabase();
-
-                                //actualizaResumen();
-                                actualizaTabs();
-
-                                Toast.makeText(main, R.string.msj_main_ruta_borrada, Toast.LENGTH_SHORT).show();
-
-                            }
-                        }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-
-                            }
-                        });
-                builder.show();
-
-                break;
-
-            case R.id.m_acercaDe:
-                AlertDialog alert = null;
-                LayoutInflater inflater = this.getLayoutInflater();
-                ImageView iv_logo;
-
-                final View view = inflater.inflate(R.layout.cpl, null);
-                view.findViewById(R.id.b_admon).setVisibility(View.GONE);
-                view.findViewById(R.id.b_lecturista).setVisibility(View.GONE);
-                TextView tv_version = (TextView) view.findViewById(R.id.tv_version_lbl);
-
-                iv_logo = (ImageView) view.findViewById(R.id.iv_logo);
-                iv_logo.setImageResource(((Globales) this.getApplicationContext()).logo);
-
-                try {
-                    tv_version.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ", " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-
-                } catch (NameNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                builder = new AlertDialog.Builder(this);
-
-                builder.setView(view).setCancelable(true);
-
-                alert = builder.create();
+                case R.id.m_borrarruta:
+                    builder = new AlertDialog.Builder(this);
 
 
-                alert.show();
+                    builder.setMessage(R.string.str_warning_borrarRuta)
+                            .setCancelable(false).setPositiveButton(R.string.continuar, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    openDatabase();
+                                    TransmisionesPadre.borrarRuta(db);
+                                    closeDatabase();
+
+                                    //actualizaResumen();
+                                    actualizaTabs();
+
+                                    Toast.makeText(main, R.string.msj_main_ruta_borrada, Toast.LENGTH_SHORT).show();
+
+                                }
+                            }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+
+                                }
+                            });
+                    builder.show();
+
+                    break;
+
+                case R.id.m_acercaDe:
+                    AlertDialog alert = null;
+                    LayoutInflater inflater = this.getLayoutInflater();
+                    ImageView iv_logo;
+
+                    final View view = inflater.inflate(R.layout.cpl, null);
+                    view.findViewById(R.id.b_admon).setVisibility(View.GONE);
+                    view.findViewById(R.id.b_lecturista).setVisibility(View.GONE);
+                    TextView tv_version = (TextView) view.findViewById(R.id.tv_version_lbl);
+
+                    iv_logo = (ImageView) view.findViewById(R.id.iv_logo);
+                    iv_logo.setImageResource(((Globales) this.getApplicationContext()).logo);
+
+                    try {
+                        tv_version.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ", " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+
+                    } catch (NameNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    builder = new AlertDialog.Builder(this);
+
+                    builder.setView(view).setCancelable(true);
+
+                    alert = builder.create();
 
 
-                break;
-            case R.id.m_verTamanosLetra:
-                //openDatabase();
-                String cadena = "";
-                //porcentaje_main, porcentaje_main2 (resumen), procentaje_hexateclado, porcentaje_teclado, porcentaje_lectura, porcentaje_info
-                cadena += "porcentaje_main " + getDoubleValue("porcentaje_main", globales.porcentaje_main);
-                cadena += "\nporcentaje_main2 " + getDoubleValue("porcentaje_main2", globales.porcentaje_main2);
-                cadena += "\nporcentaje_teclado " + getDoubleValue("porcentaje_teclado", globales.porcentaje_teclado);
-                cadena += "\nprocentaje_hexateclado " + getDoubleValue("procentaje_hexateclado", globales.porcentaje_hexateclado);
-                cadena += "\nporcentaje_lectura " + getDoubleValue("porcentaje_lectura", globales.porcentaje_lectura);
-                cadena += "\nporcentaje_info " + getDoubleValue("porcentaje_info", globales.porcentaje_info);
-                //closeDatabase();
+                    alert.show();
 
-                mensajeOK(cadena);
-                break;
-            case R.id.m_grabarEnSD:
-                GrabarSDCard();
-                break;
-            case R.id.m_cierreForzado://Mensaje de si o no
 
-                builder = new AlertDialog.Builder(this);
-                builder.setMessage("¿Esta seguro de realizar el cierre forzado?")
-                        .setCancelable(false)
-                        .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                    break;
+                case R.id.m_verTamanosLetra:
+                    //openDatabase();
+                    String cadena = "";
+                    //porcentaje_main, porcentaje_main2 (resumen), procentaje_hexateclado, porcentaje_teclado, porcentaje_lectura, porcentaje_info
+                    cadena += "porcentaje_main " + getDoubleValue("porcentaje_main", globales.porcentaje_main);
+                    cadena += "\nporcentaje_main2 " + getDoubleValue("porcentaje_main2", globales.porcentaje_main2);
+                    cadena += "\nporcentaje_teclado " + getDoubleValue("porcentaje_teclado", globales.porcentaje_teclado);
+                    cadena += "\nprocentaje_hexateclado " + getDoubleValue("procentaje_hexateclado", globales.porcentaje_hexateclado);
+                    cadena += "\nporcentaje_lectura " + getDoubleValue("porcentaje_lectura", globales.porcentaje_lectura);
+                    cadena += "\nporcentaje_info " + getDoubleValue("porcentaje_info", globales.porcentaje_info);
+                    //closeDatabase();
 
-                                globales.tll = new TodasLasLecturas(main);
-                                globales.tll.forzarLecturas();
+                    mensajeOK(cadena);
+                    break;
+                case R.id.m_grabarEnSD:
+                    GrabarSDCard();
+                    break;
+                case R.id.m_cierreForzado://Mensaje de si o no
 
-                                Intent lrs = new Intent(main, trasmisionDatos.class);
-                                lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
-                                lrs.putExtra("transmiteFotos", true);
-                                startActivityForResult(lrs, EXPORTAR);
-                            }
-                        });
+                    builder = new AlertDialog.Builder(this);
+                    builder.setMessage("¿Esta seguro de realizar el cierre forzado?")
+                            .setCancelable(false)
+                            .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
 
-                alert = builder.create();
-                alert.show();
-                break;
+                                    globales.tll = new TodasLasLecturas(main);
+                                    globales.tll.forzarLecturas();
+
+                                    Intent lrs = new Intent(main, trasmisionDatos.class);
+                                    lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+                                    lrs.putExtra("transmiteFotos", true);
+                                    startActivityForResult(lrs, EXPORTAR);
+                                }
+                            });
+
+                    alert = builder.create();
+                    alert.show();
+                    break;
+                case R.id.m_cerrarSesion:
+                    cerrarSesion();
+                    break;
+                case R.id.m_probarCamara:
+                    probarCamara();
+                    break;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            mostrarMensaje("Alerta", "Ocurrió un problema inesperado", t);
         }
-
 
         return true;
     }
@@ -744,6 +766,7 @@ public class Main extends FragmentActivity implements TabListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle bu_params;
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         switch (requestCode) {
             case EXPORTAR:
                 if (data == null) {
@@ -852,7 +875,9 @@ public class Main extends FragmentActivity implements TabListener {
                     startActivityForResult(lrs, TRANSMISION);
                 }
                 break;
-
+            case FOTO_CHECK_SEGURIDAD:
+                procesarFotoCheckSeguridad(requestCode, resultCode, data);
+                break;
 //			case TRANSMISION:
 //				//Actualizamos el secuencial Actual
 //				globales.tll.getLecturaActual().corregirSecuenciaReal();
@@ -885,66 +910,68 @@ public class Main extends FragmentActivity implements TabListener {
         long ll_conAnom;
         long ll_noRegistrados;
         String ls_archivo;
-
         String ls_resumen;
 
-        tv_resumen = (TextView) findViewById(R.id.tv_resumen);
+        try {
 
-        Cursor c;
-        openDatabase();
-        c = db.rawQuery("Select count(*) canti from Ruta", null);
-        c.moveToFirst();
-        ll_total = c.getLong(c.getColumnIndex("canti"));
-        if (ll_total > 0) {
-            try {
-                c = db.rawQuery("Select value from config where key='cpl'", null);
+            tv_resumen = (TextView) findViewById(R.id.tv_resumen);
+
+            Cursor c;
+            openDatabase();
+            c = db.rawQuery("Select count(*) canti from Ruta", null);
+            c.moveToFirst();
+            ll_total = Utils.getLong(c, "canti", 0);
+            if (ll_total > 0) {
+                try {
+                    c = db.rawQuery("Select value from config where key='cpl'", null);
+                    c.moveToFirst();
+                    ls_archivo = Utils.getString(c, "value", "");
+                } catch (Throwable e) {
+                    ls_archivo = "";
+                }
+
+                c = db.rawQuery("Select count(*) canti from ruta where lectura<>''", null);
                 c.moveToFirst();
-                ls_archivo = c.getString(c.getColumnIndex("value"));
-            } catch (Throwable e) {
-                ls_archivo = "";
+
+                ll_tomadas = Utils.getLong(c, "canti", 0);
+                c = db.rawQuery("Select count(*) canti from fotos", null);
+                c.moveToFirst();
+                ll_fotos = Utils.getLong(c, "canti", 0);
+                c.close();
+
+                c = db.rawQuery("Select count(*) canti from ruta where anomalia<>''", null);
+                c.moveToFirst();
+                ll_conAnom = Utils.getLong(c, "canti", 0);
+                c.close();
+
+                c = db.rawQuery("Select count(*) canti from ruta where anomalia='' and lectura=''", null);
+                c.moveToFirst();
+                ll_restantes = Utils.getLong(c, "canti", 0);
+                c.close();
+
+                c = db.rawQuery("Select count(*) canti from NoRegistrados", null);
+                c.moveToFirst();
+                ll_noRegistrados = Utils.getLong(c, "canti", 0);
+                c.close();
+
+                //ll_restantes = ll_total-ll_tomadas ;
+
+                ls_resumen = getString(R.string.msj_main_total_lecturas) + " " + ll_total + "\n" +
+                        getString(R.string.msj_main_medidores_con_lectura) + " " + +ll_tomadas + "\n" +
+                        getString(R.string.msj_main_medidores_con_anomalias) + " " + ll_conAnom + "\n" +
+                        getString(R.string.msj_main_lecturas_restantes) + " " + ll_restantes + "\n\n" +
+                        getString(R.string.msj_main_fotos_tomadas) + " " + ll_fotos + "\n\n" +
+                        getString(R.string.msj_main_no_registrados) + "No Registrados " + ll_noRegistrados;
+
+                tv_resumen.setText(ls_resumen);
+            } else {
+                tv_resumen.setText(R.string.msj_main_no_hay_itinerarios);
             }
 
-            c = db.rawQuery("Select count(*) canti from ruta where lectura<>''", null);
-            c.moveToFirst();
-
-            ll_tomadas = c.getLong(c.getColumnIndex("canti"));
-            c = db.rawQuery("Select count(*) canti from fotos", null);
-            c.moveToFirst();
-            ll_fotos = c.getLong(c.getColumnIndex("canti"));
-            c.close();
-
-            c = db.rawQuery("Select count(*) canti from ruta where anomalia<>''", null);
-            c.moveToFirst();
-            ll_conAnom = c.getLong(c.getColumnIndex("canti"));
-            c.close();
-
-            c = db.rawQuery("Select count(*) canti from ruta where anomalia='' and lectura=''", null);
-            c.moveToFirst();
-            ll_restantes = c.getLong(c.getColumnIndex("canti"));
-            c.close();
-
-            c = db.rawQuery("Select count(*) canti from NoRegistrados", null);
-            c.moveToFirst();
-            ll_noRegistrados = c.getLong(c.getColumnIndex("canti"));
-            c.close();
-
-            //ll_restantes = ll_total-ll_tomadas ;
-
-            ls_resumen = getString(R.string.msj_main_total_lecturas) + " " + ll_total + "\n" +
-                    getString(R.string.msj_main_medidores_con_lectura) + " " + +ll_tomadas + "\n" +
-                    getString(R.string.msj_main_medidores_con_anomalias) + " " + ll_conAnom + "\n" +
-                    getString(R.string.msj_main_lecturas_restantes) + " " + ll_restantes + "\n\n" +
-                    getString(R.string.msj_main_fotos_tomadas) + " " + ll_fotos + "\n\n" +
-                    getString(R.string.msj_main_no_registrados) + "No Registrados " + ll_noRegistrados;
-
-            tv_resumen.setText(ls_resumen);
-        } else {
-            tv_resumen.setText(R.string.msj_main_no_hay_itinerarios);
+            closeDatabase();
+        } catch (Throwable t) {
+            mostrarMensaje("Alerta", "Ocurrió un problema inesperado", t);
         }
-
-        closeDatabase();
-
-
     }
 
     private void openDatabase() {
@@ -1259,7 +1286,7 @@ public class Main extends FragmentActivity implements TabListener {
             openDatabase();
             Cursor c = db.rawQuery("Select count(*) canti from ruta", null);
             c.moveToFirst();
-            totalDeMedidores = c.getInt(c.getColumnIndex("canti"));
+            totalDeMedidores = Utils.getInt(c, "canti", 0);
             c.close();
             byte[] bytesAEnviar;
 
@@ -1314,14 +1341,14 @@ public class Main extends FragmentActivity implements TabListener {
 
     }
 
-    public int getIntValue(String key, int value) {
+    public int getIntValue(String key, int value) throws Exception {
         openDatabase();
 
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'", null);
 
         if (c.getCount() > 0) {
             c.moveToFirst();
-            value = c.getInt(c.getColumnIndex("value"));
+            value = Utils.getInt(c, "value", 0);
         } else {
             db.execSQL("Insert into config (key, value) values ('" + key + "', " + value + ")");
         }
@@ -1435,14 +1462,14 @@ public class Main extends FragmentActivity implements TabListener {
         return ejecutar;
     }
 
-    public int tipoDeTransmisionPredeterminada() {
+    public int tipoDeTransmisionPredeterminada() throws Exception {
         String ls_modo_trans;
         int metodo = 0;
         openDatabase();
         Cursor c = db.rawQuery("Select value from config where key='modo_trans'", null);
         c.moveToFirst();
         if (c.getCount() > 0) {
-            metodo = c.getInt(c.getColumnIndex("value"));
+            metodo = Utils.getInt(c, "value", 0);
         }
 
         c.close();
@@ -1451,7 +1478,7 @@ public class Main extends FragmentActivity implements TabListener {
         return metodo;
     }
 
-    public double getDoubleValue(String key, double value) {
+    public double getDoubleValue(String key, double value) throws Exception {
         openDatabase();
 
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
@@ -1459,7 +1486,7 @@ public class Main extends FragmentActivity implements TabListener {
 
         if (c.getCount() > 0) {
             c.moveToFirst();
-            value = c.getDouble(c.getColumnIndex("value"));
+            value = Utils.getDouble(c, "value", 0);
         } else {
             db.execSQL("Insert into config (key, value) values ('" + key
                     + "', " + value + ")");
@@ -1502,7 +1529,7 @@ public class Main extends FragmentActivity implements TabListener {
 
                     c = db.rawQuery("Select count(*) canti from ruta", null);
                     c.moveToFirst();
-                    totalDeMedidores = c.getInt(c.getColumnIndex("canti"));
+                    totalDeMedidores = Utils.getInt(c, "canti", 0);
                     if (totalDeMedidores == 0) {
                         mHandler.post(new Runnable() {
                             public void run() {
@@ -1581,7 +1608,7 @@ public class Main extends FragmentActivity implements TabListener {
 
                     c = db.rawQuery("Select count(*) canti from fotos", null);
                     c.moveToFirst();
-                    totalDeFotos = c.getInt(c.getColumnIndex("canti"));
+                    totalDeFotos = Utils.getInt(c, "canti", 0);
                     if (totalDeFotos == 0) {
                         c.close();
                         closeDatabase();
@@ -1938,7 +1965,7 @@ public class Main extends FragmentActivity implements TabListener {
 //				
 //				c.moveToFirst();
 //				if (c.getCount()>0){
-//					id= c.getInt(c.getColumnIndex("id"));
+//					id= Utils.getInt(c, "id"));
 //					id++;
 //				}
 //				
@@ -2363,6 +2390,179 @@ public class Main extends FragmentActivity implements TabListener {
         startActivityForResult(intent, IMPORTAR);
     }
 
+    private void inicializarControlesCheck() {
+        b_lecturas = (Button) this.findViewById(R.id.b_lecturas);
+        btnOperacion = (Button) this.findViewById(R.id.btnOperacion);
+
+        btnOperacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (globales == null) return;
+                if (globales.sesionEntity == null) return;
+                if (globales.sesionEntity.empleado == null) return;
+
+                if (globales.sesionEntity.empleado.RequiereCheckSeguridad)
+                    hacerCheckSeguridad();
+            }
+        });
+
+        CambiarBotonesOperEstatus();
+    }
+
+    private void CambiarBotonesOperEstatus() {
+        boolean habilitarLecturas = false;
+        boolean sesionActiva = false;
+        ResumenEntity resumen;
+
+        if (globales != null) {
+            if (globales.sesionEntity != null)
+                if (globales.sesionEntity.empleado != null)
+                    sesionActiva = true;
+        }
+
+        if (ii_rol == CPL.LECTURISTA && sesionActiva) {
+            resumen = DbLecturasMgr.getInstance().getResumen(this);
+
+            if (resumen != null) {
+                if (resumen.totalRegistros > 0) {
+                    if (resumen.cantLecturasPendientes > 0)
+                        habilitarLecturas = true;
+                    else
+                        habilitarLecturas = false;
+                }
+            }
+
+            if (habilitarLecturas) {
+                if (globales.sesionEntity.empleado.RequiereCheckSeguridad) {
+                    btnOperacion.setText("Hacer Check Seguridad");
+                    btnOperacion.setVisibility(View.VISIBLE);
+                    btnOperacion.setEnabled(true);
+                    b_lecturas.setEnabled(false);
+                }
+                else {
+                    btnOperacion.setVisibility(View.GONE);
+                    btnOperacion.setEnabled(false);
+                    b_lecturas.setEnabled(habilitarLecturas);
+                }
+            } else {
+                b_lecturas.setVisibility(View.VISIBLE);
+                b_lecturas.setEnabled(false);
+
+                btnOperacion.setText("---");
+                btnOperacion.setVisibility(View.VISIBLE);
+                btnOperacion.setEnabled(false);
+            }
+        } else {
+            b_lecturas.setVisibility(View.GONE);
+            b_lecturas.setEnabled(false);
+            btnOperacion.setVisibility(View.GONE);
+            btnOperacion.setEnabled(false);
+        }
+    }
+
+    /* ====================================================================================
+        hacerCheckSeguridad()
+        Solicita una foto al técnico y envía una notificación al servidor.
+        También se encola la fotografía para que se envíe al servidor
+    ==================================================================================== */
+
+    private void hacerCheckSeguridad() {
+        if (mOperacionesMgr == null) {
+            mOperacionesMgr = new OperacionesMgr(this);
+        }
+
+        try {
+            // Validar que las variables a ocupar no sean null
+
+            if (globales == null) {
+                mostrarMensaje("Alerta", "No se pudo hacer check de seguridad. Intente nuevamente.");
+                return;
+            }
+
+            if (globales.sesionEntity == null) {
+                mostrarMensaje("Alerta", "No se ha autenticado en la aplicación. Regrese a la pantalla inicial y capture su usuario y contraseña.");
+                return;
+            }
+
+            if (globales.sesionEntity.empleado == null) {
+                mostrarMensaje("Alerta", "No se ha autenticado en la aplicación. Regrese a la pantalla inicial y capture su usuario y contraseña.");
+                return;
+            }
+
+            // Solicitar foto
+
+            btnOperacion = (Button) this.findViewById(R.id.btnOperacion);
+            FotoDeSeguridad(btnOperacion);
+
+            // Notificar al servidor que se hizo el check de seguridad
+
+            mOperacionesMgr.checkSeguridad(globales.getIdEmpleado(),
+                    new OperacionesMgr.OperacionesCallback() {
+                        @Override
+                        public void enExito(OperacionRequest request, OperacionResponse resp) {
+                            globales.sesionEntity.empleado.RequiereCheckIn = resp.RequiereCheckIn;
+                            globales.sesionEntity.empleado.RequiereCheckSeguridad = resp.RequiereCheckSeguridad;
+                            globales.sesionEntity.empleado.RequiereCheckOut = resp.RequiereCheckOut;
+                            CambiarBotonesOperEstatus();
+                        }
+
+                        @Override
+                        public void enFallo(OperacionRequest request, OperacionResponse resp) {
+                            mostrarMensaje("Alerta", resp.Mensaje, resp.MensajeError, null);
+                        }
+
+                        @Override
+                        public void enError(OperacionRequest request, OperacionResponse resp) {
+                            mostrarMensaje("Alerta", resp.Mensaje, resp.MensajeError, null);
+                        }
+                    });
+
+            Utils.showMessageShort(getApplicationContext(), "Enviada la notificación de check seguridad");
+        } catch (Throwable t) {
+            mostrarMensaje("Alerta", "Ha ocurrido un problema inesperado", t);
+        }
+    }
+
+    // CE, 10/10/22, Vamos a tomar la Foto del Check de Seguridad
+    public void FotoDeSeguridad(View view) {
+        Intent camara = new Intent(this, CamaraActivity.class);
+        camara.putExtra("secuencial", globales.sesionEntity.empleado.idEmpleado);
+        camara.putExtra("caseta", Long.toString(globales.sesionEntity.empleado.idEmpleado));
+        camara.putExtra("terminacion", "Check");
+        camara.putExtra("temporal", 0);
+        camara.putExtra("cantidad", 1);
+        camara.putExtra("anomalia", "SinAnomalia");
+        camara.putExtra("TipoFoto", CamaraActivity.TIPO_FOTO_EMPLEADO);
+        // vengoDeFotos = true;
+        startActivityForResult(camara, FOTO_CHECK_SEGURIDAD);
+    }
+
+    public void enviarAvance() {
+        Intent lrs = new Intent(this, trasmisionDatos.class);
+        lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+        lrs.putExtra("transmiteFotos", true);
+        startActivityForResult(lrs, TRANSMISION);
+    }
+
+    private void procesarFotoCheckSeguridad(int requestCode, int resultCode, Intent data) {
+        Bundle bu_params;
+        int idFoto;
+
+        try {
+//            bu_params = data.getExtras();
+//
+//            if (bu_params == null)
+//                throw new Exception("No se recibieron las parámetros de la Cámara");
+//
+//            idFoto = bu_params.getInt("idFoto");
+            enviarAvance();
+        } catch (AppException e) {
+            mostrarMensaje("Alerta", e.getMessage());
+        } catch (Throwable t) {
+            mostrarMensaje("Alerta", "Error al recibir datos de la cámara", t);
+        }
+    }
+
     private void finalizarActivity() {
         stopListeningGPS();
         finalizarEnvioPuntosGps();
@@ -2374,7 +2574,7 @@ public class Main extends FragmentActivity implements TabListener {
 
     public void onBackPressed() {
         finalizarActivity();
-		finish();
+        finish();
     }
 
     private void mostrarMensaje(String titulo, String mensaje, String detalleError, DialogoMensaje.Resultado resultado) {
@@ -2392,6 +2592,33 @@ public class Main extends FragmentActivity implements TabListener {
         }
 
         mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje, Throwable t) {
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
+        mDialogoMsg.mostrarMensaje(titulo, mensaje, t.getMessage());
+    }
+
+    private void probarCamara() {
+        Intent camara = new Intent(this, CamaraActivity.class);
+        camara.putExtra("secuencial", globales.sesionEntity.empleado.idEmpleado);
+        camara.putExtra("caseta", Long.toString(globales.sesionEntity.empleado.idEmpleado));
+        camara.putExtra("terminacion", "Check");
+        camara.putExtra("temporal", 0);
+        camara.putExtra("cantidad", 1);
+        camara.putExtra("anomalia", "SinAnomalia");
+        camara.putExtra("TipoFoto", CamaraActivity.TIPO_FOTO_EMPLEADO);
+        // vengoDeFotos = true;
+        startActivityForResult(camara, FOTO_PROBAR_CAMARA);
+    }
+
+    private void cerrarSesion() {
+        globales.sesionEntity = null;
+        finalizarActivity();
+        finish();
     }
 }
 

@@ -74,8 +74,8 @@ public class LoginActivity extends Activity {
 
         mGlobales = ((Globales) getApplicationContext());
 
-        //obtenerParametros();
-        //inicializarControles();
+        obtenerParametros();
+        inicializarControles();
     }
 
     /* ====================================================================================
@@ -459,7 +459,7 @@ public class LoginActivity extends Activity {
         mIntentosAutenticacion++;
 
         if (mIntentosAutenticacion >= mGlobales.maxIntentosAutenticacion) {
-            msg = resp.Mensaje + ". Máximo de intentos.";
+            msg = resp.Mensaje;
 
             mostrarMensaje("Alerta", msg, "", new DialogoMensaje.Resultado() {
                 @Override
@@ -469,8 +469,7 @@ public class LoginActivity extends Activity {
                 }
             });
         } else {
-            msg = resp.Mensaje + ". Intento " + Utils.convToStr(mIntentosAutenticacion)
-                    + " de " + Utils.convToStr(mGlobales.maxIntentosAutenticacion);
+            msg = resp.Mensaje;
             mostrarMensaje("Alerta", msg);
         }
     }
@@ -538,23 +537,7 @@ public class LoginActivity extends Activity {
     private void falloValidacionSMS(LoginRequestEntity req, LoginResponseEntity resp) {
         String msg;
 
-        mIntentosCodigoSMS++;
-
-        if (mIntentosCodigoSMS >= 3) {
-            msg = "Se alcanzó el máximo de intentos de valicación del código SMS. Usuario bloqueado.";
-
-            mostrarMensaje("Alerta", msg, "", new DialogoMensaje.Resultado() {
-                @Override
-                public void Aceptar(boolean EsOk) {
-                    mGlobales.sesionEntity = null;
-                    cancelar();
-                }
-            });
-        } else {
-            msg = resp.Mensaje + ". Intento " + Utils.convToStr(mIntentosCodigoSMS)
-                    + " de " + Utils.convToStr(mGlobales.maxIntentosAutenticacion);
-            mostrarMensaje("Alerta", msg);
-        }
+        mostrarMensaje("Alerta", resp.Mensaje);
     }
 
     /* ====================================================================================
@@ -619,9 +602,9 @@ public class LoginActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-
-        obtenerParametros();
-        inicializarControles();
+//
+//        obtenerParametros();
+//        inicializarControles();
     }
 
     /* ====================================================================================

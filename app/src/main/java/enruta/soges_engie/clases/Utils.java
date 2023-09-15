@@ -245,6 +245,21 @@ public final class Utils {
         return c.getLong(idx);
     }
 
+    public static double getDouble(Cursor c, String columnName, long defaultValue)  throws Exception{
+        int idx;
+        double value;
+
+        if (c == null)
+            throw new Exception("No se proporcionó el cursor");
+
+        idx = c.getColumnIndex(columnName);
+
+        if (idx < 0)
+            throw new Exception("No existe la columna '" + columnName + "'");
+
+        return c.getDouble(idx);
+    }
+
     public static String getString(Cursor c, String columnName, String defaultValue)  throws Exception{
         int idx;
         String value;

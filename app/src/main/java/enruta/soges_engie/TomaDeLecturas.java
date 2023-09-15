@@ -1,11 +1,11 @@
 package enruta.soges_engie;
 
-import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import enruta.soges_engie.R;
+import enruta.soges_engie.clases.EmergenciaMgr;
+import enruta.soges_engie.clases.OperacionResponse;
 import enruta.soges_engie.clases.Utils;
 
 import android.annotation.SuppressLint;
@@ -96,6 +96,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     boolean preguntarHabitado = false;
     boolean puedeVerDatosAlRegresar = false;
+
+    private EmergenciaMgr mEmergenciaMgr = null;
+    private AlertDialog mAlertEmergencia = null;
+    private DialogoMensaje mDialogoMsg = null;
 
     @SuppressLint("NewApi")
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -2250,7 +2254,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 break;
             case R.id.m_Impresion:
                 bHabilitarImpresion = !bHabilitarImpresion;
-
+            case R.id.m_SolicitarAyuda:
+                solicitarEmergencia();
+                break;
         }
 
         if (Build.VERSION.SDK_INT >= 11)
@@ -3421,5 +3427,88 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         intent.putExtra("puedoCerrar", true);
         startActivityForResult(intent, NO_REGISTADOS);
     }
+
+    private void solicitarEmergencia() {
+        enviarSolicitudEmergencia(EmergenciaMgr.EMERGENCIA_PRELIMINAR);
+    }
+
+    protected void confirmarEmergencia() {
+        if (mAlertEmergencia == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Confirmar ayuda");
+            builder.setMessage("¿Está seguro de la ayuda?");
+            builder.setCancelable(false);
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    enviarSolicitudEmergencia(EmergenciaMgr.EMERGENCIA_CONFIRMADA);
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    enviarSolicitudEmergencia(EmergenciaMgr.EMERGENCIA_CANCELADA);
+                    dialog.dismiss();
+                    mEmergenciaMgr = null;
+                }
+            });
+
+            mAlertEmergencia = builder.create();
+        }
+        mAlertEmergencia.show();
+    }
+
+    protected void enviarSolicitudEmergencia(int solicitudEmergencia) {
+        if (globales == null) {
+            Utils.showMessageLong(this, "Error al solicitar ayuda. Contacte soporte técnico.");
+            return;
+        }
+
+        if (globales.sesionEntity == null) {
+            Utils.showMessageLong(this, "No se ha autenticado en la aplicación");
+            return;
+        }
+
+        if (globales.sesionEntity.empleado == null) {
+            Utils.showMessageLong(this, "No se ha autenticado en la aplicación");
+            return;
+        }
+
+        if (mEmergenciaMgr == null) {
+            mEmergenciaMgr = new EmergenciaMgr(this);
+
+            mEmergenciaMgr.setEmergenciaCallback(new EmergenciaMgr.EmergenciaCallback() {
+                @Override
+                public void enExito(OperacionResponse resp, int solicitudEmergenciaResultado) {
+                    if (solicitudEmergenciaResultado == EmergenciaMgr.EMERGENCIA_PRELIMINAR)
+                        confirmarEmergencia();
+                }
+
+                @Override
+                public void enFallo(OperacionResponse resp) {
+                    Utils.showMessageLong(TomaDeLecturas.this, resp.MensajeError);
+                }
+            });
+        }
+
+        switch (solicitudEmergencia) {
+            case EmergenciaMgr.EMERGENCIA_PRELIMINAR:
+                Utils.showMessageLong(TomaDeLecturas.this, "Fue enviada la solicitud de emergencia");
+                break;
+            case EmergenciaMgr.EMERGENCIA_CONFIRMADA:
+                Utils.showMessageLong(TomaDeLecturas.this, "Fue enviada la confirmación de emergencia");
+                break;
+            case EmergenciaMgr.EMERGENCIA_CANCELADA:
+                Utils.showMessageLong(TomaDeLecturas.this, "Fue enviada la cancelación de emergencia");
+                break;
+        }
+
+        mEmergenciaMgr.enviarSolicitudEmergencia(globales.sesionEntity, globales.location, solicitudEmergencia);
+    }    
 
 }

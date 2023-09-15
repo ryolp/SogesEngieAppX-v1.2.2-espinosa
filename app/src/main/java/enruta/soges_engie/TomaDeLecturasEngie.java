@@ -12,13 +12,14 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.widget.TextView;
 
+import enruta.soges_engie.clases.Utils;
+import enruta.soges_engie.entities.DatosEnvioEntity;
+
 /**
  * Esta clase crea las validaciones y los campos a mostrar
  **/
 
 public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
-
-
     public final static int MEDIDOR_ANTERIOR = 0;
     public final static int MEDIDOR_POSTERIOR = 1;
     public final static int NUM_ESFERAS = 2;
@@ -343,7 +344,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
      * @param ls_lectAct
      * @return Regresa el mensaje de error
      */
-    public String validaLectura(String ls_lectAct) {
+    public String validaLectura(String ls_lectAct) throws Exception {
 
         if (ls_lectAct.equals("")) {
             return NO_SOSPECHOSA + "|" + "No se ha ingresado algún código";
@@ -355,7 +356,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         Cursor c = db.rawQuery("Select count(*) canti from codigosEjecucion where anomalia='" + ls_lectAct + "'", null);
 
         c.moveToFirst();
-        if (c.getInt(c.getColumnIndex("canti")) == 0) {
+        if (Utils.getInt(c, "canti", 0) == 0) {
             return NO_SOSPECHOSA + "|" + "El código ingresado es invalido";
         }
 
@@ -526,8 +527,90 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         ls_nombre += Main.obtieneFecha("ymdhis") + ".JPG";
 
         return ls_nombre;
-
     }
+
+        /*
+        Función para regresar datos de la foto, incluyendo datos de nombre, unidad, porción, regional.
+     */
+
+    // RL, 2023-01-02, Regresar una estructura de datos, con la información suficiente para transmitir la foto con sus datos relacionados.
+
+    public DatosEnvioEntity getInfoFoto(Globales globales, SQLiteDatabase db, long secuencial, String is_terminacion) throws Exception {
+        String ls_nombre = "", ls_unicom;
+        Cursor c;
+        DatosEnvioEntity infoFoto = new DatosEnvioEntity();
+        Lectura lect;
+
+        /**
+         * Este es el fotmato del nombre de la foto
+         *
+         * NumMedidor a 10 posiciones,
+         * fecha	  a YYYYMMDD
+         * hora		  a HHMMSS
+         */
+
+        lect = globales.tll.getLecturaActual();
+
+        ls_nombre = Main.rellenaString(lect.is_numOrden.trim(), "0", globales.tlc.getLongCampo("numOrden"), true) + "_" + Main.rellenaString(lect.poliza.trim(), "0", globales.tlc.getLongCampo("poliza"), true);
+        //Hay que preguntar por la terminacion
+        ls_nombre += Main.obtieneFecha("ymdhis") + ".JPG";
+
+        infoFoto.nombreFoto = ls_nombre;
+        infoFoto.SerieMedidor = lect.getSerieMedidor();
+        infoFoto.idOrden = Utils.convToLong(lect.poliza);
+//        infoFoto.idArchivo = lect.idArchivo;
+        infoFoto.idEmpleado = globales.getIdEmpleado();
+//        infoFoto.Unidad = lect.unidad;
+//        infoFoto.Regional = lect.mRegional;
+//        infoFoto.Porcion = lect.mPorcion;
+        infoFoto.Lectura = lect.getLectura();
+
+        return infoFoto;
+    }
+
+    // RL, 2023-01-02, Regresar una estructura de datos, con la información suficiente para transmitir la foto con sus datos relacionados.
+
+    public DatosEnvioEntity getInfoFoto(Globales globales, SQLiteDatabase db) throws Exception {
+        String ls_nombre = "", ls_unicom;
+        Cursor c;
+        DatosEnvioEntity infoFoto = new DatosEnvioEntity();
+        Lectura lect;
+
+        /**
+         * Este es el fotmato del nombre de la foto
+         *
+         * NumMedidor a 10 posiciones,
+         * fecha	  a YYYYMMDD
+         * hora		  a HHMMSS
+         */
+
+        try {
+            infoFoto.nombreFoto = "";
+            infoFoto.idEmpleado = globales.getIdEmpleado();
+
+            if (globales == null)
+                return infoFoto;
+
+            if (globales.tll == null)
+                return infoFoto;
+
+            lect = globales.tll.getLecturaActual();
+
+            if (lect == null)
+                return infoFoto;
+
+            infoFoto.idOrden = Utils.convToLong(lect.poliza);
+//            infoFoto.idArchivo = lect.idArchivo;
+//            infoFoto.Unidad = lect.unidad;
+//            infoFoto.Regional = lect.mRegional;
+//            infoFoto.Porcion = lect.mPorcion;
+        } catch (Exception e){
+            throw new Exception("Error al obtener inforrmación de la lectura");
+        }
+
+        return infoFoto;
+    }
+
 
     public Vector<String> getInformacionDelMedidor(Lectura lectura) throws Exception {
         if (lectura == null)
