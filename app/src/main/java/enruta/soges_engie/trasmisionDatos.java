@@ -34,6 +34,7 @@ import android.widget.TextView;
 public class trasmisionDatos extends TransmisionesPadre {
 	private Serializacion serial;
 	private FotosMgr fotoMgr = null;
+	private DescargarTareasMgr mDescargarTareas;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 		setTitle("");
 		globales = ((Globales) getApplicationContext());
+
+		mDescargarTareas = new DescargarTareasMgr(this, globales);
 
 		tll = new TodasLasLecturas(this, false);
 		resources = this.getResources();
@@ -155,9 +158,13 @@ public class trasmisionDatos extends TransmisionesPadre {
 				String fechaServidor=getFechaHoraServidor();
 				String fechaActual=Main.obtieneFecha("ymdhis");
 				SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHHmmss");
+				DescargarTareasMgr mDescargarTareas;
+
 				try {
 					Date d_fechaActual = f.parse(fechaActual);
 					Date d_fechaServidor = f.parse(fechaServidor);
+
+
 					
 					if ( d_fechaActual.getTime()< d_fechaServidor.getTime() - 900000  || d_fechaActual.getTime()> d_fechaServidor.getTime() + 900000 ){
 						//Esa fecha no...
@@ -272,6 +279,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 //					borrarArchivo(ls_carpeta + "/" + globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.SALIDA));
 					serial.open(ls_servidor, ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.SALIDA),
 							Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
+
 					for (int i = 0; i < cantidad; i++) {
 						context.stop();
 						c.moveToPosition(i);
@@ -552,6 +560,9 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 				String mPhoneNumber;
 				boolean recibiOrdenes=false;
+				int cantLineas;
+
+				TareasResponse resp;
 				
 				puedoCerrar=true;
 
@@ -572,11 +583,11 @@ public class trasmisionDatos extends TransmisionesPadre {
 				try {
 
 					openDatabase();
-					
+
 					//db.execSQL("Delete from ruta where envio=0 and estadoDeLaOrden in ('EO004', 'EO002', 'EO012')");
 
-					db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< "+getFechaServidor()+" ");
-					
+					db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< " + getFechaServidor() + " ");
+
 
 					/*
 					 * Cursor parm=
@@ -603,31 +614,52 @@ public class trasmisionDatos extends TransmisionesPadre {
 					 */
 					// mostrarMensaje(PROGRESO, "Generando datos a importar");
 					// mostrarMensaje(MENSAJE, "Espere...");
-					serial.open(ls_servidor, ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA),
-							Serializacion.LECTURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
+
+					resp = mDescargarTareas.descargarTareas();
+
+//					serial.open(ls_servidor, ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA),
+//							Serializacion.LECTURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
 					context.stop();
 					// lby_cadena= new
 					// byte[context.getResources().getInteger(R.integer.LONG_DATOS_MEDIDOR)];
 
 					vLecturas = new Vector<String>();
 
-					if (serial.longitudDelArchivo == 0) {
-						// no se encontro el archivo
-						serial.close();
-						muere(true,
-								"");
+//					if (serial.longitudDelArchivo == 0) {
+//						// no se encontro el archivo
+//						serial.close();
+//						muere(true,
+//								"");
+//						return;
+//					}
+
+					if (resp == null) {
+						muere(true, "");
+						return;
+					}
+
+					if (resp.Contenido == null) {
+						muere(true, "");
+						return;
+					}
+
+					cantLineas = resp.Contenido.size();
+
+					if (cantLineas == 0) {
+						muere(true, "");
 						return;
 					}
 
 					// Obtenemos el archivo recibido completo
-					lby_cadena = new byte[serial.longitudDelArchivo];
-					serial.read(lby_cadena);
-					ls_cadena = new String(lby_cadena);
+//					lby_cadena = new byte[serial.longitudDelArchivo];
+//					serial.read(lby_cadena);
+//					ls_cadena = new String(lby_cadena);
 
 					// Hacemos split con el salto de linea
-					lineas = ls_cadena.split("\\n");
+					//lineas = ls_cadena.split("\\r\\n");
 
-					tope(Integer.parseInt(String.valueOf(lineas.length)));
+					//tope(Integer.parseInt(String.valueOf(lineas.length)));
+					tope(cantLineas);
 
 					// db.execSQL("delete from Lecturas ");
 
@@ -640,12 +672,16 @@ public class trasmisionDatos extends TransmisionesPadre {
 					 */
 					//borrarRuta(db);
 					// serial.close();
-					
-					recibiOrdenes=lineas.length>0;
+
+					//recibiOrdenes=lineas.length>0;
+
+
+
+					recibiOrdenes = (cantLineas > 0);
 
 					puedoCerrar=false;
 					db.beginTransaction();
-					for (String ls_linea : lineas) {
+					for (String ls_linea : resp.Contenido) {
 						
 						context.stop();
 						
@@ -720,9 +756,9 @@ public class trasmisionDatos extends TransmisionesPadre {
 							db.insert("encabezado", null, cv);
 						}*/
 
-						int porcentaje = (i * 100) / lineas.length;
+						int porcentaje = (i * 100) / cantLineas;
 						mostrarMensaje(MENSAJE, (i + 1) + " "
-								+ getString(R.string.de) + " " + lineas.length
+								+ getString(R.string.de) + " " + cantLineas
 								+ " " + getString(R.string.registros) + "\n"
 								+ String.valueOf(porcentaje) + "%");
 						mostrarMensaje(BARRA, String.valueOf(1));

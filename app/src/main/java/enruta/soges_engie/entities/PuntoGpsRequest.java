@@ -8,4 +8,5 @@ public class PuntoGpsRequest {
     public String Longitud = "";
     public Date Fecha;
     public String Tipo = "";
+    public int NivelBateria = -1;
 }

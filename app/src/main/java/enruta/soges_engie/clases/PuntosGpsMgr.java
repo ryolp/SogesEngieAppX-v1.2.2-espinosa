@@ -60,13 +60,16 @@ public class PuntosGpsMgr {
     public void registrarPuntoAsync(long idEmpleado, String PTN, Date fecha, String latitud, String longitud, String tipo) {
         PuntoGpsRequest req = new PuntoGpsRequest();
 
-        req.idEmpleado = idEmpleado;
-        req.PTN = PTN;
-        req.Fecha = fecha;
-        req.Latitud = latitud;
-        req.Longitud = longitud;
-        req.Tipo = tipo;
+
+
         try {
+            req.idEmpleado = idEmpleado;
+            req.PTN = PTN;
+            req.Fecha = fecha;
+            req.Latitud = latitud;
+            req.Longitud = longitud;
+            req.Tipo = tipo;
+            req.NivelBateria = BateriaMgr.getBatteryPercentage(mContext);
 
             WebApiManager.getInstance(mContext).registrarPuntoGpsAsync(req, new Callback<PuntoGpsResponse>() {
                 @Override
@@ -98,13 +101,14 @@ public class PuntosGpsMgr {
         PuntoGpsRequest req = new PuntoGpsRequest();
         PuntoGpsResponse resp;
 
-        req.idEmpleado = idEmpleado;
-        req.PTN = PTN;
-        req.Fecha = fecha;
-        req.Latitud = latitud;
-        req.Longitud = longitud;
-        req.Tipo = tipo;
         try {
+            req.idEmpleado = idEmpleado;
+            req.PTN = PTN;
+            req.Fecha = fecha;
+            req.Latitud = latitud;
+            req.Longitud = longitud;
+            req.Tipo = tipo;
+            req.NivelBateria = BateriaMgr.getBatteryPercentage(mContext);
 
             resp = WebApiManager.getInstance(mContext).registrarPuntoGps(req);
 
