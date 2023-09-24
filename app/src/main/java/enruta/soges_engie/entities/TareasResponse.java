@@ -9,4 +9,5 @@ public class TareasResponse {
     public String  MensajeError ="";
     public long idTarea = 0;
     public List<String> Contenido=null;
+    public List<String> Contenido2=null;
 }

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import enruta.soges_engie.clases.AutenticadorMgr;
-import enruta.soges_engie.clases.Utils;
 import enruta.soges_engie.entities.LoginRequestEntity;
 import enruta.soges_engie.entities.LoginResponseEntity;
 import enruta.soges_engie.entities.SesionEntity;
@@ -55,6 +54,7 @@ public class LoginActivity extends Activity {
     private Button btnValidarSMS;
     private int mIntentosAutenticacion = 0;
     private int mIntentosCodigoSMS = 0;
+    private Boolean mSecuenciaSuperUsuario = false;
 
     // RL, 2023-07-10, Migración del Cortrex
 
@@ -106,6 +106,17 @@ public class LoginActivity extends Activity {
         btnValidarSMS = (Button) findViewById(R.id.btnValidarSMS);
         btnEntrar = (Button) findViewById(R.id.b_entrar);
 
+        iniciarAutenticacion();
+        inicializarEventosControles();
+    }
+
+    /* ====================================================================================
+        Inicializar autenticación
+    ==================================================================================== */
+
+    private void iniciarAutenticacion () {
+        mSecuenciaSuperUsuario = false;
+
         tv_usuario.setVisibility(View.VISIBLE);
         et_usuario.setVisibility(View.VISIBLE);
         et_usuario.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -125,10 +136,10 @@ public class LoginActivity extends Activity {
 
         et_usuario.setFocusableInTouchMode(true);
         et_usuario.setFocusable(true);
+        et_usuario.setEnabled(true);
         et_usuario.requestFocus();
-
-        inicializarEventosControles();
     }
+
 
     /* ====================================================================================
         Inicializar los eventos de los controles
@@ -159,7 +170,7 @@ public class LoginActivity extends Activity {
                 if (valor.equals(""))
                     showMessageShort("Falta capturar el usuario");
                 else if (esSuperUsuario())
-                    autenticar(btnAutenticar);
+                    validarSuperUsuario();
                 else
                     et_contrasena.requestFocus();
                 return false;
@@ -170,12 +181,10 @@ public class LoginActivity extends Activity {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 String password;
-                String secuenciaSuperUsuario;
 
                 password = getPassword();
-                secuenciaSuperUsuario = getSecuenciaSuperUsuario();
 
-                if (!secuenciaSuperUsuario.equals("A"))
+                if (!mSecuenciaSuperUsuario)
                 {
                     if (password.equals(""))
                         showMessageShort("Falta capturar la contraseña");
@@ -183,7 +192,7 @@ public class LoginActivity extends Activity {
                         autenticar(btnValidarSMS);
                 }
                 else
-                    regresar(SUPERUSUARIO);
+                    autenticarSuperUsuario();
 
                 return false;
             }
@@ -209,16 +218,6 @@ public class LoginActivity extends Activity {
         Inicializar los eventos de los controles
     ==================================================================================== */
 
-    private String getSecuenciaSuperUsuario() {
-        if (mGlobales == null)
-            return "";
-
-        if (mGlobales.secuenciaSuperUsuario == null)
-            return "";
-
-        return mGlobales.secuenciaSuperUsuario;
-    }
-
     /* ====================================================================================
         REgresar si el usuario es SUPER USUARIO
     ==================================================================================== */
@@ -226,14 +225,13 @@ public class LoginActivity extends Activity {
     private boolean esSuperUsuario() {
         String usuario = getUsuario();
         String password = getPassword();
-        String secuencia = getSecuenciaSuperUsuario();
 
         if (mOpcionLogin != ADMINISTRADOR)
             return false;
 
         if (usuario.contains("*9776"))
             return true;
-        else if (secuencia.equals("A") && password.contains("9776"))
+        else if (mSecuenciaSuperUsuario && password.contains("9776"))
             return true;
         else
             return false;
@@ -301,12 +299,10 @@ public class LoginActivity extends Activity {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 String password;
-                String secuenciaSuperUsuario;
 
                 password = getPassword();
-                secuenciaSuperUsuario = getSecuenciaSuperUsuario();
 
-                if (!secuenciaSuperUsuario.equals("A")) {
+                if (!mSecuenciaSuperUsuario) {
                     if (password.equals(""))
                         showMessageShort("Falta capturar la contraseña");
                     else
@@ -393,9 +389,14 @@ public class LoginActivity extends Activity {
             usuario = getUsuario();
             password = getPassword();
 
-            if (esSuperUsuario()) {
-                mGlobales.esSuperUsuario = true;
-                regresar(SUPERUSUARIO);
+            if (mSecuenciaSuperUsuario)
+            {
+                autenticarSuperUsuario();
+                return;
+            }
+            else if (esSuperUsuario()) {
+                mSecuenciaSuperUsuario = true;
+                validarSuperUsuario();
                 return;
             } else if (usuario.equals("") || password.equals("")) {
                 mostrarMensaje("Alerta", "Falta capturar el usuario o la contraseña", "", null);
@@ -419,7 +420,6 @@ public class LoginActivity extends Activity {
     }
 
     /* ====================================================================================
-
         RLR / 2023-09-13
     ==================================================================================== */
 
@@ -441,7 +441,7 @@ public class LoginActivity extends Activity {
                 et_contrasena.setEnabled(false);
             } else {
                 mGlobales.sesionEntity.Autenticado = true;
-                mGlobales.secuenciaSuperUsuario = "";
+                mSecuenciaSuperUsuario = false;
                 regresar(mOpcionLogin);
             }
         }
@@ -465,7 +465,7 @@ public class LoginActivity extends Activity {
                 @Override
                 public void Aceptar(boolean EsOk) {
                     mGlobales.sesionEntity = null;
-                    cancelar();
+                    iniciarAutenticacion();
                 }
             });
         } else {
@@ -482,7 +482,7 @@ public class LoginActivity extends Activity {
         mostrarMensaje("Alerta", mensaje, "", new DialogoMensaje.Resultado() {
             @Override
             public void Aceptar(boolean EsOk) {
-                cancelar();
+                iniciarAutenticacion();
             }
         });
     }
@@ -495,9 +495,30 @@ public class LoginActivity extends Activity {
         mostrarMensaje("Alerta", resp.Mensaje, resp.MensajeError, new DialogoMensaje.Resultado() {
             @Override
             public void Aceptar(boolean EsOk) {
-                cancelar();
+                iniciarAutenticacion();
             }
         });
+    }
+
+    private void validarSuperUsuario() {
+        String password;
+
+        et_usuario.setEnabled(false);
+
+        et_contrasena.setFocusableInTouchMode(true);
+        et_contrasena.setFocusable(true);
+        et_contrasena.requestFocus();
+    }
+
+    private void autenticarSuperUsuario() {
+        String password;
+
+        password = getPassword();
+
+        if (password.equals("9776"))
+            regresar(SUPERUSUARIO);
+        else
+            mostrarMensaje("Alerta", "Usuario y contraseña incorrecta");
     }
 
     /* ====================================================================================
@@ -580,7 +601,7 @@ public class LoginActivity extends Activity {
         if (loginResponseEntity.Exito) {
             mGlobales.sesionEntity = new SesionEntity(loginResponseEntity);
             mGlobales.sesionEntity.Autenticado = true;
-            mGlobales.secuenciaSuperUsuario = "";
+            mSecuenciaSuperUsuario = false;
             regresar(mOpcionLogin);
         }
     }

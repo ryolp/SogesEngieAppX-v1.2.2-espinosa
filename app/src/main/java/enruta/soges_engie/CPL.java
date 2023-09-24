@@ -200,7 +200,7 @@ public class CPL extends Activity {
     ==================================================================================== */
 
     public void entrarAdministrador() {
-        if (!esSesionActiva())
+        if (!esSesionActiva() && !globales.esSuperUsuario)
             return;
 
         ii_perfil = ADMINISTRADOR;
@@ -276,14 +276,22 @@ public class CPL extends Activity {
         opcionLogin = bu_params.getInt("opcionLogin");
         permisoUsuario = bu_params.getInt("permisoUsuario");
 
-        globales.sesionEntity.Autenticado = true;
+        if (globales.sesionEntity != null)
+            globales.sesionEntity.Autenticado = true;
+
         globales.secuenciaSuperUsuario = "";
 
         switch (opcionLogin) {
+            case SUPERUSUARIO:
+                globales.esSuperUsuario = true;
+                entrarAdministrador();
+                break;
             case ADMINISTRADOR:
+                globales.esSuperUsuario = false;
                 entrarAdministrador();
                 break;
             case LECTURISTA:
+                globales.esSuperUsuario = false;
                 entrarLecturista();
                 break;
         }
@@ -642,6 +650,16 @@ public class CPL extends Activity {
     private void irActivityMain() {
         if (globales == null)
             return;
+
+        if (globales.esSuperUsuario)
+        {
+            Intent intent = new Intent(this, Main.class);
+            intent.putExtra("rol", ii_perfil);
+            intent.putExtra("esSuperUsuario", globales.esSuperUsuario);
+            intent.putExtra("nombre", is_nombre_Lect);
+            startActivityForResult(intent, MAIN);
+            return;
+        }
 
         if (globales.sesionEntity == null) {
             mostrarMensaje("Aviso", "Sesión finalizadao. Autenticarse otra vez.");

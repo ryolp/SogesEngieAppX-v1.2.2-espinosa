@@ -560,7 +560,8 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 				String mPhoneNumber;
 				boolean recibiOrdenes=false;
-				int cantLineas;
+				int numRegistros;
+				String ls_linea2 = "";
 
 				TareasResponse resp;
 				
@@ -643,9 +644,9 @@ public class trasmisionDatos extends TransmisionesPadre {
 						return;
 					}
 
-					cantLineas = resp.Contenido.size();
+					numRegistros = resp.Contenido.size();
 
-					if (cantLineas == 0) {
+					if (numRegistros == 0) {
 						muere(true, "");
 						return;
 					}
@@ -659,7 +660,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 					//lineas = ls_cadena.split("\\r\\n");
 
 					//tope(Integer.parseInt(String.valueOf(lineas.length)));
-					tope(cantLineas);
+					tope(numRegistros);
 
 					// db.execSQL("delete from Lecturas ");
 
@@ -677,12 +678,18 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 
 
-					recibiOrdenes = (cantLineas > 0);
+					recibiOrdenes = (numRegistros > 0);
 
 					puedoCerrar=false;
 					db.beginTransaction();
+
+					int j = 0;
+
 					for (String ls_linea : resp.Contenido) {
-						
+
+						ls_linea2 = resp.Contenido2.get(j);
+						j++;
+
 						context.stop();
 						
 						// Comprobamos que las lineas son las que esperamos
@@ -756,9 +763,9 @@ public class trasmisionDatos extends TransmisionesPadre {
 							db.insert("encabezado", null, cv);
 						}*/
 
-						int porcentaje = (i * 100) / cantLineas;
+						int porcentaje = (i * 100) / numRegistros;
 						mostrarMensaje(MENSAJE, (i + 1) + " "
-								+ getString(R.string.de) + " " + cantLineas
+								+ getString(R.string.de) + " " + numRegistros
 								+ " " + getString(R.string.registros) + "\n"
 								+ String.valueOf(porcentaje) + "%");
 						mostrarMensaje(BARRA, String.valueOf(1));
