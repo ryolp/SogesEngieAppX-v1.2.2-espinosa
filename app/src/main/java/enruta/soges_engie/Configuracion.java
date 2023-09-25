@@ -115,7 +115,7 @@ public class Configuracion extends Activity {
 		
 		
 		items= new Vector<XmlSpinnerItem>();
-		Camera mCamera = CamaraActivity.getCameraInstance();
+		Camera mCamera = CamaraActivity.getCameraInstance(globales.camaraFrontal);
 		Camera.Parameters cp=mCamera.getParameters();
 		List <Camera.Size> cs=cp.getSupportedPictureSizes();
 		

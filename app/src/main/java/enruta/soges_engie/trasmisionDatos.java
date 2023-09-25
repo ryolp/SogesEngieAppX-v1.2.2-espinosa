@@ -4,27 +4,29 @@ package enruta.soges_engie;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import enruta.soges_engie.R;
 import enruta.soges_engie.clases.DescargarTareasMgr;
 import enruta.soges_engie.clases.FotosMgr;
 import enruta.soges_engie.clases.Utils;
+import enruta.soges_engie.entities.DatosEnvioEntity;
 import enruta.soges_engie.entities.OrdenEntity;
-import enruta.soges_engie.entities.TareasRequest;
+import enruta.soges_engie.entities.SubirFotoRequest;
+import enruta.soges_engie.entities.SubirFotoResponse;
 import enruta.soges_engie.entities.TareasResponse;
 import enruta.soges_engie.services.WebApiManager;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -237,6 +239,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 				byte[] image;
 				String serieMedidor="";
 				long idOrden = 0;
+				DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
 
 				switch (globales.modoDeCierreDeLecturas){
 				case Globales.FORZADO:
@@ -464,8 +467,8 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 								String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10);
 
-								serial.open(ls_servidor, ls_capertaFotos + fecha + "/", "",
-										Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
+								//serial.open(ls_servidor, ls_capertaFotos + fecha + "/", "",
+								//		Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
 
 								long imageSize = Utils.getLong(c, "imageSize", 0);
 
@@ -475,13 +478,19 @@ public class trasmisionDatos extends TransmisionesPadre {
 
 								// ls_cadena=generaCadenaAEnviar(c);
 								// serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
-								serial.write(nombreArchivo, image);
+								// serial.write(nombreArchivo, image);
+
+								datosEnvio.Carpeta = ls_capertaFotos + fecha + "/";
+								datosEnvio.nombreArchivo = nombreArchivo;
+								datosEnvio.idEmpleado = globales.getIdEmpleado();
+
+								enviarFoto(datosEnvio, image);
 
 								String bufferLenght;
 								int porcentaje = ((i + 1) * 100) / c.getCount();
 								bufferLenght = String.valueOf(c.getCount());
-								serial.close();
-								openDatabase();
+								//serial.close();
+								// openDatabase();
 
 								String whereClause = "rowid=?";
 								String[] whereArgs = {Utils.getString(c, "rowid", "")};
@@ -538,7 +547,50 @@ public class trasmisionDatos extends TransmisionesPadre {
 		};
 
 		hilo.start();
+	}
 
+	private int enviarFoto(DatosEnvioEntity datosEnvio, byte[] foto) throws Throwable {
+		Enumeration en_Nombres, en_Fotos;
+		Hashtable params;
+		String msg;
+		SubirFotoResponse respFoto;
+
+		String ls_foto, ls_urlConArchivo, ls_url;
+
+		//params.put("Connection", "keep-alive");
+
+		byte[] response = null;
+		try {
+			if (foto != null) {
+				ls_foto = Base64.encodeToString(foto, Base64.DEFAULT);
+				if (datosEnvio.Carpeta.equals("")) {
+					ls_urlConArchivo = "/" + datosEnvio.nombreArchivo;
+					ls_url = "";
+				} else {
+					//ls_urlConArchivo= "/" +is_carpeta + "/2022/202207/20220724/" + nombre;
+					ls_urlConArchivo = "/" + datosEnvio.Carpeta + "/" + datosEnvio.nombreArchivo;
+					ls_url = datosEnvio.Carpeta;
+				}
+
+				SubirFotoRequest req = new SubirFotoRequest();
+
+				req.carpeta = "/" + datosEnvio.Carpeta;
+				req.ruta = ls_urlConArchivo;
+				req.nombre = datosEnvio.nombreArchivo;
+
+				respFoto = WebApiManager.getInstance(globales.getApplicationContext()).subirFoto(req, foto);
+
+				if (respFoto == null)
+					throw new Exception("Error al enviar la foto");
+
+				if (respFoto.NumError > 0)
+					throw new Exception("Error al enviar la foto. " + respFoto.Mensaje);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+
+		return 0;
 	}
 
 	public void recepcion() {

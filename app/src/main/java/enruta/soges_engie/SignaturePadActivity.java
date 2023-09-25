@@ -41,7 +41,7 @@ public class SignaturePadActivity extends Activity {
     private String is_terminacion = "-A", is_anomalia = "";
     private String ls_nombre, caseta;
     private int temporal, cantidad;
-    private long idLectura;
+    private long idOrden;
     private SignaturePadActivity thisIsMe;
 
     private boolean mInicializado = false;
@@ -59,7 +59,7 @@ public class SignaturePadActivity extends Activity {
         ls_nombre = bu_params.getString("ls_nombre");
         temporal = bu_params.getInt("temporal");
         cantidad = bu_params.getInt("cantidad");
-        idLectura = bu_params.getLong("idLectura");
+        idOrden = bu_params.getLong("idOrden");
         thisIsMe = this;
 
         inicializar();
@@ -109,6 +109,7 @@ public class SignaturePadActivity extends Activity {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
                         signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                         byte[] firmaAGuardar = out.toByteArray();
+                        long idFoto;
 
                         cv_datos = new ContentValues(4);
                         cv_datos.put("secuencial", secuencial);
@@ -116,11 +117,11 @@ public class SignaturePadActivity extends Activity {
                         cv_datos.put("foto", firmaAGuardar);
                         cv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
                         cv_datos.put("temporal", temporal);
-                        cv_datos.put("idLectura", idLectura);
+                        cv_datos.put("idOrden", idOrden);
 
                         DBHelper dbHelper = new DBHelper(thisIsMe);
                         SQLiteDatabase db = dbHelper.getReadableDatabase();
-                        db.insert("fotos", null, cv_datos);
+                        idFoto = db.insertOrThrow("fotos", null, cv_datos);
                         db.close();
                         dbHelper.close();
                         thisIsMe.finish();

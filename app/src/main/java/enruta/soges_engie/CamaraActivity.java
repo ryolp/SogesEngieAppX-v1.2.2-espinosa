@@ -79,7 +79,7 @@ public class CamaraActivity extends Activity {
     private boolean tieneFlash = true;
     private boolean tieneZoom = true;
     private boolean tieneCamaraFrontal = false;
-    AlertDialog alert;
+    private AlertDialog alert;
     /**
      * Cantidad de fotos
      */
@@ -358,6 +358,10 @@ public class CamaraActivity extends Activity {
         });
     }
 
+    /**
+     * Inicialización de la cámara
+     */
+
     public void iniciaCamara() {
 
         mensajeEspere();
@@ -370,7 +374,7 @@ public class CamaraActivity extends Activity {
         captureButton.setEnabled(true);
         if (mCamera == null) {
             try {
-                mCamera = getCameraInstance();
+                mCamera = getCameraInstance(globales.camaraFrontal);
 
                 //Si no pudimos habrir la camara, mandamos un lindo mensajito...
                 if (mCamera == null) {
@@ -409,7 +413,7 @@ public class CamaraActivity extends Activity {
                     if (tieneCamaraFrontal)
                         m = seleccionarResolucionModerada(cp, 640, 480);
 
-                    Size size = cp.getSupportedPictureSizes().get(Utils.getInt(c, "value", 0));
+                    Size size = cp.getSupportedPictureSizes().get(m);
                     cp.setPictureSize(size.width, size.height);
                     //cp.setJpegQuality(70);
                     cp.setJpegQuality(/*globales.calidadDeLaFoto*/globales.calidadOverride);
@@ -516,20 +520,21 @@ public class CamaraActivity extends Activity {
             downPolymorphic = camera.getClass().getMethod("setDisplayOrientation", new Class[]{int.class});
             if (downPolymorphic != null)
                 downPolymorphic.invoke(camera, new Object[]{angle});
-        } catch (Exception e1) {
+        } catch (Throwable t) {
+            mostrarMensaje("Error", "Ocurrió un error inesperado en la cámara. Contactar a soporte.", t, null);
         }
     }
 
 
-    public static Camera getCameraInstance() {
+    public static Camera getCameraInstance(int numCamara) {
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
+            c = Camera.open(numCamara); // attempt to get a Camera instance
             c.setDisplayOrientation(90);
-        } catch (Exception e) {
+        } catch (Throwable t) {
             // Camera is not available (in use or does not exist)
 
-            mensajeDeErrorCamera = e.getMessage();
+            mensajeDeErrorCamera = t.getMessage();
         }
         return c; // returns null if camera is unavailable
     }
@@ -601,7 +606,7 @@ public class CamaraActivity extends Activity {
 
             infoFoto = getInfoFoto();
 
-            ls_nombre = infoFoto.nombreFoto;
+            ls_nombre = infoFoto.nombreArchivo;
 
             // RL, 2023-09, ls_nombre = globales.tdlg.getNombreFoto(globales, db, secuencial, is_terminacion);
 
@@ -636,6 +641,7 @@ public class CamaraActivity extends Activity {
         }
     }
 
+    @Override
     public void onBackPressed() {
         if (globales.puedoCancelarFotos && !otraFoto) {
 
@@ -795,7 +801,7 @@ public class CamaraActivity extends Activity {
 
                 infoFoto = globales.tdlg.getInfoFoto(globales, db);
 
-                infoFoto.nombreFoto = ls_nombre;
+                infoFoto.nombreArchivo = ls_nombre;
             } else if (is_terminacion.equals("NoReg")) {
                 ls_nombre = Main.rellenaString(is_terminacion, "x", 10, true) + "-";
                 ls_nombre += Main.rellenaString(String.valueOf(secuencial), "0", 10, true) + "-";
@@ -807,7 +813,7 @@ public class CamaraActivity extends Activity {
                 infoFoto = globales.tdlg.getInfoFoto(globales, db);
                 infoFoto.NumId = Utils.convToInt(caseta);
 
-                infoFoto.nombreFoto = ls_nombre;
+                infoFoto.nombreArchivo = ls_nombre;
             } else {
                 infoFoto = globales.tdlg.getInfoFoto(globales, db, secuencial, is_terminacion);
                 infoFoto.Lectura = globales.is_lectura;
@@ -1177,8 +1183,8 @@ public class CamaraActivity extends Activity {
             padParaFirmar.putExtra("temporal", temporal);
             padParaFirmar.putExtra("cantidad", cantidad);
             //padParaFirmar.putExtra("anomalia", is_anomalia);
-            padParaFirmar.putExtra("ls_nombre", infoFoto.nombreFoto);
-            padParaFirmar.putExtra("idLectura", infoFoto.idOrden);
+            padParaFirmar.putExtra("ls_nombre", infoFoto.nombreArchivo);
+            padParaFirmar.putExtra("idOrden", infoFoto.idOrden);
             // vengoDeFotos = true;
             startActivityForResult(padParaFirmar, 1);
 //        startActivity(padParaFirmar);
@@ -1204,14 +1210,20 @@ public class CamaraActivity extends Activity {
 
     @Override
     protected void onResume() {
+        iniciaCamara();
         //Ahora si abrimos
         if (globales.tdlg == null) {
             super.onResume();
-            Intent i = getBaseContext().getPackageManager()
-                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-            System.exit(0);
+
+            try {
+	            Intent i = getBaseContext().getPackageManager()
+	                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
+	            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(i);
+	            System.exit(0);
+            } catch (Throwable t) {
+
+            }
             return;
         }
         super.onResume();

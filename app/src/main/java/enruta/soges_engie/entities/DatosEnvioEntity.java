@@ -1,7 +1,7 @@
 package enruta.soges_engie.entities;
 
 public class DatosEnvioEntity {
-    public String nombreFoto = "";
+    public String nombreArchivo = "";
     public long idArchivo = 0;
     public long idOrden = 0;
     public long idEmpleado = 0;
@@ -10,6 +10,7 @@ public class DatosEnvioEntity {
     public String Porcion = "";
     public String SerieMedidor = "";
     public String Lectura = "";
+    public String Carpeta = "";
     public int NumId = 0;
     public boolean Sobreescribir = false;
 }

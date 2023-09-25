@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     useLibrary 'org.apache.http.legacy'
-    compileSdk 31
+    compileSdk 33
     buildToolsVersion "33.0.0"
 
     defaultConfig {
         applicationId "enruta.soges_engie"
         minSdkVersion 25
-        targetSdkVersion 31
+        targetSdkVersion 33
     }
 
     buildTypes {

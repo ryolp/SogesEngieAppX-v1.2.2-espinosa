@@ -85,8 +85,6 @@ public class CPL extends Activity {
         showAppVersion();
 
         estableceVariablesDePaises();
-
-        validarPermisos();
     }
 
     private void showAppVersion() {
@@ -456,16 +454,9 @@ public class CPL extends Activity {
 
     private void validarPermisos() {
         boolean tienePermisos = true;
-
-        if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            tienePermisos = false;
-        }
+        String msg = "";
 
         if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            tienePermisos = false;
-        }
-
-        if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             tienePermisos = false;
         }
 
@@ -493,28 +484,67 @@ public class CPL extends Activity {
             tienePermisos = false;
         }
 
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+        } else {
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                tienePermisos = false;
+            }
+        }
+
+//        if (!HandleAndroidPermissions.hasPermissions(context, *PERMISSIONS)) {
+//            ActivityCompat.requestPermissions(
+//                    requireActivity(),
+//                    PERMISSIONS,
+//                    101
+//            );
+//        } else {
+//            captureImage()
+//        }
+
         if (!tienePermisos) {
             showMessageLong("Faltan permisos");
             if (lblMensaje != null) {
                 lblMensaje.setText("Faltan permisos");
                 lblMensaje.setVisibility(View.VISIBLE);
             }
-//            if (btnAdministrador != null)
-//                btnAdministrador.setEnabled(false);
-//
-//            if (btnLecturista != null)
-//                btnLecturista.setEnabled(false);
+            if (btnAdministrador != null)
+                btnAdministrador.setEnabled(false);
+
+            if (btnLecturista != null)
+                btnLecturista.setEnabled(false);
         } else {
             if (lblMensaje != null) {
                 lblMensaje.setText("");
                 lblMensaje.setVisibility(View.GONE);
             }
 
-//            if (btnAdministrador != null)
-//                btnAdministrador.setEnabled(true);
-//
-//            if (btnLecturista != null)
-//                btnLecturista.setEnabled(true);
+            if (btnAdministrador != null)
+                btnAdministrador.setEnabled(true);
+
+            if (btnLecturista != null)
+                btnLecturista.setEnabled(true);
         }
     }
 

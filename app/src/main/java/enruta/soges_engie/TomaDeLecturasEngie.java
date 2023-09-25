@@ -555,7 +555,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //Hay que preguntar por la terminacion
         ls_nombre += Main.obtieneFecha("ymdhis") + ".JPG";
 
-        infoFoto.nombreFoto = ls_nombre;
+        infoFoto.nombreArchivo = ls_nombre;
         infoFoto.SerieMedidor = lect.getSerieMedidor();
         infoFoto.idOrden = Utils.convToLong(lect.poliza);
 //        infoFoto.idArchivo = lect.idArchivo;
@@ -585,7 +585,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
          */
 
         try {
-            infoFoto.nombreFoto = "";
+            infoFoto.nombreArchivo = "";
             infoFoto.idEmpleado = globales.getIdEmpleado();
 
             if (globales == null)
