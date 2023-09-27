@@ -55,4 +55,5 @@ public class OrdenEntity {
     public String Estimaciones  = "";
     public String TipoCliente  = "";
     public String TextoLibre  = "";
+    public long id;
 }

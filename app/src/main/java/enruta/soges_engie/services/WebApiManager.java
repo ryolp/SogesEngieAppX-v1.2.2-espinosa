@@ -5,6 +5,8 @@ import android.content.Context;
 import enruta.soges_engie.Globales;
 import enruta.soges_engie.clases.OperacionRequest;
 import enruta.soges_engie.clases.OperacionResponse;
+import enruta.soges_engie.entities.SubirDatosRequest;
+import enruta.soges_engie.entities.SubirDatosResponse;
 import enruta.soges_engie.entities.SubirFotoRequest;
 import enruta.soges_engie.entities.SubirFotoResponse;
 import enruta.soges_engie.entities.TareasRequest;
@@ -233,6 +235,17 @@ public class WebApiManager {
         {
             throw new Exception("Error al subir foto: " + t.getMessage());
         }
+    }
+
+    public SubirDatosResponse subirDatos(SubirDatosRequest request) throws Exception {
+        Call<SubirDatosResponse> call = service.subirDatos(request);
+
+        Response<SubirDatosResponse> resp = call.execute();
+
+        if (resp != null)
+            return resp.body();
+        else
+            return null;
     }
 
 //    public SubirFotoResponse subirFoto(SubirFotoRequest req, byte[] foto) throws Exception {

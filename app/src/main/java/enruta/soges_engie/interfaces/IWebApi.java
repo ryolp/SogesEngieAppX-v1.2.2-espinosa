@@ -2,6 +2,8 @@ package enruta.soges_engie.interfaces;
 
 import enruta.soges_engie.clases.OperacionRequest;
 import enruta.soges_engie.clases.OperacionResponse;
+import enruta.soges_engie.entities.SubirDatosRequest;
+import enruta.soges_engie.entities.SubirDatosResponse;
 import enruta.soges_engie.entities.SubirFotoResponse;
 import enruta.soges_engie.entities.TareasRequest;
 import enruta.soges_engie.entities.TareasResponse;
@@ -92,4 +94,8 @@ public interface IWebApi {
                                       @Part("nombreArchivo") RequestBody nombreArchivo,
                                       @Part("serieMedidor") RequestBody serieMedidor,
                                       @Part("idOrden") RequestBody idOrden);
+
+    @POST("api/operaciones/SubirDatos")
+    Call<SubirDatosResponse> subirDatos(@Body SubirDatosRequest request);
+
 }
