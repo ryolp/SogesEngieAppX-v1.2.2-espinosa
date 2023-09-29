@@ -366,6 +366,7 @@ public class DescargarTareasMgr implements Runnable {
     }
 
     private void inicializarParams(ContentValues cv_params) {
+        cv_params.put("sospechosa", "0");
         cv_params.put("intento1", "");
         cv_params.put("intento2", "");
         cv_params.put("intento3", "");
@@ -373,7 +374,6 @@ public class DescargarTareasMgr implements Runnable {
         cv_params.put("intento5", "");
         cv_params.put("intento6", "");
         cv_params.put("intentos", 0);
-        cv_params.put("sospechosa", "0");
         cv_params.put("nisRad", 0);
         cv_params.put("dondeEsta", "");
         cv_params.put("anomInst", "");
@@ -382,6 +382,7 @@ public class DescargarTareasMgr implements Runnable {
         cv_params.put("comoLlegar2", "");
         cv_params.put("lectura", "");
         cv_params.put("anomalia", "");
+        cv_params.put("subanomalia", "");
         cv_params.put("comentarios", "");
     }
 
@@ -427,7 +428,6 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("idEmpleado", orden.idEmpleado);
                 cv_params.put("ciclo", orden.Ciclo);
                 cv_params.put("NumGrupo", orden.NumGrupo);
-                cv_params.put("Indicador", orden.Indicador);
                 cv_params.put("poliza", orden.Poliza);
                 cv_params.put("cliente", orden.Cliente);
                 cv_params.put("calle", orden.Calle);
@@ -457,6 +457,8 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("fecha_utlimo_pago", orden.FechaUltimoPago);
                 cv_params.put("giro", orden.Giro);
                 cv_params.put("diametro", orden.DiametroToma);
+                cv_params.put("miLatitud", orden.miLatitud);
+                cv_params.put("miLongitud", orden.miLongitud);
 
                 orden.id = mDb.insertOrThrow("ruta", null, cv_params);
             }
@@ -541,13 +543,18 @@ public class DescargarTareasMgr implements Runnable {
             orden.idEmpleado = Utils.convToLong(campos[i++]);
             orden.NumGrupo = campos[i++];
             orden.Ciclo = campos[i++];
-            orden.NumOrden = campos[i++];
+            orden.NumSecuencia = Utils.convToInt(campos[i++]);
             orden.AvisoAlLector = campos[i++];
             orden.MarcaMedidor = campos[i++];
             orden.TipoMedidor = campos[i++];
             orden.EstadoDelServicio = campos[i++];
             orden.Tarifa = campos[i++];
             orden.NumSello = campos[i++];
+            orden.MensajeOut = campos[i++];
+            orden.miLatitud = campos[i++];
+            orden.miLongitud = campos[i++];
+
+            orden.NumOrden = String.valueOf(orden.idOrden);
         } catch (Throwable t) {
             throw new Exception("Error al obtener los valores de los campos. " + t.getMessage());
         }

@@ -8,6 +8,7 @@ public class OrdenEntity {
     public long idEmpleado  = 0;
     public String Ciclo  = "";
     public String NumOrden  = "";
+    public int NumSecuencia  = 0;
     public String NumGrupo  = "";
     public String Indicador = "";
     public String Poliza  = "";
@@ -55,5 +56,6 @@ public class OrdenEntity {
     public String Estimaciones  = "";
     public String TipoCliente  = "";
     public String TextoLibre  = "";
+    public String MensajeOut = "";
     public long id;
 }

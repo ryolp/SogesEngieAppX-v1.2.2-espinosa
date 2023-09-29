@@ -2,12 +2,21 @@ package enruta.soges_engie;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import enruta.soges_engie.clases.Utils;
+import enruta.soges_engie.entities.SubirDatosRequest;
+import enruta.soges_engie.entities.SubirDatosResponse;
+import enruta.soges_engie.services.WebApiManager;
 
 public class TodosLosCampos {
 	//Vector <Campo> campos = new Vector<Campo>();
@@ -39,12 +48,13 @@ public class TodosLosCampos {
 			camposEnOrden.add(campo.getNombre().toUpperCase());
 	}
 	
-	public void byteToBD(SQLiteDatabase db, byte[] bytes, int secuenciaReal){
+	public void byteToBD(Context context, SQLiteDatabase db, byte[] bytes, int secuenciaReal){
 		String nombreCampo;
 		String valorCampo;
 		int i = 0;
 		Vector<String> listaCampos;
 		String linea;
+		String datos;
 
 		linea = new String(bytes);
 
@@ -126,10 +136,55 @@ public class TodosLosCampos {
 		
 		try{
 			db.insertOrThrow (is_tabla, null, cv_params);
+
+			enviarDatos(context, cv_params);
+
 		}catch(Throwable er){
 			er.printStackTrace();
 		}
-		
+	}
+
+	private void enviarDatos(Context context, ContentValues vals) throws Exception {
+		String ruta, cadenaAEnviar;
+		String msg;
+		String datos = "";
+		int cant;
+		int i;
+		Set<Map.Entry<String, Object>> s=vals.valueSet();
+		Iterator itr = s.iterator();
+
+
+		while(itr.hasNext())
+		{
+			Map.Entry me = (Map.Entry)itr.next();
+			String key = me.getKey().toString();
+			Object value =  me.getValue();
+			String valueStr = (String)(value == null?null:value.toString());
+
+			datos = Utils.concatenar(", ", datos,"'" + key + "':'" + value + "'");
+		}
+		datos = "[" + datos + "]\r\n";
+
+		cadenaAEnviar = new String(datos);
+
+		try {
+			SubirDatosRequest req = new SubirDatosRequest();
+
+			req.Datos = cadenaAEnviar;
+
+			SubirDatosResponse resp = WebApiManager.getInstance().subirDatosDebug(req);
+
+			if (resp == null)
+				throw new Exception("Error al enviar datos al servidor. No se recibieron datos.");
+
+			if (resp.NumError == 1)
+				throw new Exception("Error al enviar datos al servidor (" + String.valueOf(resp.NumError) + "). " + resp.MensajeError);
+
+			if (resp.NumError == 2)
+				throw new Exception("No se recibieron los datos (" + String.valueOf(resp.NumError) + "). " + resp.MensajeError);
+		} catch (Throwable e) {
+			throw new Exception("Error al enviar mensaje : " + e.getMessage());
+		}
 	}
 	
 	public void byteToBD(SQLiteDatabase db, String bytes, int secuenciaReal){

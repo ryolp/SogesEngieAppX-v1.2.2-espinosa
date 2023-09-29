@@ -271,8 +271,7 @@ public abstract class TransmisionesPadre extends Activity {
     
     protected abstract void transmitir();
     protected abstract void recepcion();
-	protected abstract void recepcion2();
-    
+
     public void esconderTeclado(View v){
 		InputMethodManager imm = (InputMethodManager)getSystemService(
 			      Context.INPUT_METHOD_SERVICE);

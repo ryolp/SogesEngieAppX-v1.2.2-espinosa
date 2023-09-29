@@ -98,4 +98,7 @@ public interface IWebApi {
     @POST("api/operaciones/SubirDatos")
     Call<SubirDatosResponse> subirDatos(@Body SubirDatosRequest request);
 
+    @POST("api/operaciones/SubirDatosDebug")
+    Call<SubirDatosResponse> subirDatosDebug(@Body SubirDatosRequest request);
+
 }

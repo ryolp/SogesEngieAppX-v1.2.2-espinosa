@@ -27,7 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	private static DBHelper mInstance = null;
 	
-	private static int version=11;
+	private static int version=13;
 
 	/**
 	 * Constructor Toma referencia hacia el contexto de la aplicación que lo
@@ -203,7 +203,8 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " codigoLectura default '', lecturaAnterior default '', baremo default '', divisionContrato default '', lecturista default '', supervision default '', "
 				+ " advertencias default '', ubicacion default '', situacionDelSuministro default '', fechaAviso default '', rutaReal default '', estimaciones default '', "
 				+ " escalera default '', piso default '', puerta default '', secuenciaReal,  ultimo_pago default 0,  diametro default '', fechaEnvio default '', habitado default '0', "
-				+ " fechaDeInicio default '',  idOrden default 0, idTarea default 0, idArchivo default 0, idEmpleado default 0, ciclo default '', numGrupo default 0)");
+				+ " fechaDeInicio default '',  idOrden default 0, idTarea default 0, idArchivo default 0, idEmpleado default 0, ciclo default '', numGrupo default 0, "
+				+ " numSecuencia default 0, miLatitud default '0.0', miLongitud default '0.0')");
 		//Usuarios
 		db.execSQL("CREATE TABLE usuarios (usuario , contrasena , nombre, rol default 1, fotosControlCalidad default 1, baremo default 75)");
 		//fotos
@@ -276,6 +277,9 @@ public class DBHelper extends SQLiteOpenHelper {
 			verifyColumnInTable(db, "ruta", "idEmpleado", "0");
 			verifyColumnInTable(db, "ruta", "numGrupo", "0");
 			verifyColumnInTable(db, "ruta", "ciclo", "''");
+			verifyColumnInTable(db, "ruta", "miLatitud", "'0.0'");
+			verifyColumnInTable(db, "ruta", "miLongitud", "'0.0'");
+			verifyColumnInTable(db, "ruta", "numSecuencia", "0");
 
 			verifyColumnInTable(db, "fotos", "idArchivo", "0");
 			verifyColumnInTable(db, "fotos", "idTarea", "0");

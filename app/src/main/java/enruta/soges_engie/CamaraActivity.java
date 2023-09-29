@@ -110,6 +110,7 @@ public class CamaraActivity extends Activity {
 
     private int mTipoFoto = 0;
     private int mIdFoto = 0;
+    private long mIdOrden = 0;
 
     /**
      * Inicialización del Activity
@@ -139,8 +140,8 @@ public class CamaraActivity extends Activity {
 
         temporal = bu_params.getInt("temporal");
         cantidad = bu_params.getInt("cantidad");
-
         mTipoFoto = bu_params.getInt("TipoFoto");
+        mIdOrden = bu_params.getLong("idOrden");
 
         ca = this;
 
@@ -630,6 +631,7 @@ public class CamaraActivity extends Activity {
             mCv_datos.put("foto", fotoAGuardar);
             mCv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
             mCv_datos.put("temporal", temporal);
+            mCv_datos.put("idOrden", mIdOrden);
 //        mCv_datos.put("idLectura", infoFoto.idLectura);
 //        mCv_datos.put("idEmpleado", infoFoto.idEmpleado);
 //        mCv_datos.put("idArchivo", infoFoto.idArchivo);

@@ -25,6 +25,7 @@ import enruta.soges_engie.services.WebApiManager;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -246,11 +247,10 @@ public class trasmisionDatos extends TransmisionesPadre {
                 byte[] image;
                 String serieMedidor = "";
                 long idOrden = 0;
-                DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
+
                 List<Long> listadoOrdenes = new ArrayList<Long>();
                 long idRegistro = 0L;
-                int cantFotos = 0;
-                int idFoto = 0;
+
                 GeneradorDatosEnvio genDatosEnvio = new GeneradorDatosEnvio();
 
                 switch (globales.modoDeCierreDeLecturas) {
@@ -456,112 +456,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 //
 //                    c.close();
 
-                    // --------------------------------------------------------------------------
-                    //  Enviar fotos
-                    // --------------------------------------------------------------------------
-
-                    // Por ahora, sabemos que las fotos andan rotundamente mal,
-                    // por ahora no envio nada
-                    // transmiteFotos=false;
-
-                    mostrarMensaje(BARRA, String.valueOf(0));
-
-                    if (transmiteFotos) {
-
-                        mostrarMensaje(PROGRESO,
-                                getString(R.string.msj_trans_generando_fotos));
-                        mostrarMensaje(MENSAJE, getString(R.string.str_espere));
-
-                        openDatabase();
-
-                        if (fotoMgr == null)
-                            fotoMgr = new FotosMgr();
-
-                        query = "SELECT F.idFoto, F.secuencial, F.nombre, length(F.foto) imageSize, L.serieMedidor, F.idOrden ";
-                        query += " FROM fotos F ";
-                        query += " LEFT JOIN (SELECT * FROM ruta R WHERE R.idOrden <> 0) L ON F.idOrden = L.idOrden ";
-                        query += " WHERE F.envio=1";
-
-                        c = db.rawQuery(query, null);
-
-                        cantidad = c.getCount();
-
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                pb_progress.setMax(cantidad);
-                            }
-                        });
-                        // closeDatabase();
-
-                        String ls_capertaFotos = subirDirectorio(ls_carpeta, 2)
-                                + "/fotos/"/* + ls_subCarpeta + "/"
-								+ Main.obtieneFecha("ymd")*/;
-
-                        c.moveToFirst();
-
-                        cantFotos = c.getCount();
-
-                        for (int i = 0; i < cantFotos; i++) {
-                            context.stop();
-
-                            try {
-                                nombreArchivo = Utils.getString(c, "nombre", "");
-                                serieMedidor = Utils.getString(c, "serieMedidor", "");
-                                idOrden = Utils.getLong(c, "idOrden", 0);
-                                idFoto = Utils.getInt(c, "idFoto", 0);
-
-                                String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10);
-
-                                //serial.open(ls_servidor, ls_capertaFotos + fecha + "/", "",
-                                //		Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
-
-                                long imageSize = Utils.getLong(c, "imageSize", 0);
-
-                                // ls_cadena=generaCadenaAEnviar(c);
-
-                                image = fotoMgr.obtenerFoto(db, idFoto, imageSize);
-
-                                // ls_cadena=generaCadenaAEnviar(c);
-                                // serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
-                                // serial.write(nombreArchivo, image);
-
-                                datosEnvio.Carpeta = ls_capertaFotos + fecha + "/";
-                                datosEnvio.nombreArchivo = nombreArchivo;
-                                datosEnvio.idEmpleado = globales.getIdEmpleado();
-
-                                enviarFoto(datosEnvio, image);
-
-                                // String bufferLenght;
-                                int porcentaje = ((i + 1) * 100) / cantFotos;
-                                // bufferLenght = String.valueOf(c.getCount());
-                                //serial.close();
-                                // openDatabase();
-
-                                String whereClause = "idFoto=?";
-                                String[] whereArgs = {Utils.getString(c, "idFoto", "")};
-
-
-                                if (!transmitirTodo) {
-//								cv_datos.put("envio", TomaDeLecturas.ENVIADA);
-//
-//								int j = db.update("fotos", cv_datos,
-//										whereClause, whereArgs);
-                                    db.execSQL("delete from fotos where idFoto=?", whereArgs);
-                                }
-                                // closeDatabase();
-                                // Marcar como enviada
-                                c.moveToNext();
-                                mostrarMensaje(MENSAJE, (i + 1) + " "
-                                        + getString(R.string.de) + " "
-                                        + cantFotos + " "
-                                        + getString(R.string.str_fotos) + ".\n"
-                                        + String.valueOf(porcentaje) + "%");
-                                mostrarMensaje(BARRA, String.valueOf(1));
-                            } catch (Throwable t) {
-                                t.printStackTrace();
-                            }
-                        }
-                    }
+                    transmitirFotos(context);
 
                     // mostrarMensaje(PROGRESO, "Mandando datos al servidor");
                     mostrarMensaje(MENSAJE, getString(R.string.str_espere));
@@ -606,6 +501,137 @@ public class trasmisionDatos extends TransmisionesPadre {
         };
 
         hilo.start();
+    }
+
+    private void transmitirOrdenes() {
+
+    }
+
+    private void transmitirFotos(trasmisionDatos context) throws Exception {
+        final int cantFotos;
+        int idFoto = 0;
+        String query = "";
+        long idOrden = 0;
+        long numOrden = 0;
+        Cursor c = null;
+        String nombreArchivo = "";
+        String serieMedidor = "";
+        byte[] image;
+        DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
+
+
+
+        // --------------------------------------------------------------------------
+        //  Enviar fotos
+        // --------------------------------------------------------------------------
+
+        // Por ahora, sabemos que las fotos andan rotundamente mal,
+        // por ahora no envio nada
+        // transmiteFotos=false;
+
+        try {
+
+            mostrarMensaje(BARRA, String.valueOf(0));
+
+            if (transmiteFotos) {
+
+                mostrarMensaje(PROGRESO,
+                        getString(R.string.msj_trans_generando_fotos));
+                mostrarMensaje(MENSAJE, getString(R.string.str_espere));
+
+                openDatabase();
+
+                if (fotoMgr == null)
+                    fotoMgr = new FotosMgr();
+
+                query = "SELECT F.idFoto, F.secuencial, F.nombre, length(F.foto) imageSize, L.serieMedidor, F.idOrden ";
+                query += " FROM fotos F ";
+                query += " LEFT JOIN (SELECT * FROM ruta R WHERE R.idOrden <> 0) L ON F.idOrden = L.idOrden ";
+                query += " WHERE F.envio=1";
+
+                c = db.rawQuery(query, null);
+
+                c.moveToFirst();
+
+                cantFotos = c.getCount();
+
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        pb_progress.setMax(cantFotos);
+                    }
+                });
+                // closeDatabase();
+
+                String ls_capertaFotos = subirDirectorio(ls_carpeta, 2)
+                        + "/fotos/"/* + ls_subCarpeta + "/"
+								+ Main.obtieneFecha("ymd")*/;
+
+
+                for (int i = 0; i < cantFotos; i++) {
+                    context.stop();
+
+                    try {
+                        nombreArchivo = Utils.getString(c, "nombre", "");
+                        serieMedidor = Utils.getString(c, "serieMedidor", "");
+                        idOrden = Utils.getLong(c, "idOrden", 0);
+                        idFoto = Utils.getInt(c, "idFoto", 0);
+
+                        String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10);
+
+                        //serial.open(ls_servidor, ls_capertaFotos + fecha + "/", "",
+                        //		Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), serieMedidor, idOrden, context);
+
+                        long imageSize = Utils.getLong(c, "imageSize", 0);
+
+                        // ls_cadena=generaCadenaAEnviar(c);
+
+                        image = fotoMgr.obtenerFoto(db, idFoto, imageSize);
+
+                        // ls_cadena=generaCadenaAEnviar(c);
+                        // serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
+                        // serial.write(nombreArchivo, image);
+
+                        datosEnvio.Carpeta = ls_capertaFotos + fecha + "/";
+                        datosEnvio.nombreArchivo = nombreArchivo;
+                        datosEnvio.idEmpleado = globales.getIdEmpleado();
+                        datosEnvio.idOrden = idOrden;
+
+                        enviarFoto(datosEnvio, image);
+
+                        // String bufferLenght;
+                        int porcentaje = ((i + 1) * 100) / cantFotos;
+                        // bufferLenght = String.valueOf(c.getCount());
+                        //serial.close();
+                        // openDatabase();
+
+                        String whereClause = "idFoto=?";
+                        String[] whereArgs = {Utils.getString(c, "idFoto", "")};
+
+
+                        if (!transmitirTodo) {
+//								cv_datos.put("envio", TomaDeLecturas.ENVIADA);
+//
+//								int j = db.update("fotos", cv_datos,
+//										whereClause, whereArgs);
+                            db.execSQL("delete from fotos where idFoto=?", whereArgs);
+                        }
+                        // closeDatabase();
+                        // Marcar como enviada
+                        c.moveToNext();
+                        mostrarMensaje(MENSAJE, (i + 1) + " "
+                                + getString(R.string.de) + " "
+                                + cantFotos + " "
+                                + getString(R.string.str_fotos) + ".\n"
+                                + String.valueOf(porcentaje) + "%");
+                        mostrarMensaje(BARRA, String.valueOf(1));
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            throw new Exception("Error al enviar fotos. (" + t.getMessage()+")");
+        }
     }
 
     private Boolean enviarDatos(String carpeta, String archivo, String datos) throws Exception {
@@ -688,6 +714,10 @@ public class trasmisionDatos extends TransmisionesPadre {
     }
 
     public void recepcion() {
+        recepcionPorPipes();
+    }
+
+    private void recepcionPorAnchoFijo() {
         final trasmisionDatos context = this;
         puedoCerrar = false;
         final trasmisionDatos td = this;
@@ -735,37 +765,8 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< " + getFechaServidor() + " ");
 
-
-                    /*
-                     * Cursor parm=
-                     * db.rawQuery("select value from params where key='telefono'"
-                     * , null);
-                     *
-                     * parm.moveToFirst();
-                     *
-                     * mPhoneNumber=
-                     * parm.getString(parm.getColumnIndex("value"));
-                     */
-
-                    // borrarArchivo( "uploads/"+ mPhoneNumber+".txt");
-
-                    // Cursor c=
-                    // db.rawQuery("select id , nombre , padre , telefono, tipo, avance, total, color, orden, pordefecto, horaInicio, horaFin, porcion, unidad  from direcciones ",
-                    // null);
-
-                    // cantidad=c.getCount();
-
-                    /*
-                     * mHandler.post(new Runnable() { public void run() {
-                     * pb_progress.setMax(cantidad); } });
-                     */
-                    // mostrarMensaje(PROGRESO, "Generando datos a importar");
-                    // mostrarMensaje(MENSAJE, "Espere...");
-
                     resp = mDescargarTareas.descargarTareas();
 
-//					serial.open(ls_servidor, ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA),
-//							Serializacion.LECTURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
                     context.stop();
                     // lby_cadena= new
                     // byte[context.getResources().getInteger(R.integer.LONG_DATOS_MEDIDOR)];
@@ -889,7 +890,7 @@ public class trasmisionDatos extends TransmisionesPadre {
                         if (/*i != 0 && */!ls_linea.startsWith("#")
                                 && !ls_linea.startsWith("!")) {
                             secuenciaReal++;
-                            globales.tlc.byteToBD(db,
+                            globales.tlc.byteToBD(globales.getApplicationContext(), db,
                                     ls_linea.getBytes("ISO-8859-1"), secuenciaReal);// Esta
                             // clase
                             // ahora
@@ -996,7 +997,7 @@ public class trasmisionDatos extends TransmisionesPadre {
         hilo.start();
     }
 
-    public void recepcion2() {
+    private void recepcionPorPipes() {
         final trasmisionDatos context = this;
         puedoCerrar = false;
         final trasmisionDatos td = this;
@@ -1044,24 +1045,25 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     resp = descargarTareasMgr.descargarTareas();
 
-                    if (resp == null) {
-                        muere(true, "");
-                        return;
-                    }
-
-                    if (resp.Contenido2 == null) {
-                        muere(true, "");
-                        return;
-                    }
-//
-//					serial.open(ls_servidor, ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA),
-//							Serializacion.LECTURA, 0, 0);
-
                     context.stop();
                     // lby_cadena= new
                     // byte[context.getResources().getInteger(R.integer.LONG_DATOS_MEDIDOR)];
 
                     vLecturas = new Vector<String>();
+
+                    if (resp == null) {
+                        muere(true, "");
+                        return;
+                    }
+
+                    if (!resp.EsUsuarioValido) {
+                        throw new AppUsuarioBloqueadoException();
+                    }
+
+                    if (resp.Contenido == null) {
+                        muere(true, "");
+                        return;
+                    }
 
                     contenido = resp.Contenido2;
 
@@ -1223,20 +1225,16 @@ public class trasmisionDatos extends TransmisionesPadre {
                     muere(true, String.format(
                             getString(R.string.msj_trans_correcta),
                             getString(R.string.str_importado)));
+                } catch (AppUsuarioBloqueadoException eb){
+                    cerrarSesion();
                 } catch (Throwable e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    // db.endTransaction();
-                    // db.execSQL("delete from lecturas ");
-                    muere(true,
-                            String.format(getString(R.string.msj_trans_error),
-                                    getString(R.string.str_importar_lowercase))
-                                    + i + " " + e.getMessage());
+                    terminarRecepcion(e, i);
                 } finally {
                     try {
                         db.endTransaction();
                     } catch (Throwable e) {
-
                         e.printStackTrace();
                     }
 
@@ -1247,6 +1245,34 @@ public class trasmisionDatos extends TransmisionesPadre {
             }
         };
         hilo.start();
+    }
+
+    private void terminarRecepcion(Throwable t, int i)  {
+        try {
+            String msg;
+
+            msg = String.format(getString(R.string.msj_trans_error),
+                    getString(R.string.str_importar_lowercase)) + i + " ";
+
+            mostrarMensaje("Alerta", msg, t.getMessage(), new DialogoMensaje.Resultado() {
+                @Override
+                public void Aceptar(boolean EsOk) {
+                    muere(true, msg);
+                }
+            });
+        } catch (Throwable t2) {
+            t2.printStackTrace();
+        }
+    }
+
+    private void cerrarSesion() {
+        mostrarMensaje("Alerta", getString(R.string.str_usuario_bloqueado), "", new DialogoMensaje.Resultado() {
+            @Override
+            public void Aceptar(boolean EsOk) {
+                globales.cerrarSesion();
+                muere(true, getString(R.string.str_usuario_bloqueado));
+            }
+        });
     }
 
 

@@ -78,6 +78,19 @@ public class WebApiManager {
         return apiManager;
     }
 
+    public static WebApiManager getInstance() throws Exception {
+        String servidor = "";
+
+        servidor = "http://192.168.2.123:8182";
+
+        if (apiManager == null)
+            apiManager = new WebApiManager(servidor);
+        else
+            apiManager.createConection(servidor);
+
+        return apiManager;
+    }
+
     // Se hace una llamada asíncrona al web api, y el resultado lo recibirá la función que se defina en callback
     public void echoPing(Callback<String> callback){
         Call<String> call = service.echoping();
@@ -239,6 +252,17 @@ public class WebApiManager {
 
     public SubirDatosResponse subirDatos(SubirDatosRequest request) throws Exception {
         Call<SubirDatosResponse> call = service.subirDatos(request);
+
+        Response<SubirDatosResponse> resp = call.execute();
+
+        if (resp != null)
+            return resp.body();
+        else
+            return null;
+    }
+
+    public SubirDatosResponse subirDatosDebug(SubirDatosRequest request) throws Exception {
+        Call<SubirDatosResponse> call = service.subirDatosDebug(request);
 
         Response<SubirDatosResponse> resp = call.execute();
 

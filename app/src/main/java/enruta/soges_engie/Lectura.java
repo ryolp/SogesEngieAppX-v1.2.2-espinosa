@@ -3,6 +3,7 @@ package enruta.soges_engie;
 import java.util.Vector;
 
 import enruta.soges_engie.R;
+import enruta.soges_engie.clases.Utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,6 +43,7 @@ public class Lectura {
 	
 	long lecturaAnterior;
 	String poliza, is_ubicacion, is_estimaciones, contadorAlterno, is_numOrden, is_calle;
+	long is_idOrden = 0;
 
 	private DBHelper dbHelper;
 
@@ -98,79 +100,77 @@ public class Lectura {
 					.getColumnIndex("supervisionLectura"));
 			is_reclamacionLectura = c.getString(c
 					.getColumnIndex("reclamacionLectura"));*/
-			//lamacion = c.getString(c.getColumnIndex("reclamacion")).trim();
+			//lamacion = Utils.getString(c, "reclamacion")).trim();
 			is_reclamacionLectura="1";
-			is_habitado=c.getString(c.getColumnIndex("habitado")).trim();
-			giro=c.getString(c.getColumnIndex("giro")).trim();
-			diametro_toma=c.getString(c.getColumnIndex("diametro")).trim();
-			is_vencido=c.getString(c.getColumnIndex("vencido")).trim();
-			is_balance=c.getString(c.getColumnIndex("balance")).trim();
-			is_ultimo_pago=c.getString(c.getColumnIndex("ultimo_pago")).trim();
-			is_fecha_ultimo_pago=c.getString(c.getColumnIndex("fecha_utlimo_pago")).trim();
-			is_entrecalles=c.getString(c.getColumnIndex("entrecalles")).trim();
-			is_tipoDeOrden= c.getString(c.getColumnIndex("tipoDeOrden")).trim();
-			is_estadoDeLaOrden=c.getString(c.getColumnIndex("estadoDeLaOrden")).trim();
-			is_sectorLargo = c.getString(c.getColumnIndex("sectorlargo"));
-			is_sectorCorto = c.getString(c.getColumnIndex("sectorCorto"));
-			is_tarifa = c.getString(c.getColumnIndex("tarifa"));
-			is_ilr = c.getString(c.getColumnIndex("ilr"));
-			is_marcaMedidor = c.getString(c.getColumnIndex("marcaMedidor"));
-			is_serieMedidor = c.getString(c.getColumnIndex("serieMedidor")).trim();
-			is_tipoMedidor = c.getString(c.getColumnIndex("tipoMedidor"));
-			is_aviso = c.getString(c.getColumnIndex("aviso"));
-			is_comollegar1 = c.getString(c.getColumnIndex("comoLlegar1"));
-			is_comoLlegar2 = c.getString(c.getColumnIndex("comoLlegar2"));
-			contadorAlterno =c.getString(c.getColumnIndex("rowid"));
-			serieMedidorReal=c.getString(c.getColumnIndex("serieMedidorReal"));
-			secuenciaReal= c.getInt(c
-					.getColumnIndex("secuenciaReal"));
-
-			is_cliente = c.getString(c.getColumnIndex("cliente"));
-			is_colonia = c.getString(c.getColumnIndex("colonia"));
-			is_direccion = c.getString(c.getColumnIndex("direccion"));
-			is_lectura = c.getString(c.getColumnIndex("lectura")).trim();
-			String ls_anomalia = c.getString(c.getColumnIndex("anomalia"));
-			//is_texto = c.getString(c.getColumnIndex("texto"));
-			is_fecha = c.getString(c.getColumnIndex("fecha"));
-			is_hora = c.getString(c.getColumnIndex("hora"));
-			String ls_subAnomalia = c.getString(c.getColumnIndex("subAnomalia"));
-			is_comentarios = c.getString(c.getColumnIndex("comentarios")).trim();
-			is_advertencias=c.getString(c.getColumnIndex("advertencias"));
-			is_consumo=c.getString(c.getColumnIndex("consumo"));
-			is_tipoLectura=c.getString(c.getColumnIndex("tipoLectura"));
+			is_habitado=Utils.getString(c, "habitado", "").trim();
+			giro=Utils.getString(c, "giro", "").trim();
+			diametro_toma=Utils.getString(c, "diametro", "").trim();
+			is_vencido=Utils.getString(c, "vencido", "").trim();
+			is_balance=Utils.getString(c, "balance", "").trim();
+			is_ultimo_pago=Utils.getString(c, "ultimo_pago", "").trim();
+			is_fecha_ultimo_pago=Utils.getString(c, "fecha_utlimo_pago", "").trim();
+			is_entrecalles=Utils.getString(c, "entrecalles", "").trim();
+			is_tipoDeOrden= Utils.getString(c, "tipoDeOrden", "").trim();
+			is_estadoDeLaOrden=Utils.getString(c, "estadoDeLaOrden", "").trim();
+			is_sectorLargo = Utils.getString(c, "sectorlargo", "");
+			is_sectorCorto = Utils.getString(c, "sectorCorto", "");
+			is_tarifa = Utils.getString(c, "tarifa", "");
+			is_ilr = Utils.getString(c, "ilr", "");
+			is_marcaMedidor = Utils.getString(c, "marcaMedidor", "");
+			is_serieMedidor = Utils.getString(c, "serieMedidor", "").trim();
+			is_tipoMedidor = Utils.getString(c, "tipoMedidor", "");
+			is_aviso = Utils.getString(c, "aviso", "");
+			is_comollegar1 = Utils.getString(c, "comoLlegar1", "");
+			is_comoLlegar2 = Utils.getString(c, "comoLlegar2", "");
+			contadorAlterno =Utils.getString(c, "rowid", "");
+			serieMedidorReal=Utils.getString(c, "serieMedidorReal", "");
+			secuenciaReal= Utils.getInt(c, "secuenciaReal", 0);
+			is_cliente = Utils.getString(c, "cliente", "");
+			is_colonia = Utils.getString(c, "colonia", "");
+			is_direccion = Utils.getString(c, "direccion", "");
+			is_lectura = Utils.getString(c, "lectura", "").trim();
+			String ls_anomalia = Utils.getString(c, "anomalia", "");
+			//is_texto = Utils.getString(c, "texto"));
+			is_fecha = Utils.getString(c, "fecha", "");
+			is_hora = Utils.getString(c, "hora", "");
+			String ls_subAnomalia = Utils.getString(c, "subAnomalia", "");
+			is_comentarios = Utils.getString(c, "comentarios", "").trim();
+			is_advertencias=Utils.getString(c, "advertencias", "");
+			is_consumo=Utils.getString(c, "consumo", "");
+			is_tipoLectura=Utils.getString(c, "tipoLectura", "");
 
 			if (is_comentarios == null) {
 				is_comentarios = "";
 			}
 			
-//			is_escalera = c.getString(c.getColumnIndex("escalera"));
-			is_piso = c.getString(c.getColumnIndex("piso"));
-//			is_puerta = c.getString(c.getColumnIndex("puerta"));
-//			is_ubicacion=c.getString(c.getColumnIndex("ubicacion"));
-//			is_estimaciones=c.getString(c.getColumnIndex("estimaciones")).trim();
-			is_fechaAviso=c.getString(c.getColumnIndex("fechaAviso")).trim();
+//			is_escalera = Utils.getString(c, "escalera"));
+			is_piso = Utils.getString(c, "piso", "");
+//			is_puerta = Utils.getString(c, "puerta"));
+//			is_ubicacion=Utils.getString(c, "ubicacion"));
+//			is_estimaciones=Utils.getString(c, "estimaciones")).trim();
+			is_fechaAviso=Utils.getString(c, "fechaAviso", "").trim();
 			
 
-//			nis_rad = toInteger(c.getString(c.getColumnIndex("nisRad")));
-			poliza = c.getString(c.getColumnIndex("poliza"));
-			is_numOrden=c.getString(c.getColumnIndex("numOrden"));
-//			numerodeesferas =  toInteger(c.getString(c.getColumnIndex("numEsferas")));
-//			numerodeesferasReal= c.getString(c.getColumnIndex("numEsferasReal")).trim();
+//			nis_rad = toInteger(Utils.getString(c, "nisRad")));
+			poliza = Utils.getString(c, "poliza", "");
+			is_numOrden=Utils.getString(c, "numOrden", "");
+//			numerodeesferas =  toInteger(Utils.getString(c, "numEsferas")));
+//			numerodeesferasReal= Utils.getString(c, "numEsferasReal")).trim();
 //			consAnoAnt = toInteger(c.getString(c
 //					.getColumnIndex("consAnoAnt")));
 //			consBimAnt = toInteger(c.getString(c
 //					.getColumnIndex("consBimAnt")));
-			numeroDePortal = c.getString(c.getColumnIndex("numPortal"));
-			numeroDeEdificio = c.getString(c.getColumnIndex("numEdificio"));
+			numeroDePortal = Utils.getString(c, "numPortal", "");
+			numeroDeEdificio = Utils.getString(c, "numEdificio", "");
 //			secuencia = toInteger(c.getString(c
 //					.getColumnIndex("secuencia")));
-			intentos = c.getString(c.getColumnIndex("intentos")).trim();
-			sospechosa =  c.getString(c.getColumnIndex("sospechosa")).trim();
-			is_calle=  c.getString(c.getColumnIndex("calle")).trim();
+			intentos = Utils.getString(c, "intentos", "").trim();
+			sospechosa =  Utils.getString(c, "sospechosa", "").trim();
+			is_calle=  Utils.getString(c, "calle", "").trim();
 			
-//			lecturaAnterior= toLong(c.getString(c.getColumnIndex("lecturaAnterior")));
+//			lecturaAnterior= toLong(Utils.getString(c, "lecturaAnterior")));
 			
-//			baremo =toInteger(c.getString(c.getColumnIndex("baremo")));
+//			baremo =toInteger(Utils.getString(c, "baremo")));
 
 //			if (secuencia % 2 == 0)
 //				requiereGPS = true;
@@ -179,33 +179,33 @@ public class Lectura {
 			
 			requiereGPS = true;
 
-			ordenDeLectura = c.getString(c.getColumnIndex("ordenDeLectura"));
+			ordenDeLectura = Utils.getString(c, "ordenDeLectura", "");
 
-			intento1 = c.getString(c.getColumnIndex("intento1"));
-			intento2 = c.getString(c.getColumnIndex("intento2"));
-			intento3 = c.getString(c.getColumnIndex("intento3"));
-			intento4 = c.getString(c.getColumnIndex("intento4"));
-			intento5 = c.getString(c.getColumnIndex("intento5"));
-			intento6 = c.getString(c.getColumnIndex("intento6"));
+			intento1 = Utils.getString(c, "intento1", "");
+			intento2 = Utils.getString(c, "intento2", "");
+			intento3 = Utils.getString(c, "intento3", "");
+			intento4 = Utils.getString(c, "intento4", "");
+			intento5 = Utils.getString(c, "intento5", "");
+			intento6 = Utils.getString(c, "intento6", "");
 
-			FotoAlFinal = c.getInt(c.getColumnIndex("fotoAlFinal"));
+			FotoAlFinal = Utils.getInt(c, "fotoAlFinal", 0);
 
-			terminacion = c.getString(c.getColumnIndex("terminacion"));
+			terminacion = Utils.getString(c, "terminacion", "");
 
-			is_latitud = c.getString(c.getColumnIndex("latitud"));
-			is_longitud = c.getString(c.getColumnIndex("longitud"));
+			is_latitud = Utils.getString(c, "latitud", "");
+			is_longitud = Utils.getString(c, "longitud", "");
 			
-			ls_mensaje= c.getString(c.getColumnIndex("mensaje"));
+			ls_mensaje= Utils.getString(c, "mensaje", "");
+			is_idOrden = Utils.getLong(c, "idOrden", 0);
 
-			estadoDelSuministro = c.getString(c
-					.getColumnIndex("estadoDelSuministro")).trim();
+			estadoDelSuministro = Utils.getString(c, "estadoDelSuministro", "").trim();
 			
 			if (!globales.puedoVerLosDatos)
-				verDatos =c.getInt(c.getColumnIndex("verDatos"))==0? false:true;
+				verDatos =Utils.getInt(c, "verDatos", 0)==0? false:true;
 			else
 				verDatos=true;
 			//registro = c.getBlob(c.getColumnIndex("registro"));
-//			dondeEsta = c.getString(c.getColumnIndex("dondeEsta"));
+//			dondeEsta = Utils.getString(c, "dondeEsta"));
 
 //			if (ls_anomalia.equals("") && secuencia%3==0)
 //				ls_anomalia="AC*";
