@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import enruta.soges_engie.clases.AppUsuarioBloqueadoException;
 import enruta.soges_engie.clases.DescargarTareasMgr;
 import enruta.soges_engie.clases.FotosMgr;
 import enruta.soges_engie.clases.Utils;
@@ -39,6 +40,7 @@ public class trasmisionDatos extends TransmisionesPadre {
     private Serializacion serial;
     private FotosMgr fotoMgr = null;
     private DescargarTareasMgr mDescargarTareas;
+    private DialogoMensaje mDialogoMsg = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,6 +154,10 @@ public class trasmisionDatos extends TransmisionesPadre {
 
         mHandler = new Handler();
 
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
 
         //Vamos a verificar la hora y la fecha
 
@@ -242,7 +248,9 @@ public class trasmisionDatos extends TransmisionesPadre {
                 long idOrden = 0;
                 DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
                 List<Long> listadoOrdenes = new ArrayList<Long>();
-                Long idRegistro = 0L;
+                long idRegistro = 0L;
+                int cantFotos = 0;
+                int idFoto = 0;
                 GeneradorDatosEnvio genDatosEnvio = new GeneradorDatosEnvio();
 
                 switch (globales.modoDeCierreDeLecturas) {
@@ -326,7 +334,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 //									globales.tdlg.long_registro);
 //						}else{
 
-                         ls_cadenaAEnviar += genDatosEnvio.generarInfoOrdenes(c, globales.getIdEmpleado()) + "\r\n";
+                        ls_cadenaAEnviar += genDatosEnvio.generarInfoOrdenes(c, globales.getIdEmpleado()) + "\r\n";
                         //ls_cadenaAEnviar += Utils.getString(c, "TextoSalida", "") + "\r\n";
 //						}
                         // Escribimos los bytes en el archivo
@@ -364,7 +372,8 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     //serial.close();
 
-                    enviarDatos("", nombreArchivo, ls_cadenaAEnviar);
+                    if (!enviarDatos("", nombreArchivo, ls_cadenaAEnviar))
+                        throw new AppUsuarioBloqueadoException();
 
                     cv_datos.put("envio", TomaDeLecturas.ENVIADA);
 
@@ -373,80 +382,83 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     c.close();
 
+                    // ------------------------------------------------------------------------
                     // Aqui enviamos los no registrados
-                    mostrarMensaje(
-                            PROGRESO,
-                            getString(R.string.msj_trans_generando_no_registrados));
-                    mostrarMensaje(MENSAJE, getString(R.string.str_espere));
-                    mostrarMensaje(BARRA, String.valueOf(0));
+                    // ------------------------------------------------------------------------
 
-                    c = db.rawQuery("select * from NoRegistrados ", null);
+//                    mostrarMensaje(
+//                            PROGRESO,
+//                            getString(R.string.msj_trans_generando_no_registrados));
+//                    mostrarMensaje(MENSAJE, getString(R.string.str_espere));
+//                    mostrarMensaje(BARRA, String.valueOf(0));
+//
+//                    c = db.rawQuery("select * from NoRegistrados ", null);
+//
+//                    ls_nombre_final = ls_subCarpeta + "." + "NVO";
+//                    borrarArchivo(ls_carpeta + "/" + ls_nombre_final);
+//
+//                    cantidad = c.getCount();
+//
+//                    serial.open(ls_servidor, ls_carpeta, ls_nombre_final,
+//                            Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
 
-                    ls_nombre_final = ls_subCarpeta + "." + "NVO";
-                    borrarArchivo(ls_carpeta + "/" + ls_nombre_final);
+//                    mHandler.post(new Runnable() {
+//                        public void run() {
+//                            pb_progress.setMax(cantidad);
+//                        }
+//                    });
+//                    for (int i = 0; i < cantidad; i++) {
+//                        context.stop();
+//                        c.moveToPosition(i);
+//
+//                        // ls_cadena=generaCadenaAEnviar(c);
+//                        // lby_cadenaEnBytes=ls_cadena.getBytes();
+//
+//                        // Ya tenemos los datos a enviar (que emocion!) asi que
+//                        // hay que agregarlos a la cadena final
+//
+//                        lby_registro = c.getBlob(c.getColumnIndex("poliza"));
+//
+//                        // for (int j=0; j<lby_cadenaEnBytes.length;j++)
+//                        // lby_registro[j+resources.getInteger(R.integer.POS_DATOS_TIPO_LECTURA)]=lby_cadenaEnBytes[j];
+//
+//                        // Escribimos los bytes en el archivo
+//                        serial.write(new String(lby_registro) + "\r\n");
+//
+//                        String bufferLenght;
+//                        int porcentaje = ((i + 1) * 100) / c.getCount();
+//                        bufferLenght = String.valueOf(c.getCount());
+//
+//                        /*
+//                         * openDatabase();
+//                         *
+//                         * String whereClause="secuencial=?"; String[]
+//                         * whereArgs=
+//                         * {String.valueOf(c.getLong(c.getColumnIndex("secuencial"
+//                         * )))}; ContentValues cv_datos=new ContentValues(1);
+//                         *
+//                         * cv_datos.put("envio",TomaDeLecturas.ENVIADA);
+//                         *
+//                         * int j=db.update("lecturas", cv_datos, whereClause,
+//                         * whereArgs);
+//                         *
+//                         * closeDatabase();
+//                         */
+//                        // Marcar como enviada
+//                        mostrarMensaje(MENSAJE, (i + 1) + " "
+//                                + getString(R.string.de) + " " + bufferLenght
+//                                + " " + getString(R.string.registros) + ".\n"
+//                                + String.valueOf(porcentaje) + "%");
+//                        mostrarMensaje(BARRA, String.valueOf(1));
+//
+//                    }
+//                    serial.close();
+//
+//                    c.close();
 
-                    cantidad = c.getCount();
-
-                    serial.open(ls_servidor, ls_carpeta, ls_nombre_final,
-                            Serializacion.ESCRITURA, 0, 0, globales.getIdEmpleado(), "", 0, context);
-
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            pb_progress.setMax(cantidad);
-                        }
-                    });
-                    for (int i = 0; i < cantidad; i++) {
-                        context.stop();
-                        c.moveToPosition(i);
-
-                        // ls_cadena=generaCadenaAEnviar(c);
-                        // lby_cadenaEnBytes=ls_cadena.getBytes();
-
-                        // Ya tenemos los datos a enviar (que emocion!) asi que
-                        // hay que agregarlos a la cadena final
-
-                        lby_registro = c.getBlob(c.getColumnIndex("poliza"));
-
-                        // for (int j=0; j<lby_cadenaEnBytes.length;j++)
-                        // lby_registro[j+resources.getInteger(R.integer.POS_DATOS_TIPO_LECTURA)]=lby_cadenaEnBytes[j];
-
-                        // Escribimos los bytes en el archivo
-                        serial.write(new String(lby_registro) + "\r\n");
-
-                        String bufferLenght;
-                        int porcentaje = ((i + 1) * 100) / c.getCount();
-                        bufferLenght = String.valueOf(c.getCount());
-
-                        /*
-                         * openDatabase();
-                         *
-                         * String whereClause="secuencial=?"; String[]
-                         * whereArgs=
-                         * {String.valueOf(c.getLong(c.getColumnIndex("secuencial"
-                         * )))}; ContentValues cv_datos=new ContentValues(1);
-                         *
-                         * cv_datos.put("envio",TomaDeLecturas.ENVIADA);
-                         *
-                         * int j=db.update("lecturas", cv_datos, whereClause,
-                         * whereArgs);
-                         *
-                         * closeDatabase();
-                         */
-                        // Marcar como enviada
-                        mostrarMensaje(MENSAJE, (i + 1) + " "
-                                + getString(R.string.de) + " " + bufferLenght
-                                + " " + getString(R.string.registros) + ".\n"
-                                + String.valueOf(porcentaje) + "%");
-                        mostrarMensaje(BARRA, String.valueOf(1));
-
-                    }
-                    serial.close();
-
-                    c.close();
-
-                    // -------------------------------------------------
+                    // --------------------------------------------------------------------------
                     //  Enviar fotos
-                    // -------------------------------------------------
+                    // --------------------------------------------------------------------------
 
                     // Por ahora, sabemos que las fotos andan rotundamente mal,
                     // por ahora no envio nada
@@ -465,9 +477,9 @@ public class trasmisionDatos extends TransmisionesPadre {
                         if (fotoMgr == null)
                             fotoMgr = new FotosMgr();
 
-                        query = "SELECT F.secuencial, F.nombre, F.rowid, length(F.foto) imageSize, L.serieMedidor, F.idOrden ";
+                        query = "SELECT F.idFoto, F.secuencial, F.nombre, length(F.foto) imageSize, L.serieMedidor, F.idOrden ";
                         query += " FROM fotos F ";
-                        query += " LEFT JOIN ruta L ON F.idOrden = L.idOrden ";
+                        query += " LEFT JOIN (SELECT * FROM ruta R WHERE R.idOrden <> 0) L ON F.idOrden = L.idOrden ";
                         query += " WHERE F.envio=1";
 
                         c = db.rawQuery(query, null);
@@ -487,13 +499,16 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                         c.moveToFirst();
 
-                        for (int i = 0; i < c.getCount(); i++) {
+                        cantFotos = c.getCount();
+
+                        for (int i = 0; i < cantFotos; i++) {
                             context.stop();
 
                             try {
                                 nombreArchivo = Utils.getString(c, "nombre", "");
                                 serieMedidor = Utils.getString(c, "serieMedidor", "");
                                 idOrden = Utils.getLong(c, "idOrden", 0);
+                                idFoto = Utils.getInt(c, "idFoto", 0);
 
                                 String fecha = nombreArchivo.substring(nombreArchivo.length() - 18, nombreArchivo.length() - 10);
 
@@ -504,7 +519,7 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                                 // ls_cadena=generaCadenaAEnviar(c);
 
-                                image = fotoMgr.obtenerFoto(db, nombreArchivo, imageSize);
+                                image = fotoMgr.obtenerFoto(db, idFoto, imageSize);
 
                                 // ls_cadena=generaCadenaAEnviar(c);
                                 // serial.write(nombreArchivo, c.getBlob(c.getColumnIndex("foto")));
@@ -516,14 +531,14 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                                 enviarFoto(datosEnvio, image);
 
-                                String bufferLenght;
-                                int porcentaje = ((i + 1) * 100) / c.getCount();
-                                bufferLenght = String.valueOf(c.getCount());
+                                // String bufferLenght;
+                                int porcentaje = ((i + 1) * 100) / cantFotos;
+                                // bufferLenght = String.valueOf(c.getCount());
                                 //serial.close();
                                 // openDatabase();
 
-                                String whereClause = "rowid=?";
-                                String[] whereArgs = {Utils.getString(c, "rowid", "")};
+                                String whereClause = "idFoto=?";
+                                String[] whereArgs = {Utils.getString(c, "idFoto", "")};
 
 
                                 if (!transmitirTodo) {
@@ -531,14 +546,14 @@ public class trasmisionDatos extends TransmisionesPadre {
 //
 //								int j = db.update("fotos", cv_datos,
 //										whereClause, whereArgs);
-                                    db.execSQL("delete from fotos where rowid=?", whereArgs);
+                                    db.execSQL("delete from fotos where idFoto=?", whereArgs);
                                 }
                                 // closeDatabase();
                                 // Marcar como enviada
                                 c.moveToNext();
                                 mostrarMensaje(MENSAJE, (i + 1) + " "
                                         + getString(R.string.de) + " "
-                                        + bufferLenght + " "
+                                        + cantFotos + " "
                                         + getString(R.string.str_fotos) + ".\n"
                                         + String.valueOf(porcentaje) + "%");
                                 mostrarMensaje(BARRA, String.valueOf(1));
@@ -546,8 +561,6 @@ public class trasmisionDatos extends TransmisionesPadre {
                                 t.printStackTrace();
                             }
                         }
-
-
                     }
 
                     // mostrarMensaje(PROGRESO, "Mandando datos al servidor");
@@ -559,13 +572,29 @@ public class trasmisionDatos extends TransmisionesPadre {
                             getString(R.string.msj_trans_correcta),
                             getString(R.string.str_exportado)));
                     c.close();
+                } catch (AppUsuarioBloqueadoException eb) {
+                    globales.sesionEntity = null;
+                    mostrarMensaje("Alerta", getString(R.string.str_usuario_bloqueado), "", new DialogoMensaje.Resultado() {
+                        @Override
+                        public void Aceptar(boolean EsOk) {
+                            muere(true, getString(R.string.str_usuario_bloqueado));
+                        }
+                    });
                 } catch (Throwable e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    muere(true,
-                            String.format(getString(R.string.msj_trans_error),
-                                    getString(R.string.str_exportar_lowercase))
-                                    + e.getMessage());
+
+                    String msg;
+
+                    msg = String.format(getString(R.string.msj_trans_error),
+                            getString(R.string.str_exportar_lowercase)) + e.getMessage();
+
+                    mostrarMensaje("Alerta", msg, "", new DialogoMensaje.Resultado() {
+                        @Override
+                        public void Aceptar(boolean EsOk) {
+                            muere(true,msg);
+                        }
+                    });
                 } finally {
                     closeDatabase();
 
@@ -579,12 +608,12 @@ public class trasmisionDatos extends TransmisionesPadre {
         hilo.start();
     }
 
-    private void enviarDatos(String carpeta, String archivo, String datos) throws Exception {
+    private Boolean enviarDatos(String carpeta, String archivo, String datos) throws Exception {
         String ruta, cadenaAEnviar;
         String msg;
 
         if (datos.equals(""))
-            return;
+            return true;
 
         cadenaAEnviar = new String(datos);
 
@@ -594,14 +623,20 @@ public class trasmisionDatos extends TransmisionesPadre {
             req.NombreArchivo = archivo;
             req.Carpeta = carpeta;
             req.Datos = cadenaAEnviar;
+            req.idEmpleado = globales.getIdEmpleado();
 
             SubirDatosResponse resp = WebApiManager.getInstance(globales.getApplicationContext()).subirDatos(req);
 
             if (resp == null)
                 throw new Exception("Error al enviar datos al servidor. No se recibieron datos.");
 
-            if (resp.NumError != 0)
-                throw new Exception("Error al enviar datos al servidor (" + String.valueOf(resp.NumError) + ")");
+            if (resp.NumError == 1)
+                throw new Exception("Error al enviar datos al servidor (" + String.valueOf(resp.NumError) + "). " + resp.MensajeError);
+
+            if (resp.NumError == 2)
+                throw new Exception("No se recibieron los datos (" + String.valueOf(resp.NumError) + "). " + resp.MensajeError);
+
+            return resp.EsUsuarioValido;
         } catch (Throwable e) {
             throw new Exception("Error al enviar mensaje : " + e.getMessage());
         }
@@ -748,6 +783,10 @@ public class trasmisionDatos extends TransmisionesPadre {
                     if (resp == null) {
                         muere(true, "");
                         return;
+                    }
+
+                    if (!resp.EsUsuarioValido) {
+                        throw new AppUsuarioBloqueadoException();
                     }
 
                     if (resp.Contenido == null) {
@@ -922,7 +961,17 @@ public class trasmisionDatos extends TransmisionesPadre {
                     muere(true, String.format(
                             getString(R.string.msj_trans_correcta),
                             getString(R.string.str_importado)));
-                } catch (Throwable e) {
+                }
+                catch (AppUsuarioBloqueadoException eb){
+                    mostrarMensaje("Alerta", getString(R.string.str_usuario_bloqueado), "", new DialogoMensaje.Resultado() {
+                        @Override
+                        public void Aceptar(boolean EsOk) {
+                            globales.cerrarSesion();
+                            muere(true, getString(R.string.str_usuario_bloqueado));
+                        }
+                    });
+                }
+                catch (Throwable e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     // db.endTransaction();
@@ -938,18 +987,13 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                         e.printStackTrace();
                     }
-
                     closeDatabase();
-
                     // dialog.cancel();
                 }
-
             }
-
         };
 
         hilo.start();
-
     }
 
     public void recepcion2() {
@@ -1574,5 +1618,22 @@ public class trasmisionDatos extends TransmisionesPadre {
         }
 
         return ls_fecha;
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje, String detalleError, DialogoMensaje.Resultado resultado) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mDialogoMsg.setOnResultado(resultado);
+                mDialogoMsg.mostrarMensaje(titulo, mensaje, detalleError);
+            }
+        });
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
+            }
+        });
     }
 }

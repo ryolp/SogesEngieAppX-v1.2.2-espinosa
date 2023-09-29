@@ -108,6 +108,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         esconderTeclado();
         boolean permiteTomarFoto = true;
 
+        if (globales.sesionEntity == null) {
+            cerrarActivity();
+            return;
+        }
+
         switch (requestCode) {
             case FOTOS:
 
@@ -2326,6 +2331,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
         // TODO Auto-generated method stub
+
+        if (globales.sesionEntity == null) {
+            cerrarActivity();
+        }
+
         if (!globales.modoCaptura /* || globales.is_caseta.contains("CF") */) {
             permiteCerrar();
             try {
@@ -2721,6 +2731,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         Intent resultado = new Intent();
         resultado.putExtra("bHabilitarImpresion", this.bHabilitarImpresion);
         setResult(Activity.RESULT_OK, resultado);
+        //locationManager.removeUpdates(locationListener);
+        finish();
+    }
+
+    public void cerrarActivity() {
+        Intent resultado = new Intent();
+        resultado.putExtra("bHabilitarImpresion", this.bHabilitarImpresion);
+        setResult(Activity.RESULT_CANCELED, resultado);
         //locationManager.removeUpdates(locationListener);
         finish();
     }

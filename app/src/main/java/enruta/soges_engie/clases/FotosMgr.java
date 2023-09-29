@@ -12,15 +12,15 @@ public class FotosMgr extends BaseMgr {
     private SQLiteDatabase mDb;
     private final long MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
 
-    public byte[] obtenerFoto(SQLiteDatabase db, String nombreFoto, long imageSize) throws Exception
+    public byte[] obtenerFoto(SQLiteDatabase db, int idFoto, long imageSize) throws Exception
     {
         mDb = db;
 
         try {
             if (imageSize <= MAX_IMAGE_SIZE)
-                return obtenerFoto1(nombreFoto);        // Para guardar fotos menores a 2MB
+                return obtenerFoto1(idFoto);        // Para guardar fotos menores a 2MB
             else
-                return obtenerFoto2(nombreFoto, imageSize);        // Para guardar fotos mayores a 2MB, hacerlo por bloques
+                return obtenerFoto2(idFoto, imageSize);        // Para guardar fotos mayores a 2MB, hacerlo por bloques
         }
         catch (Exception e)
         {
@@ -28,7 +28,7 @@ public class FotosMgr extends BaseMgr {
         }
     }
 
-    private byte[] obtenerFoto1(String nombreFotoPadre) throws Exception
+    private byte[] obtenerFoto1(int idFoto) throws Exception
     {
         String query;
         Cursor cFoto = null;
@@ -38,7 +38,7 @@ public class FotosMgr extends BaseMgr {
         FileOutputStream fsFoto = null;
 
         try {
-            query = "Select nombre, foto from fotos where nombre = '" + nombreFotoPadre + "'";
+            query = "Select nombre, foto from fotos where idFoto = " + String.valueOf(idFoto);
             cFoto = mDb.rawQuery(query, null);
 
             while (cFoto.moveToNext()) {
@@ -61,9 +61,10 @@ public class FotosMgr extends BaseMgr {
         }
     }
 
-    private byte[] obtenerFoto2(String nombreFoto, long imageSize) throws Exception
+    private byte[] obtenerFoto2(int idFoto, long imageSize) throws Exception
     {
         String query;
+        String nombreFoto;
         Cursor cFoto = null;
         File archivoFoto = null;
         byte[] image = null;
@@ -87,7 +88,8 @@ public class FotosMgr extends BaseMgr {
                 else
                     sizeToCopy = actualImageSize;
 
-                query = "Select nombre, substr(foto," + String.valueOf(idx) + ","+ String.valueOf(sizeToCopy)+"  ) fotoParcial from fotos where nombre = '" + nombreFoto + "'";
+                query = "Select idFoto, nombre, substr(foto," + String.valueOf(idx) + ","+ String.valueOf(sizeToCopy)+"  ) fotoParcial "
+                        + " from fotos where idFoto = " + String.valueOf(idFoto);
                 cFoto = mDb.rawQuery(query, null);
 
                 while (cFoto.moveToNext()) {

@@ -304,6 +304,24 @@ public class Globales extends Application {
 		usuario = s;
 
 	}
+
+	public SesionEntity getSesionEntity() {
+		return sesionEntity;
+	}
+
+	public boolean esSesionValida() {
+		if (sesionEntity == null)
+			return false;
+
+		if (sesionEntity.esSesionVencida())
+			return false;
+		else
+			return true;
+	}
+
+	public void cerrarSesion() {
+		sesionEntity = null;
+	}
 	  
 	  
 	  public String traducirAnomalia(){

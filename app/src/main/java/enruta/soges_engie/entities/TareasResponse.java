@@ -8,6 +8,7 @@ public class TareasResponse {
     public String Mensaje="";
     public String  MensajeError ="";
     public long idTarea = 0;
+    public boolean EsUsuarioValido = false;
     public List<String> Contenido=null;
     public List<String> Contenido2=null;
 }

@@ -305,5 +305,6 @@
     <string name="str_m_borrarEstadisticas">Borrar Estadísticas</string>
     <string name="str_ejemplo">Ejemplo</string>
     <string name="str_alerta">Alerta</string>
+    <string name="str_usuario_bloqueado">Usuario bloqueado</string>
 
 </resources>

@@ -767,6 +767,11 @@ public class Main extends FragmentActivity implements TabListener {
         Bundle bu_params;
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        if (globales.sesionEntity == null) {
+            cerrarSesion();
+            return;
+        }
+
         switch (requestCode) {
             case EXPORTAR:
                 if (data == null) {
@@ -878,7 +883,9 @@ public class Main extends FragmentActivity implements TabListener {
             case FOTO_CHECK_SEGURIDAD:
                 procesarFotoCheckSeguridad(requestCode, resultCode, data);
                 break;
-//			case TRANSMISION:
+			case TRANSMISION:
+
+
 //				//Actualizamos el secuencial Actual
 //				globales.tll.getLecturaActual().corregirSecuenciaReal();
 //				break;

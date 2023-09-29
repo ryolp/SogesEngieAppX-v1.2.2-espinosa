@@ -207,7 +207,8 @@ public class DBHelper extends SQLiteOpenHelper {
 		//Usuarios
 		db.execSQL("CREATE TABLE usuarios (usuario , contrasena , nombre, rol default 1, fotosControlCalidad default 1, baremo default 75)");
 		//fotos
-		db.execSQL("CREATE TABLE fotos (secuencial, nombre , foto, envio default 1, temporal, idArchivo default 0, idTarea default 0, idOrden default 0)");
+		db.execSQL("CREATE TABLE fotos (idFoto INTEGER PRIMARY KEY, secuencial, nombre , foto, envio default 1, temporal, "
+				+ " idArchivo default 0, idTarea default 0, idOrden default 0, fecha default '')");
 		//Encabezado
 		db.execSQL("CREATE TABLE encabezado (cpl , centro , lote , descargada, lecturista, registro, ultimoSeleccionado default 0)");
 		//Configuraciones globales y extras
@@ -215,7 +216,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		//Configuraciones globales y extras
 		db.execSQL("CREATE TABLE usoAnomalias (anomalia, veces default 0, fecha )");
 		
-		db.execSQL("CREATE TABLE rutaGPS (id INTEGER PRIMARY KEY,latitud, longitud, PTN, fecha, tipo)");
+		db.execSQL("CREATE TABLE rutaGPS (id INTEGER PRIMARY KEY, latitud, longitud, PTN, fecha, tipo)");
 	}
 
 	@Override
