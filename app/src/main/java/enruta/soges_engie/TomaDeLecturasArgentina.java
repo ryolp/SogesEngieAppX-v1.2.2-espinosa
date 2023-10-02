@@ -96,7 +96,7 @@ public class TomaDeLecturasArgentina extends TomaDeLecturasGenerica {
 		mj_anomalia_seis=new MensajeEspecial("Seleccione", respuesta, ANOMALIA_SEIS);
 		mj_anomalia_seis.cancelable=false;
 		
-		mj_habitado = new MensajeEspecial("¿Esta habitado?", TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO);
+		mj_habitado = new MensajeEspecial("¿Esta el cliente presente?", TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO);
 		mj_registro = new MensajeEspecial("¿Tiene Registro?", TomaDeLecturasGenerica.PREGUNTAS_TIENE_REGISTRO);
 		globales.logo=R.drawable.mexicana;
 		

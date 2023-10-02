@@ -84,5 +84,11 @@
         android:id="@+id/m_cierreForzado"
         android:title="Cierre Forzado"></item>
 
+    <item
+        android:id="@+id/m_VerMapaDeTodos"
+        android:icon="@drawable/ic_scanner_24"
+        android:orderInCategory="22"
+        android:showAsAction="never"
+        android:title="@string/str_ver_mapa_de_todos"/>
 
 </menu>

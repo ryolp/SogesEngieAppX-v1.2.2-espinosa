@@ -47,7 +47,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
     //int versionAnom=0;
 
-    public TomaDeLecturasEngie(Context context) {
+     public TomaDeLecturasEngie(Context context) {
         super(context);
         long_registro = 649;
 
@@ -68,7 +68,9 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
         mj_sellos = new MensajeEspecial("¿Tiene Sellos?", respuesta, PREGUNTAS_EN_EJECUCION);
 
-        respuesta = new Vector<Respuesta>();
+//*********************************************************************************************
+// CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el Material Utilizado
+/*        respuesta = new Vector<Respuesta>();
         respuesta.add(new Respuesta("4J", "J-Sin Servicio"));
         respuesta.add(new Respuesta("4O", "O-No usan gas"));
         respuesta.add(new Respuesta("4P", "P-Refaccion"));
@@ -76,7 +78,16 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         respuesta.add(new Respuesta("4U", "U-Desocupado"));
         respuesta.add(new Respuesta("4X", "X-Cerrado Vacaciones"));
         mj_consumocero = new MensajeEspecial("Consumo Cero. Seleccione una de las opciones", respuesta, PREGUNTAS_CONSUMO_CERO);
+        mj_consumocero.cancelable = false;*/
+
+        respuesta = new Vector<Respuesta>();
+        respuesta.add(new Respuesta("JC", "J-Junta Ciega"));
+        respuesta.add(new Respuesta("EX", "X-Expander"));
+        respuesta.add(new Respuesta("SR", "S-Sello Rojo"));
+        respuesta.add(new Respuesta("TP", "T-Tapón"));
+        mj_consumocero = new MensajeEspecial("Material Utilizado. Seleccione el material utilizado", respuesta, PREGUNTAS_CONSUMO_CERO);
         mj_consumocero.cancelable = false;
+//*********************************************************************************************
 
 
         respuesta = new Vector<Respuesta>();
@@ -95,14 +106,14 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         mj_anomalia_seis = new MensajeEspecial("Seleccione", respuesta, ANOMALIA_SEIS);
         mj_anomalia_seis.cancelable = false;
 
-        mj_habitado = new MensajeEspecial("¿Esta habitado?", TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO);
-        mj_registro = new MensajeEspecial("¿Tiene Registro?", TomaDeLecturasGenerica.PREGUNTAS_TIENE_REGISTRO);
+        mj_habitado = new MensajeEspecial("¿Esta el cliente presente?", TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO);
+        mj_registro = new MensajeEspecial("¿Tiene válvula?", TomaDeLecturasGenerica.PREGUNTAS_TIENE_REGISTRO);
         globales.logo = R.drawable.logo_engie;
 
         globales.GPS = true;
 
         globales.multiplesAnomalias = false;
-        globales.convertirAnomalias = false;
+        globales.convertirAnomalias = true;
 
         globales.longitudCodigoAnomalia = 2;
         globales.longitudCodigoSubAnomalia = 2;
@@ -181,7 +192,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         agregarAnomalias();
     }
 
-    private void agregarAnomalias() {
+    private void agregarAnomaliasMexicana() {
         // TODO Auto-generated method stub
         //Agregaremos las anomalias
         openDatabase();
@@ -264,6 +275,51 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         closeDatabase();
     }
 
+    private void agregarAnomalias() {
+        // TODO Auto-generated method stub
+        //Agregaremos las anomalias
+        openDatabase();
+        ContentValues cv_anom = new ContentValues();
+
+        db.execSQL("Delete from Anomalia");
+        agregarAnomalia(db, "1", "1 - Sin efectos ", 0, 0, "D");
+        agregarAnomalia(db, "2", "2 - Limitación de producción ", 0, 0, "D");
+        agregarAnomalia(db, "3", "3 - Parada de la producción ", 0, 0, "D");
+        agregarAnomalia(db, "4", "B - Reja Perimetral ", 1, 1);
+        agregarAnomalia(db, "5", "C - Medidor interno  ", 1, 1);
+        agregarAnomalia(db, "7", "D - Cliente no permitió. Cliente agresivo ", 1, 1);
+        agregarAnomalia(db, "8", "E - Cliente se reabre el servicio ", 1, 0, "I");
+        agregarAnomalia(db, "9", "F - Retiro de válvula o regulador ", 1, 1);
+        agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1);
+        agregarAnomalia(db, "11", "H - Dirección incorrecta del servicio ", 1, 1);
+        agregarAnomalia(db, "12", "I - Condición insegura ", 1, 1);
+        agregarAnomalia(db, "14", "J - No usuario ", 1, 0, "I");
+        agregarAnomalia(db, "15", "K - Faltante de tubería ", 1, 1, "I");
+        agregarAnomalia(db, "16", "L - Duplicada ", 0, 0, "D");
+        agregarAnomalia(db, "17", "M - Medidor enrejado ", 1, 1);
+        agregarAnomalia(db, "18", "N - No enviada a campo ", 0, 0, "D");
+        agregarAnomalia(db, "19", "O - Toma compartida ", 1, 1);
+        agregarAnomalia(db, "20", "R - Zona de riesgo ", 1, 1);
+        agregarAnomalia(db, "21", "S - Sin válvula ", 1, 1);
+        agregarAnomalia(db, "22", "V - Vigilancia no permite ", 1, 1);
+        agregarAnomalia(db, "23", "X - Órdenes erróneas ", 0, 0, "D");
+        agregarAnomalia(db, "24", "Z - Otro ", 1, 1);
+        agregarAnomalia(db, "99", "Texto libre", 1, 1, "D");
+
+        db.execSQL("Delete from codigosEjecucion");
+        agregarCodigoEjecucion(db, "10", "Cortado");
+        agregarCodigoEjecucion(db, "20", "Cliente Presentó Pago ");
+        agregarCodigoEjecucion(db, "30", "No se Realizó El Corte");
+        agregarCodigoEjecucion(db, "40", "No Localizado ", 0);
+        agregarCodigoEjecucion(db, "50", "No Visitado", 0);
+        agregarCodigoEjecucion(db, "60", "Reconexión Realizada");
+        agregarCodigoEjecucion(db, "70", "No se Realizó la Reconexión");
+        agregarCodigoEjecucion(db, "80", "Cliente Autoreconectado");
+        agregarCodigoEjecucion(db, "90", "Remoción Realizada");
+
+        closeDatabase();
+    }
+
     public void agregarAnomalia(SQLiteDatabase db, String anomalia, String desc) {
         agregarAnomalia(db, anomalia, desc, 1, 1);
     }
@@ -275,7 +331,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", 0);
+        cv_params.put("conv", desc.substring(0,1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -297,7 +353,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", 0);
+        cv_params.put("conv", desc.substring(0,1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -323,7 +379,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", 0);
+        cv_params.put("conv", desc.substring(0,1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -1012,6 +1068,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         // TODO Auto-generated method stub
         //Hay que convertirla a entero
 
+//*************************************************************************
+// CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el material utilizado. Siempre debe pedirlo
+        if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO002"))
+            return mj_consumocero;
+        return null;
+/*
         //Vamos a realizar una prueba... no se los estados del suministro, asi que si es par es 0 y non 4
         String estadoDelSuministro = globales.tll.getLecturaActual().estadoDelSuministro;
 
@@ -1027,7 +1089,8 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             //Si es la misma o menor... quiere decir que no hubo un consumo
             return mj_consumocero;
         }
-        return null;
+        return null;*/
+//*************************************************************************
     }
 
     @Override
@@ -1049,14 +1112,19 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 }
                 break;
             case PREGUNTAS_CONSUMO_CERO:
+//**********************************************************
+// CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el Material Utilizado
+/*
                 //Borramos la anomalia y la sub
+
                 globales.tll.getLecturaActual().deleteAnomalia(me.regresaValor(respuesta).substring(0, 1));
                 //Agregamos
                 cambiosAnomaliaAntesDeGuardar(globales.is_lectura);
                 globales.tll.getLecturaActual().setAnomalia(me.regresaValor(respuesta).substring(0, 1));
                 globales.tll.getLecturaActual().setSubAnomalia(me.regresaValor(respuesta));
 
-                globales.is_presion = globales.tll.getLecturaActual().getAnomalia();
+                globales.is_presion = globales.tll.getLecturaActual().getAnomalia();*/
+//**********************************************************
                 break;
             case PREGUNTAS_EN_EJECUCION:
                 break;
@@ -1492,8 +1560,18 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 break;
 
             case BuscarMedidorTabsPagerAdapter.DIRECCION:
-                ls_preview += "IC:" + lectura.poliza + "<br>";
-                ls_preview += lectura.is_comollegar1 + "<br>";
+                if (lectura.is_tipoDeOrden.equals("TO002"))
+                    ls_preview += "DESCONEXION" + "<br>";
+                if (lectura.is_tipoDeOrden.equals("TO003"))
+                    ls_preview += "RECONEXION" + "<br>";
+                if (lectura.is_tipoDeOrden.equals("TO004"))
+                    ls_preview += "REC/REMO" + "<br>";
+                if (lectura.is_tipoDeOrden.equals("TO005"))
+                    ls_preview += "REMOCION" + "<br>";
+
+                ls_preview += "IC:  " + lectura.poliza + "<br>";
+                ls_preview += "Medidor:  " + lectura.is_serieMedidor + "<br>";
+//                ls_preview += lectura.is_comollegar1 + "<br>";
                 if (!lectura.getColonia().equals(""))
                     ls_preview += "<br>"
                             + Lectura.marcarTexto(lectura.getColonia(), textoBuscado, true);

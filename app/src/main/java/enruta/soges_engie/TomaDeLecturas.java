@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -2262,11 +2263,56 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             case R.id.m_SolicitarAyuda:
                 solicitarEmergencia();
                 break;
+            case R.id.m_MostrarUbicacionGPS:
+                mostrarUbicacionGPS();
+                break;
         }
 
         if (Build.VERSION.SDK_INT >= 11)
             invalidateOptionsMenu();
         return true;
+    }
+
+    private void mostrarUbicacionGPS() {
+        Lectura lectura;
+        String miLatitud = "";
+        String miLongitud = "";
+        String serieMedidor = "";
+        String uri = "";
+
+        try {
+            if (globales == null)
+                return;
+
+            if (globales.tll == null)
+                return;
+
+            lectura = globales.tll.getLecturaActual();
+
+            if (lectura == null)
+                return;
+
+// CE, 01/10/23, Vamos a poner fijo la Geoposicion hasta que nos llegue del servidor
+//            miLatitud = lectura.getMiLatitud();
+//            miLongitud = lectura.getMiLongitud();
+            miLatitud = "25.696515021213962";
+            miLongitud = "-100.34119561673539";
+
+            if (miLatitud.trim().equals("") || miLongitud.trim().equals(""))
+                return;
+
+            serieMedidor = lectura.getSerieMedidor();
+
+            //uri = "https://maps.google.com/maps/@?api=1&map_action=map&center=" + miLatitud + "," + miLongitud + "&zoom=20";
+
+            uri = "geo:" + miLatitud + "," + miLongitud + "?q=" + miLatitud + "," + miLongitud + "(" + serieMedidor + ")&z=24";
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setPackage("com.google.android.apps.maps");
+            this.startActivity(intent);
+        } catch (Throwable t) {
+            Utils.showMessageLong(this, t.getMessage());
+        }
     }
 
     public void setModoModificacion() {
@@ -3378,7 +3424,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 ////		tv_caseta.setVisibility(View.VISIBLE);
 //		setStyleDatosVistos();
 //		this.tomarFoto(99, 1);
-        } else if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO) {
+
+// *************************************************************
+// CE, 01/10/23, Vamos a quitar la segunda pregunta
+/*        } else if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO) {
             preguntaSiNo(globales.tdlg.mj_registro);
             openDatabase();
             db.execSQL("update ruta set habitado=" + respuesta + " where secuenciaReal=" + globales.il_lect_act);
@@ -3389,7 +3438,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             openDatabase();
             db.execSQL("update ruta set registro=" + respuesta + " where secuenciaReal=" + globales.il_lect_act);
             closeDatabase();
+            this.tomarFoto(99, 1);*/
+        } else if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO) {
+            puedeVerDatosAlRegresar = true;
+            globales.puedoCancelarFotos = true;
+            openDatabase();
+            db.execSQL("update ruta set habitado=" + respuesta + " where secuenciaReal=" + globales.il_lect_act);
+            closeDatabase();
             this.tomarFoto(99, 1);
+// *************************************************************
         } else {
             preguntaSiBorraDatos = true;
             guardarRespuestaDialog(respuesta);

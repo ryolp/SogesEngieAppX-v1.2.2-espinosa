@@ -384,7 +384,7 @@
 	            android:lines="1"
 	            android:marqueeRepeatLimit="marquee_forever"
 	            android:scrollHorizontally="true"
-	            android:text="A:"
+	            android:text="R:"
 	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textColor="@color/white"
 	            android:textSize="43sp" />

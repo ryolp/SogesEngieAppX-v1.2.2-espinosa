@@ -247,6 +247,7 @@ public class Globales extends Application {
 
 	public int maxIntentosAutenticacion = 3;
 
+	boolean habilitarPuntoDecimal = true;
 
 	 Timer supervisor;
 

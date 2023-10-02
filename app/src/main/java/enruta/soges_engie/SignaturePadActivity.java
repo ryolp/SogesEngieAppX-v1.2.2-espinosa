@@ -35,6 +35,10 @@ public class SignaturePadActivity extends Activity {
     private SignaturePad mSignaturePad;
     private Button mClearButton;
     private Button mSaveButton;
+    private Button mSaveButton2;
+    private Button mSaveButton3;
+    private Button mSaveButton4;
+    private Button mSaveButton5;
 
     private ContentValues cv_datos;
     private long secuencial;
@@ -77,18 +81,30 @@ public class SignaturePadActivity extends Activity {
                 @Override
                 public void onSigned() {
                     mSaveButton.setEnabled(true);
+                    mSaveButton2.setEnabled(true);
+                    mSaveButton3.setEnabled(true);
+                    mSaveButton4.setEnabled(true);
+                    mSaveButton5.setEnabled(true);
                     mClearButton.setEnabled(true);
                 }
 
                 @Override
                 public void onClear() {
                     mSaveButton.setEnabled(false);
+                    mSaveButton2.setEnabled(false);
+                    mSaveButton3.setEnabled(false);
+                    mSaveButton4.setEnabled(false);
+                    mSaveButton5.setEnabled(false);
                     mClearButton.setEnabled(false);
                 }
             });
 
-            mClearButton = (Button) findViewById(R.id.clear_button);
             mSaveButton = (Button) findViewById(R.id.save_button);
+            mSaveButton2 = (Button) findViewById(R.id.save_button2);
+            mSaveButton3 = (Button) findViewById(R.id.save_button3);
+            mSaveButton4 = (Button) findViewById(R.id.save_button4);
+            mSaveButton5 = (Button) findViewById(R.id.save_button5);
+            mClearButton = (Button) findViewById(R.id.clear_button);
 
             mClearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,19 +144,128 @@ public class SignaturePadActivity extends Activity {
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }
-
-//                if (addJpgSignatureToGallery(signatureBitmap)) {
-//                    Toast.makeText(SignaturePadActivity.this, "Se guardo la firma en la galeria de fotos", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(SignaturePadActivity.this, "No se pudo guardar la firma", Toast.LENGTH_SHORT).show();
-//                }
-//                if (addSvgSignatureToGallery(mSignaturePad.getSignatureSvg())) {
-//                    Toast.makeText(SignaturePadActivity.this, "SVG Signature saved into the Gallery", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(SignaturePadActivity.this, "Unable to store the SVG signature", Toast.LENGTH_SHORT).show();
-//                }
                 }
-            });
+                                           });
+
+            mSaveButton2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                            byte[] firmaAGuardar = out.toByteArray();
+                            long idFoto;
+
+                            cv_datos = new ContentValues(4);
+                            cv_datos.put("secuencial", secuencial);
+                            cv_datos.put("nombre", ls_nombre);
+                            cv_datos.put("foto", firmaAGuardar);
+                            cv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
+                            cv_datos.put("temporal", temporal);
+                            cv_datos.put("idOrden", idOrden);
+
+                            DBHelper dbHelper = new DBHelper(thisIsMe);
+                            SQLiteDatabase db = dbHelper.getReadableDatabase();
+                            idFoto = db.insertOrThrow("fotos", null, cv_datos);
+                            db.close();
+                            dbHelper.close();
+                            thisIsMe.finish();
+                        } catch (Throwable t) {
+                            t.printStackTrace();
+                        }
+                    }
+                });
+
+                    mSaveButton3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
+                                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                                byte[] firmaAGuardar = out.toByteArray();
+                                long idFoto;
+
+                                cv_datos = new ContentValues(4);
+                                cv_datos.put("secuencial", secuencial);
+                                cv_datos.put("nombre", ls_nombre);
+                                cv_datos.put("foto", firmaAGuardar);
+                                cv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
+                                cv_datos.put("temporal", temporal);
+                                cv_datos.put("idOrden", idOrden);
+
+                                DBHelper dbHelper = new DBHelper(thisIsMe);
+                                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                                idFoto = db.insertOrThrow("fotos", null, cv_datos);
+                                db.close();
+                                dbHelper.close();
+                                thisIsMe.finish();
+                            } catch (Throwable t) {
+                                t.printStackTrace();
+                            }
+                        }
+                });
+
+                                    mSaveButton4.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+                                    Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
+                                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                    signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                                    byte[] firmaAGuardar = out.toByteArray();
+                                    long idFoto;
+
+                                    cv_datos = new ContentValues(4);
+                                    cv_datos.put("secuencial", secuencial);
+                                    cv_datos.put("nombre", ls_nombre);
+                                    cv_datos.put("foto", firmaAGuardar);
+                                    cv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
+                                    cv_datos.put("temporal", temporal);
+                                    cv_datos.put("idOrden", idOrden);
+
+                                    DBHelper dbHelper = new DBHelper(thisIsMe);
+                                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                                    idFoto = db.insertOrThrow("fotos", null, cv_datos);
+                                    db.close();
+                                    dbHelper.close();
+                                    thisIsMe.finish();
+                                } catch (Throwable t) {
+                                    t.printStackTrace();
+                                }
+                            }
+                });
+
+                            mSaveButton5.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
+                                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                        signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                                        byte[] firmaAGuardar = out.toByteArray();
+                                        long idFoto;
+
+                                        cv_datos = new ContentValues(4);
+                                        cv_datos.put("secuencial", secuencial);
+                                        cv_datos.put("nombre", ls_nombre);
+                                        cv_datos.put("foto", firmaAGuardar);
+                                        cv_datos.put("envio", TomaDeLecturas.NO_ENVIADA);
+                                        cv_datos.put("temporal", temporal);
+                                        cv_datos.put("idOrden", idOrden);
+
+                                        DBHelper dbHelper = new DBHelper(thisIsMe);
+                                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+                                        idFoto = db.insertOrThrow("fotos", null, cv_datos);
+                                        db.close();
+                                        dbHelper.close();
+                                        thisIsMe.finish();
+                                    } catch (Throwable t) {
+                                        t.printStackTrace();
+                                    }
+                                }
+                });
 
             mInicializado = true;
         } catch (Throwable t) {

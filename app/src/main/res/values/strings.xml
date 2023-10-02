@@ -22,7 +22,7 @@
     <string name="cancelar">Cancelar</string>
     <string name="guardar">Grabar</string>
     <string name="capturar">Capturar</string>
-    <string name="str_lectura">Ejecutar</string>
+    <string name="str_lectura">EFECTIVA</string>
     <string name="str_presion">Presión</string>
     <string name="str_lectura_verifique">VERIFIQUE Lectura:</string>
     <string name="str_presion_verifique">VERIFIQUE Presión:</string>
@@ -94,6 +94,8 @@
     <string name="str_contrasena">Contraseña:</string>
     <string name="lbl_entrar">Entrar</string>
 
+    <string name="str_mostrar_ubicacion_gps">Ubicación medidor (GPS)</string>
+    <string name="str_ver_mapa_de_todos">Mapa de la Ruta</string>
     <string-array name="Modo">
         <item>Normal</item>
         <item>Corrección</item>
@@ -109,7 +111,7 @@
     <string name="str_lbl_medidor">Medidor</string>
     <string name="str_marca">Marca</string>
     <string name="str_nis">NIS</string>
-    <string name="str_anomalia">Anomalia</string>
+    <string name="str_anomalia">NO EFECTIVA</string>
     <string name="str_subanomalia">Subanomalia</string>
     <string name="str_buscar">Buscar</string>
     <string name="str_buscar_lowercase">buscar</string>
@@ -216,6 +218,10 @@
     <string name="msj_main_fotos_tomadas">"Fotos Tomadas"</string>
     <string name="msj_main_no_registrados">"No Registrados"</string>
 
+    <string name="msj_main_engie_desconexiones">"Desconexiones"</string>
+    <string name="msj_main_engie_reconexiones">"Reconexiones"</string>
+    <string name="msj_main_engie_remociones">"Remociones"</string>
+    <string name="msj_main_engie_recremos">"Rec/Remos"</string>
     <string name="msj_main_no_hay_itinerarios">"No hay ordenes cargadas"</string>
 
     <string name="msj_no_registrados_num_serie">"Número de Serie"</string>
@@ -231,8 +237,8 @@
     <string name="msj_anomalias_borrada">La anomalia ha sido borrada</string>
     <string name="msj_anomalias_error_borrado">Ocurrio un error al borrar, la anomalia no ha sido borrada</string>
 
-    <string name="lbl_tdl_indica_lectura">E:</string>
-    <string name="lbl_tdl_indica_anomalia">A:</string>
+    <string name="lbl_tdl_indica_lectura">L:</string>
+    <string name="lbl_tdl_indica_anomalia">R:</string>
     <string name="lbl_tdl_indica_medidor">IC:</string>
     <string name="lbl_tdl_repetirAnomalia">Repetir Aviso</string>
 

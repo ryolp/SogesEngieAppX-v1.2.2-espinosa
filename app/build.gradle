@@ -15,7 +15,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             debuggable true
-            buildConfigField "String", 'BASE_URL', '"http://192.168.2.123:8182"'
+            buildConfigField "String", 'BASE_URL', '"http://192.168.3.111:8182"'
         }
         staging {
             initWith debug

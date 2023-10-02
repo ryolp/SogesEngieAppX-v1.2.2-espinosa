@@ -42,6 +42,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -753,6 +754,9 @@ public class Main extends FragmentActivity implements TabListener {
                 case R.id.m_probarCamara:
                     probarCamara();
                     break;
+                case R.id.m_VerMapaDeTodos:
+                    verMapaDeTodos();
+                    break;
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -762,6 +766,31 @@ public class Main extends FragmentActivity implements TabListener {
         return true;
     }
 
+    private void verMapaDeTodos() {
+        Lectura lectura;
+        String miLatitud = "";
+        String miLongitud = "";
+        String uri = "";
+
+        try {
+// CE, 01/10/23, Vamos a poner fijo la Geoposicion hasta que nos llegue del servidor
+//            miLatitud = lectura.getMiLatitud();
+//            miLongitud = lectura.getMiLongitud();
+            miLatitud = "25.696515021213962";
+            miLongitud = "-100.34119561673539";
+
+            if (miLatitud.trim().equals("") || miLongitud.trim().equals(""))
+                return;
+
+            uri = "geo:" + miLatitud + "," + miLongitud + "?q=" + miLatitud + "," + miLongitud + "(MapaDeLaRuta)&z=24";
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setPackage("com.google.android.apps.maps");
+            this.startActivity(intent);
+        } catch (Throwable t) {
+            Utils.showMessageLong(this, t.getMessage());
+        }
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle bu_params;

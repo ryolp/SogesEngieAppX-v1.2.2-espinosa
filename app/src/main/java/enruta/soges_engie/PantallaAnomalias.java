@@ -35,10 +35,7 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 	String is_lectura="";
 	
 	boolean tieneMensaje=false;
-	
-	
-	
-	
+
 	String is_anomaliaSelec="", is_subAnomSelect="", is_comentarios="", is_desc="";
 	Cursor c;
 	
@@ -51,9 +48,6 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 	private PantallaAnomaliasTabsPagerAdapter mAdapter;
 	
 	int ii_vp_height=0, ii_vp_width=0;
-	
-//	EditText li_anomalia;
-//	TextView tv_label;
 	
 	Globales globales;
 	
@@ -72,8 +66,6 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
         actionBar = getActionBar();
         mAdapter = new PantallaAnomaliasTabsPagerAdapter(getSupportFragmentManager());
         
-        
-        
         int li_tabSelected=ii_lastSelectedTab;
         
         final PantallaAnomalias pa= this;
@@ -86,7 +78,6 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 		}catch(Throwable e){
 			
 		}
-		
 		is_anomalia=bu_params.getString("anomalia");
 		
 		//Tenemos que verificar si tenemos ya seleccionada una anomalia, si ya hay una debemos mostrar la pagina de todas.
@@ -113,10 +104,8 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 		
 		//li_tabSelected=ii_lastSelectedTab;
         
-        
         ViewTreeObserver vto = viewPager.getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-
 			
 			@Override
 			public void onGlobalLayout() {
@@ -141,36 +130,11 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 		        	}
 		            i++;
 		        }
-		        
-		        
-				
 				ViewTreeObserver obs = viewPager.getViewTreeObserver();
-
-				// if (Build.VERSION.SDK_INT >=
-				// Build.VERSION_CODES.JELLY_BEAN) {
-				// obs.removeOnGlobalLayoutListener(this);
-				// } else {
-
 				obs.removeGlobalOnLayoutListener(this);
-				// }
 			}
-
 		});
         
-        
-//        viewPager.setAdapter(mAdapter);
-//        actionBar.setHomeButtonEnabled(false);
-//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
-// 
-//        actionBar.removeAllTabs();
-//        // Adding Tabs
-//        for (String tab_name : tabs) {
-//            actionBar.addTab(actionBar.newTab().setText(tab_name)
-//                    .setTabListener(this).setTag(tabs));
-//        }
-		
-		
-		
 		viewPager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
@@ -182,17 +146,9 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
                         globales.ultimaPestanaAnomaliasUsada=ii_lastSelectedTab;
                     }
                 });
-		
-		
-		
 		ii_lastSelectedTab=li_tabSelected;
-		
 		//actionBar.setSelectedNavigationItem(li_tabSelected);
         //viewPager.setCurrentItem(li_tabSelected);
-
-
-        
-        
 	}
 	
 	public void mandarAnomalia(){
@@ -203,8 +159,7 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 			longAnomalia=this.getResources().getInteger(R.integer.ANOM_LONG_CONV);
 		else
 			longAnomalia=globales.tlc.getLongCampo("anomalia");
-		
-		
+
 		String ls_anomalia= is_anomaliaSelec;//Main.rellenaString(is_anomaliaSelec, "0", longAnomalia, true);
 		
 		intent.putExtra("anomalia", is_anomaliaSelec);
@@ -217,18 +172,13 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 		//Primero verificamos si ya tiene un registro en usoAnomalias
 		Cursor c;
 		c= db.rawQuery("Select count(*) canti from usoAnomalias where anomalia='"+ls_anomalia+"'" , null);
-		
 		c.moveToFirst();
-		
 		if (c.getInt(c.getColumnIndex("canti"))>0)
 			db.execSQL("update usoAnomalias set veces=veces + 1, fecha='" + Main.obtieneFecha("ymdhis")+"' where anomalia='"+ls_anomalia+"'");
 		else
 			db.execSQL("insert into usoAnomalias(anomalia, veces, fecha) values('"+ls_anomalia+"', 1, '" + Main.obtieneFecha("ymdhis")+"' )");
-		
 		closeDatabase();
-		
 		setResult(Activity.RESULT_OK, intent);
-		
 		this.finish();
 	}
 	
@@ -242,22 +192,16 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 		case TomaDeLecturas.COMENTARIOS:
 			if (resultCode == Activity.RESULT_OK){
 				bu_params =data.getExtras();
-				
 				if (is_subAnomSelect.equals("")){
 					globales.tdlg.regresaDeCamposGenericos(bu_params, is_anomaliaSelec);
 					globales.tdlg.RealizarModificacionesDeAnomalia(is_anomaliaSelec, bu_params.getString("input"));
 					//globales.tdlg.RealizarModificacionesDeAnomalia(is_anomaliaSelec);
 				}
-					
 				else{
 					globales.tdlg.regresaDeCamposGenericos(bu_params, is_subAnomSelect);
 					globales.tdlg.RealizarModificacionesDeAnomalia(is_subAnomSelect, bu_params.getString("input"));
 					
 				}
-					
-				
-				
-				
 				//is_comentarios=bu_params.getString("input");
 				 mandarAnomalia();
 			}
@@ -272,9 +216,7 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 					else{
 						page.reinicializaTAB();
 					}
-					
 			     }
-				
 			}
 			break;
 		case TomaDeLecturas.INPUT_CAMPOS_GENERICO:
@@ -284,7 +226,6 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 					globales.tdlg.regresaDeCamposGenericos(bu_params, is_anomaliaSelec);
 					globales.tdlg.RealizarModificacionesDeAnomalia(is_anomaliaSelec, bu_params.getString("input"));
 				}
-					
 				else{
 					globales.tdlg.regresaDeCamposGenericos(bu_params, is_subAnomSelect);
 					globales.tdlg.RealizarModificacionesDeAnomalia(is_subAnomSelect, bu_params.getString("input"));
@@ -302,17 +243,12 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 				else{
 					page.reinicializaTAB();
 				}
-				
 		     }
-			
 		}
-			
 			break;
 		}
 	}
-	
-	
-	
+
 //	public void esconderTeclado() {
 //		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //		mgr.hideSoftInputFromWindow(li_anomalia.getWindowToken(), 0);
@@ -325,7 +261,6 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
 		switch (item.getItemId()) {
 			case R.id.m_borrarAnom:
 				if (globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size()>1){
@@ -376,9 +311,7 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 //				
 //			break;
 		}
-		
 		return true;
-		
 	}
 	
 public void anomaliasABorrar(MensajeEspecial me){
@@ -399,8 +332,7 @@ public void anomaliasABorrar(MensajeEspecial me){
 						});
 		builder.show();
 	}
-	
-	
+
 	public void borrarAnomalia(){
 		Intent intent= new Intent();
 		
@@ -429,8 +361,6 @@ public void anomaliasABorrar(MensajeEspecial me){
 		 is_anomaliaSelec="";
 		 is_subAnomSelect="";
 		 is_comentarios="";
-		 
-		 
 	}
 
 	@Override
@@ -442,12 +372,9 @@ public void anomaliasABorrar(MensajeEspecial me){
 	     // class and call the method:
 	     if (/*viewPager.getCurrentItem() == 0 &&*/ page != null) {
 	          ((PantallaAnomaliasFragment)page).reinicializaTAB();     
-	     } 
-		
+	     }
 	}
 
-	
-	
 	public String getFiltro() {
 		// TODO Auto-generated method stub
 		if (globales.filtrarAnomaliasConLectura){
@@ -456,10 +383,7 @@ public void anomaliasABorrar(MensajeEspecial me){
 			else
 				return " and (lectura='0' and ausente='4')";
 		}
-		
 		return "";
-		
-		
 	}
 	
 	@Override
@@ -475,11 +399,7 @@ public void anomaliasABorrar(MensajeEspecial me){
 	 			setResult(Activity.RESULT_CANCELED, resultado);
 	    		 finish();
 	    	 }
-	    		 
-	          
-	          
 	     }
-
 	}
 	
 	  public void mensajeOK(String ls_mensaje){
@@ -491,11 +411,8 @@ public void anomaliasABorrar(MensajeEspecial me){
 			                dialog.cancel();
 			           }
 			       });
-			
 			AlertDialog alert = builder.create();
 			alert.show();
-			
-			
 		}
 	  
 	  public void openDatabase(){
@@ -505,7 +422,6 @@ public void anomaliasABorrar(MensajeEspecial me){
 		
 		public void closeDatabase(){
 			db.close();
-			
 			dbHelper.close();
 		}
 	
@@ -523,5 +439,4 @@ public void anomaliasABorrar(MensajeEspecial me){
 			}
 			super.onResume();
 		}
-		
 }

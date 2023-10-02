@@ -225,6 +225,11 @@ public class Lectura {
 			throw new Throwable(
 					"No se encontraron lecturas con dicho secuencial");
 		}
+
+		if (globales.habilitarPuntoDecimal) {
+//			is_lectura = String.valueOf(Double.parseDouble(is_lectura) / 1000f);
+		}
+
 		c.close();
 		closeDatabase();
 

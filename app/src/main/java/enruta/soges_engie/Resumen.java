@@ -41,7 +41,11 @@ public class Resumen extends Fragment {
 	    	long ll_fotos;
 	    	long ll_restantes;
 	    	long ll_conAnom;
-	    	long ll_noRegistrados;
+		   long ll_noRegistrados;
+		   long ll_EngieDesconexiones;
+		   long ll_EngieReconexiones;
+		   long ll_EngieRemociones;
+		   long ll_EngieRecRemos;
 	    	String ls_archivo;
 	    	
 	    	
@@ -91,8 +95,29 @@ public class Resumen extends Fragment {
 	        	 c.moveToFirst();
 	        	 ll_noRegistrados=c.getLong(c.getColumnIndex("canti"));
 	        	 c.close();
-	        	
-	        	//ll_restantes = ll_total-ll_tomadas ;
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO002'", null);
+				c.moveToFirst();
+				ll_EngieDesconexiones=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO003'", null);
+				c.moveToFirst();
+				ll_EngieReconexiones=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO004'", null);
+				c.moveToFirst();
+				ll_EngieRecRemos=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO005'", null);
+				c.moveToFirst();
+				ll_EngieRemociones=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+
+				//ll_restantes = ll_total-ll_tomadas ;
 	        	
 //	        	ls_resumen="Total de Lecturas " + ll_total +"\n" +
 //	        			"Medidores con Lectura " +  + ll_tomadas +"\n" +
@@ -116,19 +141,28 @@ public class Resumen extends Fragment {
 	        		 resumen.add(new EstructuraResumen(sa[0],sa[1]));
 	        	 }
 	        	 
-	        	 resumen.add(new EstructuraResumen( getString(R.string.msj_main_total_lecturas), String.valueOf(ll_total)));
+	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_total_lecturas), String.valueOf(ll_total)));
 	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_fotos_tomadas), String.valueOf(ll_fotos)));
 	        	 resumen.add(new EstructuraResumen("", ""));
 	        	 porcentaje=  (((float)ll_restantes*100) /(float)ll_total);
 	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_lecturas_restantes),String.valueOf(ll_restantes),  formatter.format(porcentaje) +"%"));
 	        	 porcentaje=  (((float)ll_tomadas*100) /(float)ll_total);
 	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_medidores_con_lectura), String.valueOf(ll_tomadas),  formatter.format(porcentaje) +"%"));
-	        	 porcentaje=  (((float)ll_conAnom*100) /(float)ll_total);
-	        	 resumen.add(new EstructuraResumen( getString(R.string.msj_main_medidores_con_anomalias),String.valueOf(ll_conAnom), formatter.format(porcentaje) +"%"));
-	        	 
-	        	 resumen.add(new EstructuraResumen("", ""));
-	        	 
-	        	 if (ma_papa.globales.mostrarNoRegistrados)
+
+				resumen.add(new EstructuraResumen("", ""));
+
+				porcentaje=  (((float)ll_EngieDesconexiones*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_desconexiones),String.valueOf(ll_EngieDesconexiones), formatter.format(porcentaje) +"%"));
+				porcentaje=  (((float)ll_EngieReconexiones*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_reconexiones),String.valueOf(ll_EngieReconexiones), formatter.format(porcentaje) +"%"));
+				porcentaje=  (((float)ll_EngieRemociones*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_remociones),String.valueOf(ll_EngieRemociones), formatter.format(porcentaje) +"%"));
+				porcentaje=  (((float)ll_EngieRecRemos*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_recremos),String.valueOf(ll_EngieRecRemos), formatter.format(porcentaje) +"%"));
+
+				resumen.add(new EstructuraResumen("", ""));
+
+				if (ma_papa.globales.mostrarNoRegistrados)
 	        		 resumen.add(new EstructuraResumen("Nuevos Puntos", String.valueOf(ll_noRegistrados)));
 	        	 
 	        	 resumen.add(new EstructuraResumen("", "")); //Agregamos una linea mas

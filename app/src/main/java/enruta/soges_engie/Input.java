@@ -200,6 +200,12 @@ public class Input extends TomaDeLecturasPadre {
 
                     esconderTeclado();
 
+                    if (globales.habilitarPuntoDecimal) {
+                        Button punto = (Button) findViewById(R.id.teclado_b_borrar);
+                        punto.setTag(".");
+                        punto.setText(".");
+                    }
+
 //			 mensajeOK( "Favor de ingresar la lectura del medidor", "Teclado");
 
                     break;
@@ -568,10 +574,21 @@ public class Input extends TomaDeLecturasPadre {
 
                     closeDatabase();
 
+//********************************************************************
+// CE, 01/10/23, Vamos a mostrar textos diferentes dependiendo de la Operacion
+                    String is_NuevoMensajePorMostrar = "";
+                    if (this.et_generico.getText().toString().equals("10"))
+                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
+                    else if (this.et_generico.getText().toString().equals("60"))
+                        is_NuevoMensajePorMostrar = "ESCRIBA EL NUMERO DE MEDIDOR";
+                    else
+                        is_NuevoMensajePorMostrar = this.et_generico.getText().toString() + " - " + is_desc + "";
+//********************************************************************
+
                     // Con esto generamos la etiqueta que tendra el input
                     intent.putExtra("label",
-                            this.et_generico.getText().toString() + " - "
-                                    + is_desc
+                            ""
+                                    + is_NuevoMensajePorMostrar
                                     + "");
 
 //			String codigoAnomalia="";
@@ -710,6 +727,11 @@ public class Input extends TomaDeLecturasPadre {
         // Solo si es una lectura
         if (ii_tipo == LECTURA)
             getMenuInflater().inflate(R.menu.m_input, menu);
+        if (globales.habilitarPuntoDecimal) {
+// CE, 01/10/2023
+//            MenuItem mi_backspace = menu.findItem(R.id.m_backspace);
+//            mi_backspace.setVisible(true);
+        }
         return true;
     }
 

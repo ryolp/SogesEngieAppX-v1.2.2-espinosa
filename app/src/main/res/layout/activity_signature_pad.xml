@@ -31,39 +31,77 @@
             android:textColor="@android:color/darker_gray"
             android:layout_marginBottom="16dp"
             android:layout_alignParentBottom="true"
-            android:text="Acepto los terminos y condiciones" />
+            android:text="Evalúe Nuestro Servicio del 1 al 5" />
 
         <com.github.gcacace.signaturepad.views.SignaturePad
+            android:id="@+id/signature_pad"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/signature_pad" />
+            android:layout_height="fill_parent" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/buttons_container"
-        android:paddingTop="16dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:paddingTop="16dp">
 
-        <Button
-            android:id="@+id/clear_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            style="@style/AppTheme.RoundedCornerMaterialButton"
-            android:text="Limpiar"
-            android:enabled="false" />
+                <Button
+                    android:id="@+id/save_button"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="1" />
 
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            style="@style/AppTheme.RoundedCornerMaterialButton"
-            android:text="Guardar Firma"
-            android:enabled="false" />
+                <Button
+                    android:id="@+id/save_button2"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="2" />
+
+                <Button
+                    android:id="@+id/save_button3"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="3" />
+
+                <Button
+                    android:id="@+id/save_button4"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="4" />
+
+                <Button
+                    android:id="@+id/save_button5"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="5" />
+
+                <Button
+                    android:id="@+id/clear_button"
+                    style="@style/AppTheme.RoundedCornerMaterialButton"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="Limpiar" />
+
     </LinearLayout>
+
 
 </RelativeLayout>

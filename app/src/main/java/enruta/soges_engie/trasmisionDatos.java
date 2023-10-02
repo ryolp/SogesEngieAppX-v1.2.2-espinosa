@@ -27,6 +27,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -334,6 +335,9 @@ public class trasmisionDatos extends TransmisionesPadre {
 //									globales.tdlg.long_registro);
 //						}else{
 
+                        // RL, 28-09-2023, Aquí se forma la cadena con los campos ...
+                        // ... que se transmitirán posteriormente.
+
                         ls_cadenaAEnviar += genDatosEnvio.generarInfoOrdenes(c, globales.getIdEmpleado()) + "\r\n";
                         //ls_cadenaAEnviar += Utils.getString(c, "TextoSalida", "") + "\r\n";
 //						}
@@ -371,6 +375,9 @@ public class trasmisionDatos extends TransmisionesPadre {
                     }
 
                     //serial.close();
+
+                    // RL, 28-09-2023, Aquí se transmite los datos al servidor ...
+                    // ... con la cadena que se generó previamente
 
                     if (!enviarDatos("", nombreArchivo, ls_cadenaAEnviar))
                         throw new AppUsuarioBloqueadoException();
@@ -1111,6 +1118,10 @@ public class trasmisionDatos extends TransmisionesPadre {
                     db.beginTransaction();
                     for (i = 0; i < numRegistros; i++) {
                         context.stop();
+
+                        // RL, 28-09-2023, Aquí se reciben los datos del servidor ...
+                        // ... se convierten a la estructura ordenEntity.
+                        // ... y luego se insertan en la base de datos SQLLite.
 
                         registro = contenido.get(i);
                         orden = descargarTareasMgr.convToOrden(registro);

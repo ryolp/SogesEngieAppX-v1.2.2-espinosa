@@ -91,18 +91,18 @@ public class PantallaAnomaliasFragment extends Fragment {
 		tipo = bu_params.getInt("tipo");
 		tipoAnomalia=pa_papa.globales.tll.getLecturaActual().is_tipoDeOrden;
 		
-		if (tipoAnomalia.equals("TO005")){
+		if (tipoAnomalia.equals("TO003")){   // Reconexion
+			tipoAnomalia="I";
+		}
+		else if (tipoAnomalia.equals("TO004")){   // Rec-Remo
 			tipoAnomalia="I";
 		}
 		else{
 			tipoAnomalia="M";
 		}
-
 		li_anomalia.setText(bu_params.getString("anomalia"));
 
 		b_clearText=(ImageButton) rootView.findViewById(R.id.im_clearText);
-		
-
 		lv_lista = (ListView) rootView.findViewById(R.id.anom_lv_lista);
 		gv_lista = (GridView) rootView.findViewById(R.id.anom_gv_lista);
 		tv_label = (TextView) rootView.findViewById(R.id.tv_label);
