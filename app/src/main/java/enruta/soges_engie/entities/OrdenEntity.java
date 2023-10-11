@@ -51,11 +51,32 @@ public class OrdenEntity {
     public String codigoBarras  = "";
     public String TipoAcuse  = "";
     public String UbicacionMedidor  = "";
-    public String miLatitud  = "";
-    public String miLongitud  = "";
+
     public String Estimaciones  = "";
     public String TipoCliente  = "";
     public String TextoLibre  = "";
+
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui debemos tener una variable de todos los CamposEngie que que vamos a recibir del servidor
+    public String miLatitud = "";
+    public String miLongitud = "";
     public String MensajeOut = "";
+    public String NumAviso = "";
+    public String CuentaContrato = "";
+    public String idMaterialSolicitado = "";
+    
+    public int EncuestaDeSatisfaccion = 0;
+    public String MedidorInstalado = "";
+    public int idMarcaInstalada = 0;
+    public String LecturaReal = "";
+    public String Repercusion = "";
+    public String idMaterialUtilizado = "";
+    public int idTipoDeReconexion = 0;
+    public int idTipoDeRemocion = 0;
+	public String ClienteYaPagoMonto = "";    
+	public String ClienteYaPagoFecha = "";    
+	public String ClienteYaPagoAgente = "";    
+//************************************************************************************************************************************
+
     public long id;
 }

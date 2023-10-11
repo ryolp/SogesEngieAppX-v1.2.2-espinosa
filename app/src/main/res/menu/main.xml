@@ -58,37 +58,48 @@
         android:visible="true" />
 
     <item
-        android:id="@+id/m_salir"
+        android:id="@+id/m_probarVideo"
         android:orderInCategory="8"
-        android:title="@string/Salir"></item>
+        android:title="Probar video"
+        android:visible="true" />
+
+
 
     <item
         android:id="@+id/probar_bt"
         android:title="Probar bt"
-        android:visible="false"></item>
+        android:visible="false"/>
+
     <item
         android:id="@+id/m_cambiarUsuario"
         android:icon="@drawable/ic_action_cambiausr"
         android:showAsAction="always"
-        android:title="@string/lbl_cambiarUsuario"></item>
+        android:title="@string/lbl_cambiarUsuario"/>
+
     <item
         android:id="@+id/m_acercaDe"
-        android:title="@string/m_str_acercade"></item>
+        android:title="@string/m_str_acercade"/>
     <item
         android:id="@+id/m_verTamanosLetra"
-        android:title="Tamaños de Fuente"></item>
+        android:title="Tamaños de Fuente"/>
     <item
         android:id="@+id/m_grabarEnSD"
-        android:title="Grabar en SDCard"></item>
+        android:title="Grabar en SDCard"/>
     <item
         android:id="@+id/m_cierreForzado"
-        android:title="Cierre Forzado"></item>
+        android:title="Cierre Forzado"/>
 
     <item
         android:id="@+id/m_VerMapaDeTodos"
         android:icon="@drawable/ic_scanner_24"
-        android:orderInCategory="22"
+        android:orderInCategory="10"
         android:showAsAction="never"
         android:title="@string/str_ver_mapa_de_todos"/>
+
+    <item
+        android:id="@+id/m_salir"
+        android:orderInCategory="50"
+        android:showAsAction="never"
+        android:title="@string/Salir"/>
 
 </menu>

@@ -1,5 +1,7 @@
 package enruta.soges_engie;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +26,7 @@ import enruta.soges_engie.entities.ResumenEntity;
 import enruta.soges_engie.services.DbLecturasMgr;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
+//import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
@@ -46,9 +48,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -61,7 +68,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class Main extends FragmentActivity implements TabListener {
+public class Main extends AppCompatActivity implements TabListener {
 
     final static int IMPORTAR = 0;
     final static int EXPORTAR = 1;
@@ -90,6 +97,7 @@ public class Main extends FragmentActivity implements TabListener {
 
     final static int FOTO_CHECK_SEGURIDAD = 10;     // RL, 2023-09,
     final static int FOTO_PROBAR_CAMARA = 11;
+    final static int FOTO_PROBAR_VIDEO = 12;
 
     //	LocationManager locationManager;
     LocationManager locationManager2;
@@ -302,19 +310,22 @@ public class Main extends FragmentActivity implements TabListener {
         if (globales.tdlg == null)
             return;
         viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
+        actionBar = getSupportActionBar();
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         int li_tabSelected = ii_lastSelectedTab;
 
         viewPager.setAdapter(mAdapter);
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        actionBar.removeAllTabs();
-        // Adding Tabs
-        for (int tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name)
-                    .setTabListener(this));
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+            actionBar.removeAllTabs();
+            // Adding Tabs
+//            for (int tab_name : tabs) {
+//                actionBar.addTab(actionBar.newTab().setText(tab_name)
+//                        .setTabListener(this));
+//            }
         }
 
 //     // Create a tab listener that is called when the user changes tabs.
@@ -754,6 +765,9 @@ public class Main extends FragmentActivity implements TabListener {
                 case R.id.m_probarCamara:
                     probarCamara();
                     break;
+                case R.id.m_probarVideo:
+                    probarVideo();
+                    break;
                 case R.id.m_VerMapaDeTodos:
                     verMapaDeTodos();
                     break;
@@ -782,11 +796,18 @@ public class Main extends FragmentActivity implements TabListener {
             if (miLatitud.trim().equals("") || miLongitud.trim().equals(""))
                 return;
 
-            uri = "geo:" + miLatitud + "," + miLongitud + "?q=" + miLatitud + "," + miLongitud + "(MapaDeLaRuta)&z=24";
-
+//            uri = "geo:" + miLatitud + "," + miLongitud + "?q=" + miLatitud + "," + miLongitud + "(MapaDeLaRuta)&z=24";
+//            uri = "https://maps.google.com/maps?daddr=" + miLatitud + "," + miLongitud + "+to:25.70,-100.33+to:25.72,-100.31+to:25.75,-100.38+to:25.74,-100.36+to:25.77,-100.40";
+            TodasLasLecturas tll;
+            tll = new TodasLasLecturas(this.getApplicationContext(), 0);// Se buscaran las lecturas desde el principio
+            uri = tll.getTodosLosPuntosGPS();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
             intent.setPackage("com.google.android.apps.maps");
-            this.startActivity(intent);
+//            if (intent.resolveActivity(MainActivity.this.getPackageManager()) != null) {
+                this.startActivity(intent);
+//            }
         } catch (Throwable t) {
             Utils.showMessageLong(this, t.getMessage());
         }
@@ -2649,6 +2670,11 @@ public class Main extends FragmentActivity implements TabListener {
         camara.putExtra("TipoFoto", CamaraActivity.TIPO_FOTO_EMPLEADO);
         // vengoDeFotos = true;
         startActivityForResult(camara, FOTO_PROBAR_CAMARA);
+    }
+
+    private void probarVideo() {
+        Intent camara = new Intent(this, Camara2Activity.class);
+        startActivityForResult(camara, FOTO_PROBAR_VIDEO);
     }
 
     private void cerrarSesion() {

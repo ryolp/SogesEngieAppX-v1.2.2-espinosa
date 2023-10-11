@@ -41,6 +41,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
+import androidx.appcompat.app.ActionBar;
+
 public class TomaDeLecturas extends TomaDeLecturasPadre implements
         OnGestureListener {
 
@@ -101,6 +103,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     private EmergenciaMgr mEmergenciaMgr = null;
     private AlertDialog mAlertEmergencia = null;
     private DialogoMensaje mDialogoMsg = null;
+
+    private ActionBar actionBar;
+
+    private final static int TOMAR_VIDEO = 1;
 
     @SuppressLint("NewApi")
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -199,6 +205,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     globales.tdlg.setConsumo();
 
                     if (globales.is_lectura.equals("")) {
+                        globales.BorrarTodasLosCamposEngie();
                         globales.tdlg.regresaDeBorrarLectura();
                     }
 
@@ -571,11 +578,20 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         muere();
                     }
                 }
-
                 break;
-
+/*
+            case CLIENTE_YA_PAGO:
+                if (resultCode == Activity.RESULT_OK) {
+                    bu_params = data.getExtras();
+                    globales.tdlg.regresaDeCamposGenericos(bu_params, "cliente_ya_pago");
+                } else {
+                    if (!globales.tll.hayPendientes()) {
+                        muere();
+                    }
+                }
+                break;
+*/
             case TRANSMISION:
-
                 //Recibimos si fue extoso el result
                 if (resultCode == Activity.RESULT_OK) {
                     Intent lrs = new Intent(this, trasmisionDatos.class);
@@ -620,6 +636,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
         is_mensaje_direccion = getString(R.string.msj_lecturas_no_hay_mas);
         setTitle("");
+
+        mostrarToolbar();
 
         //startListeningGPS();
         mHandler = new Handler();
@@ -783,6 +801,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         // c.close();
     }
 
+    protected void mostrarToolbar() {
+        actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }
+    }
+
     /*
      * @Override public boolean onCreateOptionsMenu(Menu menu) { // Inflate the
      * menu; this adds items to the action bar if it is present.
@@ -889,6 +916,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         View.OnClickListener clicLectura = new View.OnClickListener() {
             public void onClick(View v) {
                 // Capturamos la lectura
+                globales.setEstadoDeLaRepercusion(true,false);
                 cancelaTimer();
                 if (button1.isEnabled()) {
                     cancelaTimer();
@@ -914,11 +942,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             @Override
             public boolean onLongClick(View v) {
+                globales.setEstadoDeLaRepercusion(true,true);
                 cancelaTimer();
                 // TODO Auto-generated method stub
                 if (button1.isEnabled()) {
                     cancelaTimer();
                     globales.is_lectura = "";
+                    globales.BorrarTodasLosCamposEngie();
                     globales.tdlg.regresaDeBorrarLectura();
 
                     if (globales.tll.getLecturaActual().anomalias.size() == 0) {
@@ -962,6 +992,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             public void onClick(View v) {
                 // mensajeInput(PRESION);
+                globales.setEstadoDeLaRepercusion(false,false);
                 cancelaTimer();
                 Intent anom = new Intent(parent, PantallaAnomalias.class);
                 anom.putExtra("secuencial", globales.il_lect_act);
@@ -982,6 +1013,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             @Override
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
+                globales.setEstadoDeLaRepercusion(false,true);
                 cancelaTimer();
 
 
@@ -1005,9 +1037,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         + CamaraActivity.ANOMALIA);
                 closeDatabase();
 
+                globales.BorrarTodasLosCamposEngie();
 
                 regresaDeBorrar();
-
                 verficarSiPuedoDejarAusente();
 
                 return true;
@@ -1476,7 +1508,18 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             enciendeGPS();
 
-            tv_caseta.setText(getString(R.string.lbl_tdl_indica_medidor) + globales.is_caseta);
+// CE, 01/10/2023, Vamos a cambiar los colores dependiendo del TipoDeOrden
+//            tv_caseta.setText(getString(R.string.lbl_tdl_indica_medidor) + globales.is_caseta);
+            String strTipoDeMaterial = "";
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION")) {
+                if (globales.tll.getLecturaActual().is_idMaterialSolicitado.equals("2"))
+                    strTipoDeMaterial = " (EX)";
+                else
+                    strTipoDeMaterial = " (JC)";
+            }
+
+            tv_caseta.setText(globales.tll.getLecturaActual().getTipoDeOrden() + strTipoDeMaterial);
+
             //tv_nombre.setText(globales.tll.getLecturaActual().getNombreCliente());
             //globales.tdlg.getInformacionDelMedidor(ll_generica, globales.tll.getLecturaActual(), sizeGenerico);
             preparaDatosGenericos();
@@ -1525,7 +1568,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             // if (strEsDemanda.equals("6") || strEsDemanda.equals("7"))
             // {nNumColorAviso = 9; strTextoEspecial = " - " + tipoMedidor.trim(); }
             //
-            if (globales.tll.getLecturaActual().is_tarifa.endsWith("5")) {
+
+//*******************************************************************************************
+// CE, 01/10/2023, Vamos a cambiar los colores dependiendo del TipoDeOrden
+/*            if (globales.tll.getLecturaActual().is_tarifa.endsWith("5")) {
                 // ll_linearLayout1.setBackgroundColor(R.color.Blue);
                 ll_linearLayout1.setBackgroundResource(R.color.Blue);
             } else if (globales.tll.getLecturaActual().is_tarifa.endsWith("6")
@@ -1534,8 +1580,17 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             } else {
                 // ll_linearLayout1.setBackgroundResource(R.color.SteelBlue);
                 ll_linearLayout1.setBackgroundResource(R.color.green);
+            }*/
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION")) {
+                ll_linearLayout1.setBackgroundResource(R.color.DarkOrange);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) {
+                ll_linearLayout1.setBackgroundResource(R.color.green);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCION")) {
+                ll_linearLayout1.setBackgroundResource(R.color.Red);
+            } else {
+                ll_linearLayout1.setBackgroundResource(R.color.Blue);
             }
-
+//*******************************************************************************************
             /*
              * int secuencial=(int) globales.il_lect_act; button5.setEnabled(false);
              * Cursor c; //Por ahora no tenemos un objeto de donde tomar las fotos
@@ -1730,6 +1785,17 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                 globales.il_ultimoSegReg = globales.il_lect_act;
 
+//*************************************************************************************
+// CE, 08/10/23, Vamos a establecer los cambios que necesitamos para los CamposEngie
+                if (globales.is_presion.equals(""))
+                    ll_lectura.is_Repercusion = "A";
+                else
+                    ll_lectura.is_Repercusion = globales.is_presion;
+                if (!globales.tll.getLecturaActual().is_idMaterialUtilizado.equals(""))
+                    globales.tll.getLecturaActual().is_idMaterialUtilizado += ", ";
+                globales.tll.getLecturaActual().is_idMaterialUtilizado += globales.getMaterialUtilizado();
+                globales.tll.getLecturaActual().is_LecturaReal = globales.is_lectura;
+//*************************************************************************************
 
 //				if (captureAnomalias){
 //					globales.tdlg.anomaliasARepetir();
@@ -2192,7 +2258,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             /*
              * case R.id.m_siguiente: globales.bcerrar=false; getSigLect(); break;
              */
-
+/*
+            case R.id.m_cliente_ya_pago:
+                mostrarVentanaDeClienteYaPago();
+                break;
+*/
             case R.id.m_noRegistrados:
 
 //			if (globales.il_ultimoSegReg == 0) {
@@ -2266,6 +2336,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             case R.id.m_MostrarUbicacionGPS:
                 mostrarUbicacionGPS();
                 break;
+            case R.id.m_CapturarVideo:
+                capturarVideo();
+                break;
         }
 
         if (Build.VERSION.SDK_INT >= 11)
@@ -2293,10 +2366,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 return;
 
 // CE, 01/10/23, Vamos a poner fijo la Geoposicion hasta que nos llegue del servidor
-//            miLatitud = lectura.getMiLatitud();
-//            miLongitud = lectura.getMiLongitud();
-            miLatitud = "25.696515021213962";
-            miLongitud = "-100.34119561673539";
+            miLatitud = lectura.getMiLatitud();
+            miLongitud = lectura.getMiLongitud();
+//            miLatitud = "25.696515021213962";
+//            miLongitud = "-100.34119561673539";
 
             if (miLatitud.trim().equals("") || miLongitud.trim().equals(""))
                 return;
@@ -2563,6 +2636,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     public void manejaEstadosDelMenu(Menu menu) {
         MenuItem mi_correcion = menu.findItem(R.id.m_correccion);
         MenuItem mi_noRegistrados = menu.findItem(R.id.m_noRegistrados);
+//        MenuItem mi_cliente_ya_pago = menu.findItem(R.id.m_cliente_ya_pago);
         MenuItem mi_orden = menu.findItem(R.id.m_orden);
         MenuItem mi_impresion = menu.findItem(R.id.m_Impresion);
         MenuItem mi_gps = menu.findItem(R.id.m_gps);
@@ -3408,7 +3482,21 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             presentacionAnomalias(true, me.regresaValor(respuesta), "");
         } else if (me.respondeA == TomaDeLecturasGenerica.VER_DATOS) {
             // TODO Auto-generated method stub
-            preguntaSiNo(globales.tdlg.mj_habitado);
+//**********************************************************************************************
+// CE, 04/10/2023, Vamos a preguntar si esta el Cliente Presente solamente en las Rx y RecRemo
+            if ((globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) ||
+                    (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))) {
+                preguntaSiNo(globales.tdlg.mj_habitado);
+            } else {
+                puedeVerDatosAlRegresar = true;
+                globales.puedoCancelarFotos = true;
+                openDatabase();
+                db.execSQL("update ruta set habitado=1 where secuenciaReal=" + globales.il_lect_act);
+                closeDatabase();
+                this.tomarFoto(99, 1);
+            }
+//**********************************************************************************************
+
 //		puedeVerDatosAlRegresar=true;
 //		globales.puedoCancelarFotos=true;
 //		globales.tll.getLecturaActual().verDatos=true;
@@ -3442,6 +3530,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         } else if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO) {
             puedeVerDatosAlRegresar = true;
             globales.puedoCancelarFotos = true;
+            globales.tll.getLecturaActual().is_habitado = "" + respuesta;
             openDatabase();
             db.execSQL("update ruta set habitado=" + respuesta + " where secuenciaReal=" + globales.il_lect_act);
             closeDatabase();
@@ -3502,7 +3591,20 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         intent.putExtra("puedoCerrar", true);
         startActivityForResult(intent, NO_REGISTADOS);
     }
-
+/*
+    void mostrarVentanaDeClienteYaPago() {
+        if (globales.tdlg == null)
+            return;
+        Intent intent = new Intent(this, InputCamposGenerico.class);
+        intent.putExtra("campos", globales.tdlg.getCamposGenerico("cliente_ya_pago"));
+        intent.putExtra("label", "");
+        intent.putExtra("anomalia", "cliente_ya_pago");
+        intent.putExtra("titulo", "Cliente Ya Pagó");
+        intent.putExtra("boton", "Continuar");
+        intent.putExtra("puedoCerrar", true);
+        startActivityForResult(intent, CLIENTE_YA_PAGO);
+    }
+*/
     private void solicitarEmergencia() {
         enviarSolicitudEmergencia(EmergenciaMgr.EMERGENCIA_PRELIMINAR);
     }
@@ -3584,6 +3686,28 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         }
 
         mEmergenciaMgr.enviarSolicitudEmergencia(globales.sesionEntity, globales.location, solicitudEmergencia);
-    }    
+    }
+
+    private void capturarVideo() {
+        Lectura lectura;
+        long idOrden;
+
+        if (globales == null)
+            return;
+
+        if (globales.tll == null)
+            return;
+
+        lectura = globales.tll.getLecturaActual();
+
+        if (lectura == null)
+            return;
+
+        idOrden = lectura.is_idOrden;
+
+        Intent video = new Intent(this, Camara2Activity.class);
+        video.putExtra("idOrden", idOrden);
+        startActivityForResult(video, TOMAR_VIDEO);
+    }
 
 }

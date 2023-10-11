@@ -195,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " fechaEjecucion, FechaRealizacion, envio default 0, numOrden, tipoDeOrden, motivo, descOrden, supervisionLectura , reclamacionLectura , reclamacion, "
 				+ " nisRad, poliza, sectorlargo, sectorCorto, tarifa, numEsferas, consAnoAnt, consBimAnt, ilr, marcaMedidor, tipoMedidor, serieMedidor, aviso,"
 				+ " comoLlegar2 , comoLlegar1 , numPortal , numEdificio , secuencia TEXT, cliente TEXT, colonia TEXT, "
-				+ " fechadeTransmision default '', fechadeRecepcion default '',fechadeAsignacion default '', direccion TEXT, lectura, anomalia, texto, intentos, "
+				+ " fechadeTransmision default '', fechaDeRecepcion default '',fechaDeAsignacion default '', direccion TEXT, lectura, anomalia, texto, intentos, "
 				+ " fecha, hora, sospechosa, intento1, intento2, intento3, intento4, intento5, intento6, dondeEsta, estadoDelSuministro, registro, subAnomalia, "
 				+ " comentarios, terminacion default '-1', fotoAlFinal default 0, ordenDeLectura  default '', latitud default '0.0', longitud default '0.0', anomInst, tipoLectura default '', "
 				+ " sinUso1 default '', sinUso2 default '', sinUso3 default '', sinUso4 default '', sinUso5 default '', sinUso6 default '', sinUso7 default '', sinUso8 default '', "
@@ -204,7 +204,11 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " advertencias default '', ubicacion default '', situacionDelSuministro default '', fechaAviso default '', rutaReal default '', estimaciones default '', "
 				+ " escalera default '', piso default '', puerta default '', secuenciaReal,  ultimo_pago default 0,  diametro default '', fechaEnvio default '', habitado default '0', "
 				+ " fechaDeInicio default '',  idOrden default 0, idTarea default 0, idArchivo default 0, idEmpleado default 0, ciclo default '', numGrupo default 0, "
-				+ " numSecuencia default 0, miLatitud default '0.0', miLongitud default '0.0')");
+// CE, 06/10/23, Aqui van los CamposEngie que vamos a agregar en la Tabla. Si agregamos uno, debemos desintalar y reinstalar la App
+				+ " numSecuencia default 0, MensajeOut default '', miLatitud default '0.0', miLongitud default '0.0', NumAviso default '', CuentaContrato default '', idMaterialSolicitado default 0, "
+				+ " EncuestaDeSatisfaccion default 0, MedidorInstalado default '', idMarcaInstalada default 0, LecturaReal default '0.0', idMaterialUtilizado default '', "
+				+ " ClienteYaPagoMonto default '', ClienteYaPagoFecha default '', ClienteYaPagoAgente default '', "
+				+ " idTipoDeReconexion default 0, idTipoDeRemocion default 0, Repercusion default '')");
 		//Usuarios
 		db.execSQL("CREATE TABLE usuarios (usuario , contrasena , nombre, rol default 1, fotosControlCalidad default 1, baremo default 75)");
 		//fotos
@@ -277,9 +281,25 @@ public class DBHelper extends SQLiteOpenHelper {
 			verifyColumnInTable(db, "ruta", "idEmpleado", "0");
 			verifyColumnInTable(db, "ruta", "numGrupo", "0");
 			verifyColumnInTable(db, "ruta", "ciclo", "''");
+			verifyColumnInTable(db, "ruta", "numSecuencia", "0");
+
 			verifyColumnInTable(db, "ruta", "miLatitud", "'0.0'");
 			verifyColumnInTable(db, "ruta", "miLongitud", "'0.0'");
-			verifyColumnInTable(db, "ruta", "numSecuencia", "0");
+			verifyColumnInTable(db, "ruta", "MensajeOut", "''");
+			verifyColumnInTable(db, "ruta", "NumAviso", "''");
+			verifyColumnInTable(db, "ruta", "CuentaContrato", "''");
+			verifyColumnInTable(db, "ruta", "idMaterialSolicitado", "0");
+			verifyColumnInTable(db, "ruta", "EncuestaDeSatisfaccion", "''");
+			verifyColumnInTable(db, "ruta", "MedidorInstalado", "''");
+			verifyColumnInTable(db, "ruta", "idMarcaInstalada", "0");
+			verifyColumnInTable(db, "ruta", "LecturaReal", "''");
+			verifyColumnInTable(db, "ruta", "Repercusion", "''");
+			verifyColumnInTable(db, "ruta", "idMaterialUtilizado", "''");
+			verifyColumnInTable(db, "ruta", "idTipoDeReconexion", "0");
+			verifyColumnInTable(db, "ruta", "idTipoDeRemocion", "0");
+			verifyColumnInTable(db, "ruta", "ClienteYaPagoFecha", "''");
+			verifyColumnInTable(db, "ruta", "ClienteYaPagoMonto", "''");
+			verifyColumnInTable(db, "ruta", "ClienteYaPagoAgente", "''");
 
 			verifyColumnInTable(db, "fotos", "idArchivo", "0");
 			verifyColumnInTable(db, "fotos", "idTarea", "0");

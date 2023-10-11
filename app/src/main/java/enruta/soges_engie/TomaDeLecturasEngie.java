@@ -3,14 +3,17 @@ package enruta.soges_engie;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import enruta.soges_engie.clases.Utils;
 import enruta.soges_engie.entities.DatosEnvioEntity;
@@ -33,6 +36,9 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     public final static int PUERTA = 10;
     public final static int COMPLEMENTO = 11;
     public final static int IC = 12;
+    public final static int CLIENTE_YA_PAGO_MONTO = 13;
+    public final static int CLIENTE_YA_PAGO_FECHA = 14;
+    public final static int CLIENTE_YA_PAGO_AGENTE = 15;
 
 
     Vector<TextView> textViews = new Vector<TextView>();
@@ -85,7 +91,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         respuesta.add(new Respuesta("EX", "X-Expander"));
         respuesta.add(new Respuesta("SR", "S-Sello Rojo"));
         respuesta.add(new Respuesta("TP", "T-Tapón"));
-        mj_consumocero = new MensajeEspecial("Material Utilizado. Seleccione el material utilizado", respuesta, PREGUNTAS_CONSUMO_CERO);
+        mj_consumocero = new MensajeEspecial("Seleccione el Material Utilizado", respuesta, PREGUNTAS_CONSUMO_CERO);
         mj_consumocero.cancelable = false;
 //*********************************************************************************************
 
@@ -290,7 +296,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         agregarAnomalia(db, "7", "D - Cliente no permitió. Cliente agresivo ", 1, 1);
         agregarAnomalia(db, "8", "E - Cliente se reabre el servicio ", 1, 0, "I");
         agregarAnomalia(db, "9", "F - Retiro de válvula o regulador ", 1, 1);
-        agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1);
+        agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1,"M",1);
         agregarAnomalia(db, "11", "H - Dirección incorrecta del servicio ", 1, 1);
         agregarAnomalia(db, "12", "I - Condición insegura ", 1, 1);
         agregarAnomalia(db, "14", "J - No usuario ", 1, 0, "I");
@@ -368,6 +374,28 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         db.insert("Anomalia", null, cv_params);
     }
 
+    public void agregarAnomalia(SQLiteDatabase db, String anomalia, String desc, int foto, int mensaje, String tipo, int capt) {
+        this.context = context;
+        Resources res = context.getResources();
+
+        //openDatabase();
+        ContentValues cv_params = new ContentValues();
+        cv_params.put("desc", desc);
+        cv_params.put("conv", desc.substring(0,1));
+        cv_params.put("capt", capt);
+        cv_params.put("subanomalia", ".");
+        cv_params.put("ausente", "4");
+        cv_params.put("mens", mensaje);
+        cv_params.put("lectura", 0);
+        cv_params.put("anomalia", anomalia);
+        cv_params.put("activa", "A");
+        cv_params.put("tipo", tipo);
+        cv_params.put("pais", "M");
+        cv_params.put("foto", foto);
+
+        db.insert("Anomalia", null, cv_params);
+    }
+
     public void agregarCodigoEjecucion(SQLiteDatabase db, String anomalia, String desc) {
         agregarCodigoEjecucion(db, anomalia, desc, 1);
     }
@@ -403,9 +431,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     public String validaLectura(String ls_lectAct) throws Exception {
 
         if (ls_lectAct.equals("")) {
-            return NO_SOSPECHOSA + "|" + "No se ha ingresado algún código";
+            return NO_SOSPECHOSA + "|" + "No se ha ingresado ninguna lectura";
         }
 
+//*****************************************************************************************
+// CE, 04/10/23, Vamos a aceptar cualquier lectura escrita por el técnico
+/*
         openDatabase();
         globales.ignorarContadorControlCalidad = true;
 
@@ -443,7 +474,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
         globales.is_terminacion = "_1";
         globales.ignorarContadorControlCalidad = true;
-
+*/
         return "";
 //
 //		int esferas=0;
@@ -680,7 +711,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //datos.add(lectura.is_tipoDeOrden);
         datos.add("Medidor: " + lectura.is_serieMedidor);
 
-        if (lectura.is_tipoDeOrden.equals("TO002")){
+ /*       if (lectura.is_tipoDeOrden.equals("TO002")){
             datos.add("Tipo de Orden: Desconexión");
         }else if (lectura.is_tipoDeOrden.equals("TO003")){
             datos.add("Tipo de Orden: Reconexión");
@@ -691,6 +722,24 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         }
         else{
             datos.add("Tipo de Orden: Orden manual");
+        }*/
+//        datos.add("Tipo de Orden: " + lectura.getTipoDeOrden());
+        datos.add("Cuenta Contrato: "+lectura.is_cuentaContrato);
+        datos.add("Interlocutor: "+lectura.poliza);
+        datos.add("Aviso SAP: "+lectura.is_numAviso);
+ //       if (globales.esSuperUsuario) {
+            datos.add("Adeudo: " + lectura.is_vencido);
+            if (!lectura.is_EncuestaDeSatisfaccion.equals("")) {
+                datos.add("Encuesta: " + lectura.is_EncuestaDeSatisfaccion);
+            }
+            if (!lectura.is_idMaterialUtilizado.equals("")) {
+                datos.add("Material: " + lectura.is_idMaterialUtilizado);
+            }
+ //       }
+        if (!lectura.is_MensajeOut.equals("")) {
+            datos.add("****************************");
+            datos.add(lectura.is_MensajeOut);
+            datos.add("****************************");
         }
 
         if (!lectura.is_numOrden.equals("0")) {
@@ -763,12 +812,16 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             ls_comentarios += "\n";
 
         }
-
         ls_comentarios = "\n" + ls_comentarios
                 + globales.tll.getLecturaActual().getComentarios();
         if (!ls_comentarios.trim().equals("")) ;
         datos.add(ls_comentarios);
 
+        if (!lectura.is_ClienteYaPagoMonto.equals("")) {
+            datos.add("Monto Pagado: " + lectura.is_ClienteYaPagoMonto);
+            datos.add("Fecha de Pago: " + lectura.is_ClienteYaPagoFecha);
+            datos.add("Agente: " + lectura.is_ClienteYaPagoAgente);
+        }
 
         //}
 
@@ -1112,6 +1165,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 }
                 break;
             case PREGUNTAS_CONSUMO_CERO:
+                globales.tll.getLecturaActual().is_idMaterialUtilizado = me.regresaValor(respuesta);
 //**********************************************************
 // CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el Material Utilizado
 /*
@@ -1220,6 +1274,18 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 cib_config.obligatorio = true;
                 break;
 
+            case CLIENTE_YA_PAGO_MONTO:
+                cib_config = new ComentariosInputBehavior("Monto Pagado", InputType.TYPE_CLASS_NUMBER, globales.tlc.getLongCampo("ClienteYaPagoMonto"), "");
+                cib_config.obligatorio = true;
+                break;
+            case CLIENTE_YA_PAGO_FECHA:
+                cib_config = new ComentariosInputBehavior("Fecha de Pago", InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS, globales.tlc.getLongCampo("ClienteYaPagoFecha"), "");
+                cib_config.obligatorio = true;
+                break;
+            case CLIENTE_YA_PAGO_AGENTE:
+                cib_config = new ComentariosInputBehavior("Agente", InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS, globales.tlc.getLongCampo("ClienteYaPagoAgente"), "");
+                cib_config.obligatorio = true;
+                break;
         }
 
         return cib_config;
@@ -1233,7 +1299,13 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             campos = new int[2];
             campos[0] = IC;
             campos[1] = NUM_MEDIDOR;
-        } else if (anomalia.equals("B") || anomalia.equals("H")) {
+        } else if (anomalia.equals("cliente_ya_pago") || (anomalia.equals("G"))) {
+            campos = new int[3];
+            campos[0] = CLIENTE_YA_PAGO_MONTO;
+            campos[1] = CLIENTE_YA_PAGO_FECHA;
+            campos[2] = CLIENTE_YA_PAGO_AGENTE;
+        }
+/*        else if (anomalia.equals("B") || anomalia.equals("H")) {
             campos = new int[3];
             campos[0] = NUM_MEDIDOR;
             campos[1] = NUM_ESFERAS;
@@ -1249,7 +1321,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             campos[5] = PUERTA;
             campos[6] = COMPLEMENTO;
         }
-
+*/
         return campos;
     }
 
@@ -1291,6 +1363,23 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             //Agregar el nuevo registro
             openDatabase();
             globales.tlc.byteToBD(db, globales, bu_params.getString(String.valueOf(IC)), bu_params.getString(String.valueOf(NUM_MEDIDOR)));
+            closeDatabase();
+        }else if (anomalia.equals("cliente_ya_pago") || anomalia.equals("G")) {
+            openDatabase();
+            if (globales.tll.getLecturaActual().setClienteYaPago(bu_params)) {
+                    Toast.makeText(this.context, "El Monto es inferior al Adeudo. Proceda con la Desconexión/Remoción", Toast.LENGTH_LONG).show();
+/*                AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+                builder.setMessage("El Monto pagado es inferior al Adeudo. Favor de proceder con la Desconexión o Remoción")
+                        .setTitle("Proceder con la Orden")
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id){
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();*/
+            }
             closeDatabase();
         } else {
             globales.tll.getLecturaActual().setComentarios(bu_params.getString("input"));
@@ -1376,6 +1465,13 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         globales.tlc.add(new Campo(22, "fechaDeInicio", 507, 14, Campo.I, " ", false));
         globales.tlc.add(new Campo(22, "habitado", 507, 1, Campo.I, " ", false));
         globales.tlc.add(new Campo(22, "registro", 507, 1, Campo.I, " ", false));
+
+//************************************************************************************************************************************
+// CE, 06/10/23, Preguntar a Reynol si aqui deben estar todos los CamposEngie
+        globales.tlc.add(new Campo(22, "ClienteYaPagoMonto", 507, 10, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "ClienteYaPagoFecha", 507, 10, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "ClienteYaPagoAgente", 507, 50, Campo.I, " ", false));
+//************************************************************************************************************************************
 
         //globales.tlc.add(new Campo(3, "situacionDelSuministro", 97, 1, Campo.D, " "));
 //			globales.tlc.add(new Campo(4, "subAnomalia", 104, 10, Campo.I, " "));
@@ -1560,17 +1656,21 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 break;
 
             case BuscarMedidorTabsPagerAdapter.DIRECCION:
-                if (lectura.is_tipoDeOrden.equals("TO002"))
+/*                if (lectura.is_tipoDeOrden.equals("TO002"))
                     ls_preview += "DESCONEXION" + "<br>";
                 if (lectura.is_tipoDeOrden.equals("TO003"))
                     ls_preview += "RECONEXION" + "<br>";
                 if (lectura.is_tipoDeOrden.equals("TO004"))
                     ls_preview += "REC/REMO" + "<br>";
                 if (lectura.is_tipoDeOrden.equals("TO005"))
-                    ls_preview += "REMOCION" + "<br>";
+                    ls_preview += "REMOCION" + "<br>";*/
 
-                ls_preview += "IC:  " + lectura.poliza + "<br>";
+                ls_preview += lectura.getTipoDeOrden() + "<br>";
+
+//                ls_preview += "IC:  " + lectura.poliza + "<br>";
                 ls_preview += "Medidor:  " + lectura.is_serieMedidor + "<br>";
+                ls_preview += "Cuenta Contrato:  " + lectura.is_cuentaContrato + "<br>";
+                ls_preview += "Aviso SAP:  " + lectura.is_numAviso + "<br>";
 //                ls_preview += lectura.is_comollegar1 + "<br>";
                 if (!lectura.getColonia().equals(""))
                     ls_preview += "<br>"

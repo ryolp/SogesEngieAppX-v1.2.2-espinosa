@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="enruta.soges_engie"
     android:installLocation="preferExternal"
     android:versionCode="6"
     android:versionName="SOGES (1.0.0)">
@@ -15,7 +14,8 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".Globales"
@@ -34,8 +35,15 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name="enruta.soges_engie.Camara2Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name="enruta.soges_engie.LoginActivity"
             android:exported="false">
@@ -46,52 +54,59 @@
         <activity
             android:name="enruta.soges_engie.Main"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.TomaDeLecturas"
-            android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:label="@string/title_activity_toma_de_lecturas"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!--<activity
+            android:name="enruta.soges_engie.TomaDeLecturas"
+        android:configChanges="keyboardHidden|navigation|orientation|screenSize"
+        android:label="@string/title_activity_toma_de_lecturas"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="stateAlwaysHidden" />-->
+
         <activity
             android:name="enruta.soges_engie.CamaraActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.trasmisionDatos"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.VerFotos"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.Filtrado"
             android:label="@string/title_activity_filtrado"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="enruta.soges_engie.Input"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="enruta.soges_engie.PantallaAnomalias"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="enruta.soges_engie.BuscarMedidor"
             android:label="@string/title_activity_buscar_medidor"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="enruta.soges_engie.Configuracion"
             android:label="@string/title_activity_configuracion"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name="enruta.soges_engie.Informacion"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.NoRegistrados"
             android:label="@string/title_activity_no_registrados"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.trasmisionDatosBt"
             android:screenOrientation="portrait" />
@@ -110,13 +125,13 @@
         <activity
             android:name="enruta.soges_engie.InputCamposGenerico"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="enruta.soges_engie.PantallaCodigos"
             android:screenOrientation="portrait" />
         <activity
             android:name="enruta.soges_engie.DescargarTareasActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name="enruta.soges_engie.SignaturePadActivity"
             android:exported="false" />

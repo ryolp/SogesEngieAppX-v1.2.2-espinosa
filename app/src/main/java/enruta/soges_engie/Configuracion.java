@@ -26,7 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class Configuracion extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Configuracion extends AppCompatActivity {
 
 	Vector <Entry> objetosAMostar;
 	

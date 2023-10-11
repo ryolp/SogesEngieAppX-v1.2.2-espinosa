@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/Gray">
+    android:background="@color/Gray"
+    tools:context=".Camara2Activity">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -11,22 +13,11 @@
 
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/camera_preview"
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="match_parent" />
 
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/camera_preview_foto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="gone">
-
-        </FrameLayout>
 
     </LinearLayout>
 
@@ -37,12 +28,11 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/ib_cambiarCamara"
+            android:id="@+id/btnCambiarCamara"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:adjustViewBounds="true"
-            android:onClick="flashMode"
             android:padding="5dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_cambiar_camara" />
@@ -106,7 +96,6 @@
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:adjustViewBounds="true"
-            android:onClick="flashMode"
             android:padding="5dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_lecturas" />
@@ -126,13 +115,22 @@
             android:layout_weight=".3333">
 
             <Button
-                android:id="@+id/btnCapturar"
+                android:id="@+id/btnCapturarFoto"
                 style="@style/AppTheme.RoundedCornerMaterialButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
-                android:layout_weight=".3333"
+                android:layout_weight=".25"
                 android:text="@string/str_captura" />
+
+            <Button
+                android:id="@+id/btnCapturarVideo"
+                style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_weight=".25"
+                android:text="@string/str_captura_video" />
 
             <Button
                 android:id="@+id/camara_b_otra"
@@ -141,16 +139,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
-                android:layout_weight=".3333"
+                android:layout_weight=".25"
                 android:text="@string/lbl_camara_otra" />
 
             <Button
-                android:id="@+id/camara_b_regresa"
+                android:id="@+id/btnRegresar"
                 style="@style/AppTheme.RoundedCornerMaterialButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:layout_weight=".3333"
+                android:layout_weight=".25"
                 android:text="@string/lbl_regresar"
                 android:visibility="visible" />
         </LinearLayout>
@@ -185,7 +183,6 @@
         android:layout_above="@+id/controles"
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="true"
-        android:onClick="flashMode"
         android:padding="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_con_flash" />
@@ -198,7 +195,6 @@
         android:layout_above="@+id/controles"
         android:layout_alignParentRight="true"
         android:adjustViewBounds="true"
-        android:onClick="flashMode"
         android:padding="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_nuevo" />
@@ -210,9 +206,7 @@
         android:layout_above="@+id/controles"
         android:layout_toLeftOf="@id/ib_subirResolucion"
         android:adjustViewBounds="true"
-        android:onClick="flashMode"
         android:padding="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_disminuir_24" />
-
 </RelativeLayout>

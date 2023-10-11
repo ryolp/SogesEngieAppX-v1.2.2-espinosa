@@ -1,7 +1,6 @@
 package enruta.soges_engie;
 
 
-import enruta.soges_engie.R;
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -11,9 +10,11 @@ import android.app.Activity;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

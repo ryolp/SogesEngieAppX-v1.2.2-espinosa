@@ -95,6 +95,14 @@ public interface IWebApi {
                                       @Part("serieMedidor") RequestBody serieMedidor,
                                       @Part("idOrden") RequestBody idOrden);
 
+    @Multipart
+    @POST("api/operaciones/subirVideo")
+    Call<SubirFotoResponse> subirVideo(@Part MultipartBody.Part file, @Part("ruta") RequestBody ruta,
+                                      @Part("carpeta") RequestBody carpeta,
+                                      @Part("nombreArchivo") RequestBody nombreArchivo,
+                                      @Part("serieMedidor") RequestBody serieMedidor,
+                                      @Part("idOrden") RequestBody idOrden);
+
     @POST("api/operaciones/SubirDatos")
     Call<SubirDatosResponse> subirDatos(@Body SubirDatosRequest request);
 

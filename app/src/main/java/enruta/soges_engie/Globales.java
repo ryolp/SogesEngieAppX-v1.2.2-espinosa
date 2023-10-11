@@ -39,9 +39,36 @@ public class Globales extends Application {
 	String usuarioBD="u1003479_pruebas";
 	String serverBD= "db1003479_prueba";
 	String passwordBD= "Sotixe_69";
-	
 
-	
+
+
+	int nEstadoDeLaRepercusion;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_DESCONEXION = 1;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REMOCION = 2;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_RECONEXION = 3;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REC_REMO = 4;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_OTRO = 5;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_DESCONEXION = 6;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION = 7;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION = 8;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO = 9;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_OTRO = 10;
+
+	final static int ENTRO_EFECTIVA_CON_DATOS_DESCONEXION = 11;
+	final static int ENTRO_EFECTIVA_CON_DATOS_REMOCION = 12;
+	final static int ENTRO_EFECTIVA_CON_DATOS_RECONEXION = 13;
+	final static int ENTRO_EFECTIVA_CON_DATOS_REC_REMO = 14;
+	final static int ENTRO_EFECTIVA_CON_DATOS_OTRO = 15;
+	final static int ENTRO_NO_EFECTIVA_CON_DATOS_DESCONEXION = 16;
+	final static int ENTRO_NO_EFECTIVA_CON_DATOS_REMOCION = 17;
+	final static int ENTRO_NO_EFECTIVA_CON_DATOS_RECONEXION = 18;
+	final static int ENTRO_NO_EFECTIVA_CON_DATOS_REC_REMO = 19;
+	final static int ENTRO_NO_EFECTIVA_CON_DATOS_OTRO = 20;
+
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE = 21;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE = 22;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE = 23;
+	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE = 24;
 	/**
 	 * No se genera cambio en las lecturas que se no se han leido
 	 */
@@ -334,9 +361,114 @@ public class Globales extends Application {
 		  
 		  return anomaliaTraducida;
 	  }
-	 
-	  
-	  
-	 
-	  
+
+	public String getMaterialUtilizado() {
+		String strMarbete = "";
+		if (tll.getLecturaActual().is_Repercusion.equals("A")) {
+			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				strMarbete = "MARBETE DX EFE";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				strMarbete = "MARBETE REM N/E";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) {
+				if (tll.getLecturaActual().is_habitado.equals("0"))
+					strMarbete = "2x ARANDELAS, MARBETE RX EFE CLIENTE PRESENTE";
+				else
+					strMarbete = "2x ARANDELAS, MARBETE RX EFE LITRAJE";
+			}else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO")) {
+				if (tll.getLecturaActual().is_habitado.equals("0"))
+					strMarbete = "2x ARANDELAS, MARBETE R/R EFE CLIENTE PRESENTE";
+				else
+					strMarbete = "2x ARANDELAS, MARBETE R/R EFE LITRAJE";
+			} else
+				strMarbete = "";
+		}else{
+			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				strMarbete = "";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				strMarbete = "";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+				strMarbete = "MARBETE RX N/E";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+				strMarbete = "MARBETE R/R N/E";
+			else
+				strMarbete = "";
+		}
+		return strMarbete;
+	}
+
+	public void BorrarTodasLosCamposEngie() {
+		tll.getLecturaActual().is_EncuestaDeSatisfaccion = "";
+		tll.getLecturaActual().is_MedidorInstalado = "";
+		tll.getLecturaActual().is_idMarcaInstalada = "";
+		tll.getLecturaActual().is_LecturaReal = "";
+		tll.getLecturaActual().is_Repercusion = "";
+		tll.getLecturaActual().is_idMaterialUtilizado = "";
+		tll.getLecturaActual().is_idTipoDeReconexion = "";
+		tll.getLecturaActual().is_idTipoDeRemocion = "";
+		tll.getLecturaActual().is_ClienteYaPagoMonto="";
+		tll.getLecturaActual().is_ClienteYaPagoFecha="";
+		tll.getLecturaActual().is_ClienteYaPagoAgente="";
+	}
+
+	public String getMensajeParaMostrarAntesDeTomarLaFoto(){
+		String strMensajeParaMostrar = "Preparese para tomar la foto";
+
+		return strMensajeParaMostrar;
+	}
+
+	public int getEstadoDeLaRepercusion(){
+		return nEstadoDeLaRepercusion;
+	}
+
+	public void setEstadoDeLaRepercusion(boolean bEsUnaEfectiva, boolean bEsParaBorrar){
+		if (!bEsParaBorrar) {
+			if (bEsUnaEfectiva) {
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_DESCONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REMOCION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REC_REMO;
+				else
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_OTRO;
+			} else {
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_DESCONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO;
+				else
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_OTRO;
+			}
+		} else {
+			if (bEsUnaEfectiva) {
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_DESCONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_REMOCION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_REC_REMO;
+				else
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_OTRO;
+			} else {
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_DESCONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REMOCION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REC_REMO;
+				else
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_OTRO;
+			}
+		}
+	}
 }

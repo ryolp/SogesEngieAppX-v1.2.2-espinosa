@@ -2,12 +2,10 @@ package enruta.soges_engie;
 
 import java.util.Vector;
 
-import enruta.soges_engie.R;
 import android.os.Bundle;
 import android.os.Handler;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+
+import androidx.fragment.app.Fragment;
 
 @SuppressLint("NewApi")
 public class BuscarMedidorFragment extends Fragment {

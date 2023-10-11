@@ -1,5 +1,4 @@
 package enruta.soges_engie;
-import enruta.soges_engie.R;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar;
@@ -12,9 +11,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
@@ -25,7 +26,7 @@ import android.widget.Toast;
 
 
 @SuppressLint("NewApi")
-public class PantallaAnomalias extends FragmentActivity  implements TabListener {
+public class PantallaAnomalias extends FragmentActivity implements TabListener {
 	DBHelper dbHelper;
 	SQLiteDatabase db;
 //	ListView lv_lista;
@@ -274,10 +275,12 @@ public class PantallaAnomalias extends FragmentActivity  implements TabListener 
 //						return true;
 //					}
 //					//Solo hay una, asi que la borramos
-					if(globales.tll.getLecturaActual().deleteAnomalia(globales.tll.getLecturaActual().getAnomaliasAIngresadas()))
+					if(globales.tll.getLecturaActual().deleteAnomalia(globales.tll.getLecturaActual().getAnomaliasAIngresadas())) {
+						globales.BorrarTodasLosCamposEngie();
 						Toast.makeText(this, R.string.msj_anomalias_borrada, Toast.LENGTH_SHORT).show();
-					else
+					} else {
 						Toast.makeText(this, R.string.msj_anomalias_error_borrado, Toast.LENGTH_LONG).show();
+					}
 					setResult(Activity.RESULT_CANCELED);
 					this.finish();
 				}

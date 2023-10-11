@@ -2,15 +2,12 @@ package enruta.soges_engie;
 
 import java.util.Vector;
 
-import enruta.soges_engie.R;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,6 +26,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 
 public class PantallaAnomaliasFragment extends Fragment {
 	DBHelper dbHelper;

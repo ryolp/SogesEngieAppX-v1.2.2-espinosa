@@ -2,18 +2,17 @@ package enruta.soges_engie;
 
 import java.util.Vector;
 
-import enruta.soges_engie.R;
-
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 public class Principal extends Fragment {
 	

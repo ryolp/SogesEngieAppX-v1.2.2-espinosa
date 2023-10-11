@@ -44,7 +44,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CamaraActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class CamaraActivity extends AppCompatActivity {
 
     public static int TEMPORAL = 1;
     public static int PERMANENTE = 0;
@@ -146,7 +148,7 @@ public class CamaraActivity extends Activity {
         ca = this;
 
         tv_indicador = (TextView) findViewById(R.id.tv_indicador);
-        captureButton = (Button) findViewById(R.id.camara_b_capture);
+        captureButton = (Button) findViewById(R.id.btnCapturar);
         backButton = (Button) findViewById(R.id.camara_b_regresa);
         otraButton = (Button) findViewById(R.id.camara_b_otra);
         ib_flash = (ImageButton) findViewById(R.id.ib_flash);

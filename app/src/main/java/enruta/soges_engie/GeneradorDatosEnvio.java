@@ -16,34 +16,52 @@ public class GeneradorDatosEnvio {
 
         mCursor = c;
 
-        dato = Utils.concatenarColumnas("|",
-                tipoRegistro,
-                getString("numOrden"),
-                getString("estadoDeLaOrden"),
-                getString("anomalia"),
-                getString("serieMedidor"),
-                getString("lectura"),
-                getString("fecha") + getString("hora"),
-                getString("sospechosa"),
-                String.valueOf(idEmpleado),
-                getString("fechaEnvio"),
-                getString("fechaDeInicio"),
-                getString("fecha") + getString("hora"),
-                getString("comentarios"),
-                getString("latitud"),
-                getString("longitud"),
-                getString("poliza"),
-                getString("habitado"),
-                getString("registro"),
+        try {
+            dato = Utils.concatenarColumnas("|",
+                    tipoRegistro,
+                    getString("numOrden"),
+                    getString("estadoDeLaOrden"),
+                    getString("anomalia"),
+                    getString("serieMedidor"),
+                    getString("lectura"),
+                    getString("fecha") + getString("hora"),     // Fecha de Ejecución
+                    getString("sospechosa"),
+                    String.valueOf(idEmpleado),
+                    getString("fechaDeRecepcion"),                      // Momento en que el celular recibe la orden
+                    //getString("fechaEnvio"),                            // En Soges Web, se llama FechaRecepcion
+                    getString("fechaDeInicio"),
+                    getString("fecha") + getString("hora"),     // Fecha de Ejecución
+                    getString("comentarios"),
+                    getString("latitud"),
+                    getString("longitud"),
+                    getString("poliza"),
+                    getString("habitado"),
+                    getString("registro"),
 
-                getString("idArchivo"),
-                getString("idTarea"),
-                getString("ciclo"),
-                getString("numGrupo"),
-                getString("idOrden")
-        );
-
-        return dato;
+                    getString("idArchivo"),
+                    getString("idTarea"),
+                    getString("ciclo"),
+                    getString("numGrupo"),
+                    getString("idOrden"),
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui vamos a poner todos los CamposEngie que vamos a enviar de regreso al servidor
+                getString("EncuestaDeSatisfaccion"),
+                getString("MedidorInstalado"),
+                getString("idMarcaInstalada"),
+                getString("LecturaReal"),
+                getString("Repercusion"),
+                getString("idMaterialUtilizado"),
+                getString("idTipoDeReconexion"),
+                getString("idTipoDeRemocion"),
+                getString("ClienteYaPagoMonto"),
+                getString("ClienteYaPagoFecha"),
+                getString("ClienteYaPagoAgente")
+//************************************************************************************************************************************
+            );
+            return dato;
+        } catch (Throwable t) {
+            throw new Exception("Error al leer información para ser enviada");
+        }
     }
 
     public String generarNoregistrado(Cursor c) throws Exception {

@@ -105,6 +105,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="m_str_salirCorreccion">Salir de Correccion</string>
     <string name="str_captura">Captura</string>
+    <string name="str_captura_video">Captura video</string>
     <string name="str_servidor">Servidor</string>
     <string name="lbl_medidor">Medidor</string>
     <string name="lbl_ic">IC</string>
@@ -212,7 +213,7 @@
 
     <string name="msj_main_operacion_cancelada">"La operación ha sido cancelada."</string>
     <string name="msj_main_total_lecturas">"Ordenes en  la Ruta"</string>
-    <string name="msj_main_medidores_con_lectura">"Ordenes Ejecutadas"</string>
+    <string name="msj_main_medidores_con_lectura">"Ordenes Por Enviar"</string>
     <string name="msj_main_medidores_con_anomalias">"Ordenes con Anomalia"</string>
     <string name="msj_main_lecturas_restantes">"Ordenes Pendientes"</string>
     <string name="msj_main_fotos_tomadas">"Fotos Tomadas"</string>

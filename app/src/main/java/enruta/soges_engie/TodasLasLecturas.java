@@ -1179,5 +1179,48 @@ public class TodasLasLecturas {
 		
 		return lvs_vector;
 	}
-	
+
+	public String getTodosLosPuntosGPS(){
+		openDatabase();
+		String lvs_vector = "";
+		String strOrigen = "";
+		String strDestino = "";
+		String strDestinoAnterior = "";
+		String strWaypoints = "";
+		Cursor c;
+
+		c=db.rawQuery("Select * from ruta order by cast(secuenciaReal as Integer) asc", null);
+		c.moveToFirst();
+		for (int i=0; i<c.getCount(); i++){
+			if (lvs_vector.equals("")) {
+// Metodo 1
+//				lvs_vector = "https://maps.google.com/maps?daddr="+c.getString(c.getColumnIndex("miLatitud"))+","+c.getString(c.getColumnIndex("miLongitud"));
+// Metodo 2
+//				strOrigen = "https://maps.google.com/maps/dir/?api=1&origin=" + c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
+//				lvs_vector = "&waypoints=";
+// Metodo 3
+				strOrigen = "https://maps.google.com/maps?saddr=" + c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
+				lvs_vector = "+to:";
+			} else {
+				strDestino = c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
+				if (!strDestinoAnterior.equals(""))
+//Metodo 2
+//					strWaypoints += strDestinoAnterior + "|";
+// Metodo 3
+				strWaypoints += "+to:" + strDestinoAnterior;
+				strDestinoAnterior = strDestino;
+			}
+			c.moveToNext();
+		}
+//Metodo 2
+//		strWaypoints = strWaypoints.substring(0,strWaypoints.length()-1);
+//		lvs_vector = strOrigen + strDestino + lvs_vector + strWaypoints + "&travelmode=driving";
+// Metodo 3
+//		No se necesita nada en Metodo 3
+		lvs_vector = strOrigen + "&daddr=" + strDestino + strWaypoints;
+		c.close();
+		closeDatabase();
+		return lvs_vector;
+	}
+
 }

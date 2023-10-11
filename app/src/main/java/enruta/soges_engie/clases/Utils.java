@@ -24,6 +24,15 @@ public final class Utils {
         return calendar.getTime();
     }
 
+    public static String getDateTimeStr(String formato) {
+        Calendar calendar = Calendar.getInstance();
+        String dateStr;
+
+        dateStr = convToDateTimeStr(calendar.getTime(), formato);
+
+        return dateStr;
+    }
+
     public static void showMessageLong(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }

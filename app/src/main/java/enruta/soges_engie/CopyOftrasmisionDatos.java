@@ -21,8 +21,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 
-public class CopyOftrasmisionDatos extends Activity {
+
+public class CopyOftrasmisionDatos extends AppCompatActivity {
 	TextView tv_progreso, tv_indicador;
 	ProgressBar pb_progress;
 	Handler mHandler;

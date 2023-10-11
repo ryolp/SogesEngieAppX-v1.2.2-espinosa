@@ -5,12 +5,15 @@ import java.util.Vector;
 import enruta.soges_engie.R;
 import enruta.soges_engie.clases.Utils;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 
@@ -21,6 +24,10 @@ public class Lectura {
 
 	public static int LEIDA_LECTURA = 0;
 	public static int LEIDA_ANOMALIA = 1;
+
+	public final static int CLIENTE_YA_PAGO_MONTO = 13;
+	public final static int CLIENTE_YA_PAGO_FECHA = 14;
+	public final static int CLIENTE_YA_PAGO_AGENTE = 15;
 
 	String is_supervisionLectura="0", is_reclamacionLectura="0", is_reclamacion,
 			is_sectorLargo, is_sectorCorto, is_tarifa, is_ilr, is_marcaMedidor,
@@ -63,6 +70,27 @@ public class Lectura {
 	long index;
 
 	String is_longitud = "0.0", is_latitud = "0.0";
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui tenemos que agregar una variable a todos los CamposEngie que agreguemos y los vamos a inicializar
+	String miLongitud = "0.0";
+	String miLatitud = "0.0";
+	String is_MensajeOut = "";
+	String is_numAviso = "";
+	String is_cuentaContrato = "";
+	String is_idMaterialSolicitado = "";
+
+	String is_EncuestaDeSatisfaccion = "";
+	String is_MedidorInstalado = "";
+	String is_idMarcaInstalada = "";
+	String is_LecturaReal = "";
+	String is_Repercusion = "";
+	String is_idMaterialUtilizado = "";
+	String is_idTipoDeReconexion = "";
+	String is_idTipoDeRemocion = "";
+	String is_ClienteYaPagoMonto="";
+	String is_ClienteYaPagoFecha="";
+	String is_ClienteYaPagoAgente="";
+//************************************************************************************************************************************
 
 	private Resources res;
 
@@ -78,6 +106,20 @@ public class Lectura {
 		globales = ((Globales) context.getApplicationContext());
 
 		llenacampos();
+	}
+
+	public String getTipoDeOrden() {
+		String strTipoDeOrden="DESCONOCIDO";
+		if (is_tipoDeOrden.equals("TO002"))
+			strTipoDeOrden = "DESCONEXION";
+		if (is_tipoDeOrden.equals("TO003"))
+			strTipoDeOrden = "RECONEXION";
+		if (is_tipoDeOrden.equals("TO004"))
+			strTipoDeOrden= "REC/REMO";
+		if (is_tipoDeOrden.equals("TO005"))
+			strTipoDeOrden= "REMOCION";
+
+		return strTipoDeOrden;
 	}
 
 	public String getFechaHora() {
@@ -194,7 +236,29 @@ public class Lectura {
 
 			is_latitud = Utils.getString(c, "latitud", "");
 			is_longitud = Utils.getString(c, "longitud", "");
-			
+
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui vamos a inicializar las variables de todos los CamposEngie que agregamos
+			miLatitud = Utils.getString(c, "miLatitud", "");
+			miLongitud = Utils.getString(c, "miLongitud", "");
+			is_MensajeOut = Utils.getString(c, "MensajeOut", "");
+			is_numAviso = Utils.getString(c, "NumAviso", "");
+			is_cuentaContrato = Utils.getString(c, "CuentaContrato", "");
+			is_idMaterialSolicitado = Utils.getString(c, "idMaterialSolicitado", "");
+
+			is_EncuestaDeSatisfaccion = Utils.getString(c, "EncuestaDeSatisfaccion", "");
+			is_MedidorInstalado = Utils.getString(c, "MedidorInstalado", "");
+			is_idMarcaInstalada = Utils.getString(c, "idMarcaInstalada", "");
+			is_LecturaReal = Utils.getString(c, "LecturaReal", "");
+			is_Repercusion = Utils.getString(c, "Repercusion", "");
+			is_idMaterialUtilizado = Utils.getString(c, "idMaterialUtilizado", "");
+			is_idTipoDeReconexion = Utils.getString(c, "idTipoDeReconexion", "");
+			is_idTipoDeRemocion = Utils.getString(c, "idTipoDeRemocion", "");
+			is_ClienteYaPagoMonto = Utils.getString(c, "ClienteYaPagoMonto", "");
+			is_ClienteYaPagoFecha = Utils.getString(c, "ClienteYaPagoFecha", "");
+			is_ClienteYaPagoAgente = Utils.getString(c, "ClienteYaPagoAgente", "");
+//************************************************************************************************************************************
+
 			ls_mensaje= Utils.getString(c, "mensaje", "");
 			is_idOrden = Utils.getLong(c, "idOrden", 0);
 
@@ -410,7 +474,22 @@ public class Lectura {
 		cv_params.put("longitud", is_longitud);
 		cv_params.put("estadoDeLaOrden", is_estadoDeLaOrden);
 		cv_params.put("envio", 1);
-		
+
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui vamos a poner todos los CamposEngie que vamos a enviar de regreso al servidor
+		cv_params.put("EncuestaDeSatisfaccion", is_EncuestaDeSatisfaccion);
+		cv_params.put("MedidorInstalado", is_MedidorInstalado);
+		cv_params.put("idMarcaInstalada", is_idMarcaInstalada);
+		cv_params.put("LecturaReal", is_LecturaReal);
+		cv_params.put("Repercusion", is_Repercusion);
+		cv_params.put("idMaterialUtilizado", is_idMaterialUtilizado);
+		cv_params.put("idTipoDeReconexion", is_idTipoDeReconexion);
+		cv_params.put("idTipoDeRemocion", is_idTipoDeRemocion);
+		cv_params.put("ClienteYaPagoMonto", is_ClienteYaPagoMonto);
+		cv_params.put("ClienteYaPagoFecha", is_ClienteYaPagoFecha);
+		cv_params.put("ClienteYaPagoAgente", is_ClienteYaPagoAgente);
+//************************************************************************************************************************************
+
 		String params[] = { String.valueOf(secuenciaReal) };
 
 		db.update("ruta", cv_params,
@@ -455,8 +534,20 @@ public class Lectura {
 		guardar(false, 0);
 	}
 
+	public boolean setClienteYaPago(Bundle bu_params) {
+		if (bu_params == null)
+			return false;
+		globales.tll.getLecturaActual().is_ClienteYaPagoMonto = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_MONTO));
+		globales.tll.getLecturaActual().is_ClienteYaPagoFecha = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_FECHA));
+		globales.tll.getLecturaActual().is_ClienteYaPagoAgente = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_AGENTE));
+		if ((Float.parseFloat(globales.tll.getLecturaActual().is_ClienteYaPagoMonto)+100.0) < Float.parseFloat(globales.tll.getLecturaActual().is_vencido)) {
+			return true;
+		}
+		return false;
+	}
+
 	public void setComentarios(String ls_comentarios) {
-		
+
 		if (globales.multiplesAnomalias){
 			//No se pueden agregar comentarios vacios
 			if (ls_comentarios.equals("")){
@@ -947,7 +1038,18 @@ public class Lectura {
 		closeDatabase();
 
 	}
-	
+
+//************************************************************************************************************************************
+// CE, 06/10/23, Opcionalmente podemos agregar una funcion para leer y escribir todos los CamposEngie que agregamos
+	public String getMiLatitud() {
+		return miLatitud;
+	}
+
+	public String getMiLongitud() {
+		return miLongitud;
+	}
+//************************************************************************************************************************************
+
 	public String getAnomaliaAMostrar(){
 //		String cadena="";
 //		for (Anomalia anomalia:anomalias){

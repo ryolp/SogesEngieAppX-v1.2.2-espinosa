@@ -12,8 +12,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +30,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class SignaturePadActivity extends Activity {
+
+    Globales globales;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -56,6 +59,8 @@ public class SignaturePadActivity extends Activity {
         verifyStoragePermissions(this);
         setContentView(R.layout.activity_signature_pad);
 
+        globales = ((Globales) getApplicationContext());
+
         Bundle bu_params = getIntent().getExtras();
         secuencial = bu_params.getInt("secuencial");
         caseta = bu_params.getString("caseta");
@@ -75,7 +80,7 @@ public class SignaturePadActivity extends Activity {
             mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
                 @Override
                 public void onStartSigning() {
-                    Toast.makeText(SignaturePadActivity.this, "OnStartSigning", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SignaturePadActivity.this, "OnStartSigning", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -127,6 +132,7 @@ public class SignaturePadActivity extends Activity {
                         byte[] firmaAGuardar = out.toByteArray();
                         long idFoto;
 
+                        globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "1";
                         cv_datos = new ContentValues(4);
                         cv_datos.put("secuencial", secuencial);
                         cv_datos.put("nombre", ls_nombre);
@@ -157,6 +163,7 @@ public class SignaturePadActivity extends Activity {
                             byte[] firmaAGuardar = out.toByteArray();
                             long idFoto;
 
+                            globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "2";
                             cv_datos = new ContentValues(4);
                             cv_datos.put("secuencial", secuencial);
                             cv_datos.put("nombre", ls_nombre);
@@ -187,6 +194,7 @@ public class SignaturePadActivity extends Activity {
                                 byte[] firmaAGuardar = out.toByteArray();
                                 long idFoto;
 
+                                globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "3";
                                 cv_datos = new ContentValues(4);
                                 cv_datos.put("secuencial", secuencial);
                                 cv_datos.put("nombre", ls_nombre);
@@ -217,6 +225,7 @@ public class SignaturePadActivity extends Activity {
                                     byte[] firmaAGuardar = out.toByteArray();
                                     long idFoto;
 
+                                    globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "4";
                                     cv_datos = new ContentValues(4);
                                     cv_datos.put("secuencial", secuencial);
                                     cv_datos.put("nombre", ls_nombre);
@@ -247,6 +256,7 @@ public class SignaturePadActivity extends Activity {
                                         byte[] firmaAGuardar = out.toByteArray();
                                         long idFoto;
 
+                                        globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "5";
                                         cv_datos = new ContentValues(4);
                                         cv_datos.put("secuencial", secuencial);
                                         cv_datos.put("nombre", ls_nombre);

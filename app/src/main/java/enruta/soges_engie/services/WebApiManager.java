@@ -250,6 +250,30 @@ public class WebApiManager {
         }
     }
 
+    public SubirFotoResponse subirVideo(SubirFotoRequest req, byte[] foto) throws Exception {
+        try {
+
+            // RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), foto);
+
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, RequestBody.create(MediaType.parse("image/*"), foto));
+
+            RequestBody ruta = RequestBody.create(MediaType.parse("text/plain"), req.ruta);
+            RequestBody carpeta = RequestBody.create(MediaType.parse("text/plain"), req.carpeta);
+            RequestBody nombreArchivo = RequestBody.create(MediaType.parse("text/plain"), req.nombre);
+            RequestBody serieMedidor = RequestBody.create(MediaType.parse("text/plain"), req.serieMedidor);
+            RequestBody idOrden= RequestBody.create(MediaType.parse("text/plain"), String.valueOf(req.idOrden));
+
+            Call<SubirFotoResponse> call = service.subirVideo(filePart, ruta, carpeta, nombreArchivo, serieMedidor, idOrden);
+
+            Response<SubirFotoResponse> resp = call.execute();
+
+            return resp.body();
+        } catch (Throwable t)
+        {
+            throw new Exception("Error al subir foto: " + t.getMessage());
+        }
+    }
+
     public SubirDatosResponse subirDatos(SubirDatosRequest request) throws Exception {
         Call<SubirDatosResponse> call = service.subirDatos(request);
 

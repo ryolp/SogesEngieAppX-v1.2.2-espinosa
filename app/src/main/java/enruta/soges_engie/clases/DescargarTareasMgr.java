@@ -447,6 +447,7 @@ public class DescargarTareasMgr implements Runnable {
 //        cv_params.put("TimeOfLife", orden.TimeOfLife );
 //        cv_params.put("MedTimeOfLife", orden.MedTimeOfLife );
                 cv_params.put("FechaDeAsignacion", orden.FechaDeAsignacion);
+                cv_params.put("fechaDeRecepcion", Utils.getDateTimeStr("yyyyMMddHHmmss"));
 //            cv_params.put("NumSello", orden.NumSello);
 //            cv_params.put("Anio", orden.Anio);
                 cv_params.put("consumo", "");
@@ -457,8 +458,15 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("fecha_utlimo_pago", orden.FechaUltimoPago);
                 cv_params.put("giro", orden.Giro);
                 cv_params.put("diametro", orden.DiametroToma);
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui vamos a agregar solamente los CamposEngie que vienen en el archivo que descargamos del servidor
                 cv_params.put("miLatitud", orden.miLatitud);
                 cv_params.put("miLongitud", orden.miLongitud);
+                cv_params.put("NumAviso", orden.NumAviso);
+                cv_params.put("CuentaContrato", orden.CuentaContrato);
+                cv_params.put("idMaterialSolicitado", orden.idMaterialSolicitado);
+                cv_params.put("MensajeOut", orden.MensajeOut);
+//************************************************************************************************************************************
 
                 orden.id = mDb.insertOrThrow("ruta", null, cv_params);
             }
@@ -550,9 +558,16 @@ public class DescargarTareasMgr implements Runnable {
             orden.EstadoDelServicio = campos[i++];
             orden.Tarifa = campos[i++];
             orden.NumSello = campos[i++];
+//************************************************************************************************************************************
+// CE, 06/10/23, Aqui vamos a agregar solamente los CamposEngie que vienen en el archivo que descargamos del servidor
             orden.MensajeOut = campos[i++];
             orden.miLatitud = campos[i++];
             orden.miLongitud = campos[i++];
+            orden.NumAviso = campos[i++];
+            orden.CuentaContrato = campos[i++];
+            orden.idMaterialSolicitado = campos[i];
+// *** MUY IMPORTANTE: El ultimo campo no debe llevar el ++ ****
+//************************************************************************************************************************************
 
             orden.NumOrden = String.valueOf(orden.idOrden);
         } catch (Throwable t) {

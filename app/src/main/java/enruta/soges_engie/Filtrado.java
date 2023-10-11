@@ -15,7 +15,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class Filtrado extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Filtrado extends AppCompatActivity {
 
 	Spinner sp_modo;
 	EditText et_ciudad, et_medidor, et_cliente, et_direccion;

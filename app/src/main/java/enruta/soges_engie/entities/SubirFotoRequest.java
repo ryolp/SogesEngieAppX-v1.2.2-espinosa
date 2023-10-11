@@ -5,6 +5,7 @@ public class SubirFotoRequest {
     public String carpeta = "";
     public String nombre = "";
     public String serieMedidor = "";
+    public String fecha = "";
     public long idOrden = 0;
     public long idEmpleado = 0;
 }

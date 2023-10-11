@@ -3,22 +3,18 @@ package enruta.soges_engie;
 import java.util.ArrayList;
 import java.util.List;
 
-import enruta.soges_engie.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
-
- 
 
 public class VerFotos extends Activity{
     /** maintains the pager adapter*/
@@ -110,7 +106,7 @@ public class VerFotos extends Activity{
         is_caseta= c.getString(c.getColumnIndex("serieMedidor"));
         closeDatabase();
         
-        captureButton = (Button) findViewById(R.id.camara_b_capture);
+        captureButton = (Button) findViewById(R.id.btnCapturar);
         backButton = (Button) findViewById(R.id.camara_b_regresa);
         otraButton=(Button) findViewById(R.id.camara_b_otra);
         

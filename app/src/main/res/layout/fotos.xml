@@ -6,11 +6,11 @@
   android:orientation="vertical"
   >
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -19,7 +19,7 @@
       android:layout_alignParentLeft="true" >
 
       <Button
-            android:id="@+id/camara_b_capture"
+            android:id="@+id/btnCapturar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".3333"

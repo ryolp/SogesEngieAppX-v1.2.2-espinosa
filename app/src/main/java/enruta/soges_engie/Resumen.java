@@ -4,17 +4,16 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Vector;
 
-import enruta.soges_engie.R;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 public class Resumen extends Fragment {
 	
@@ -141,9 +140,9 @@ public class Resumen extends Fragment {
 	        		 resumen.add(new EstructuraResumen(sa[0],sa[1]));
 	        	 }
 	        	 
-	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_total_lecturas), String.valueOf(ll_total)));
-	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_fotos_tomadas), String.valueOf(ll_fotos)));
-	        	 resumen.add(new EstructuraResumen("", ""));
+//	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_total_lecturas), String.valueOf(ll_total)));
+//	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_fotos_tomadas), String.valueOf(ll_fotos)));
+//	        	 resumen.add(new EstructuraResumen("", ""));
 	        	 porcentaje=  (((float)ll_restantes*100) /(float)ll_total);
 	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_lecturas_restantes),String.valueOf(ll_restantes),  formatter.format(porcentaje) +"%"));
 	        	 porcentaje=  (((float)ll_tomadas*100) /(float)ll_total);
@@ -162,8 +161,8 @@ public class Resumen extends Fragment {
 
 				resumen.add(new EstructuraResumen("", ""));
 
-				if (ma_papa.globales.mostrarNoRegistrados)
-	        		 resumen.add(new EstructuraResumen("Nuevos Puntos", String.valueOf(ll_noRegistrados)));
+//				if (ma_papa.globales.mostrarNoRegistrados)
+//	        		 resumen.add(new EstructuraResumen("Nuevos Puntos", String.valueOf(ll_noRegistrados)));
 	        	 
 	        	 resumen.add(new EstructuraResumen("", "")); //Agregamos una linea mas
 	        	 final ResumenGridAdapter adapter = new ResumenGridAdapter(getActivity(), resumen, ma_papa.infoFontSize * ma_papa.porcentaje2);

@@ -1,5 +1,7 @@
 package enruta.soges_engie;
 
+import static enruta.soges_engie.Main.FOTO_PROBAR_VIDEO;
+
 import enruta.soges_engie.services.WebApiManager;
 
 import android.Manifest;
@@ -11,7 +13,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.ActivityCompat;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +27,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CPL extends Activity {
+public class CPL extends AppCompatActivity {
 
     public final static int NINGUNO = 0;
     public final static int ADMINISTRADOR = 1;
@@ -68,6 +73,10 @@ public class CPL extends Activity {
 
     private DialogoMensaje mDialogoMsg = null;
 
+    private Button btnProbarCamara;
+
+    private ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //	requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -80,12 +89,32 @@ public class CPL extends Activity {
 
         esconderAdministrador();
 
+        inicializarProbarCamara();
+
         inicializarControles();
 
         showAppVersion();
 
         estableceVariablesDePaises();
     }
+
+    private void inicializarProbarCamara()
+    {
+        btnProbarCamara = (Button)findViewById(R.id.btnProbarCamara);
+
+        btnProbarCamara.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                probarVideo();
+            }
+        });
+    }
+
+    private void probarVideo() {
+        Intent camara = new Intent(this, Camara2Activity.class);
+        startActivityForResult(camara, FOTO_PROBAR_VIDEO);
+    }
+
 
     private void showAppVersion() {
         String version;
@@ -484,7 +513,9 @@ public class CPL extends Activity {
             tienePermisos = false;
         }
 
-
+        if (ActivityCompat.checkSelfPermission(CPL.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            tienePermisos = false;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 

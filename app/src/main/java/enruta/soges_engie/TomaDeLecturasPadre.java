@@ -24,7 +24,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
-public abstract class TomaDeLecturasPadre extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	final static public int CORRECTA = 0;
 	final static public int FUERA_DE_RANGO = -1;
 	final static public int LECTURA_VACIA = -2;
@@ -52,6 +54,7 @@ public abstract class TomaDeLecturasPadre extends Activity {
 	final static int REQUEST_ENABLE_BT = 6;
 	final static int TRANSMISION=7;
 	final static int RECEPCION=8;
+//	final static int CLIENTE_YA_PAGO = 9;
 
 	final static int LECTURA = 0;
 	final static int PRESION = 1;
@@ -897,13 +900,15 @@ public abstract class TomaDeLecturasPadre extends Activity {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //		builder.setMessage(regreseDe!=ANOMALIA?(globales.is_terminacion.endsWith("1") ? "Obtención de Foto antes de ejecutar la acción": "Obtención de Foto una vez ejecutada la acción"):"Preparese para tomar la foto")
-		builder.setMessage("Preparese para tomar la foto")
+// CE, 08/10/23, Vamos a mostrar un mensaje diferente dependiendo de la situacion
+//		builder.setMessage("Preparese para tomar la foto")
+		builder.setMessage(globales.getMensajeParaMostrarAntesDeTomarLaFoto())
 		.setTitle("Cámara")
 		       .setCancelable(false)
 		       .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id){
-		        	   
-		        	   
+
+        	   
 		       		camara.putExtra("secuencial", lectura.secuenciaReal);
 		       		camara.putExtra("caseta", lectura.is_serieMedidor);
 		       		camara.putExtra("terminacion", globales.is_terminacion);

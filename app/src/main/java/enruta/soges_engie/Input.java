@@ -545,15 +545,11 @@ public class Input extends TomaDeLecturasPadre {
 
                         if (globales.sonidos) {
                             if (!sospechosa) {
-
                                 sonidos.playSoundMedia(globales.sonidoCorrecta);
                             } else {
                                 sonidos.playSoundMedia(globales.sonidoConfirmada);
                             }
-
                         }
-
-
                     } else {
                         esLecturaValida = true;
                     }
@@ -566,23 +562,27 @@ public class Input extends TomaDeLecturasPadre {
                     intent.putExtra("comentarios", "");
                     String is_desc = "";
 
-                    openDatabase();
-                    Cursor c = db.rawQuery("Select desc from codigosEjecucion where anomalia='" + this.et_generico.getText().toString() + "'", null);
-                    c.moveToFirst();
-
-                    is_desc = Utils.getString(c, "desc", "");
-
-                    closeDatabase();
+// CE, 10/10/23, Ya nos vamos a buscar la descricpion de ningun codigo
+//                    openDatabase();
+//                    Cursor c = db.rawQuery("Select desc from codigosEjecucion where anomalia='" + this.et_generico.getText().toString() + "'", null);
+//                    c.moveToFirst();
+//                    is_desc = Utils.getString(c, "desc", "");
+//                    closeDatabase();
 
 //********************************************************************
 // CE, 01/10/23, Vamos a mostrar textos diferentes dependiendo de la Operacion
                     String is_NuevoMensajePorMostrar = "";
-                    if (this.et_generico.getText().toString().equals("10"))
+                    if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
                         is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
-                    else if (this.et_generico.getText().toString().equals("60"))
-                        is_NuevoMensajePorMostrar = "ESCRIBA EL NUMERO DE MEDIDOR";
+                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
+                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+                        is_NuevoMensajePorMostrar = "ESCRIBA EL NOMBRE DEL CLIENTE";
+                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+                        is_NuevoMensajePorMostrar = "ESCRIBA EL NUMERO DE MEDIDOR INSTALADO";
                     else
-                        is_NuevoMensajePorMostrar = this.et_generico.getText().toString() + " - " + is_desc + "";
+                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
+//                        is_NuevoMensajePorMostrar = this.et_generico.getText().toString() + " - " + is_desc + "";
 //********************************************************************
 
                     // Con esto generamos la etiqueta que tendra el input
@@ -1333,6 +1333,7 @@ public class Input extends TomaDeLecturasPadre {
 //		tv_info.setText("Medidor con " + lectura.numerodeesferas
 //				+ " esferas.");
 
+// CE, 10/10/23, Aqui debemos mostrar la LecturaReal
         et_generico.setText(globales.is_lectura);
         et_generico.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50);
         //if (lectura.numerodeesferasReal.equals(""))
