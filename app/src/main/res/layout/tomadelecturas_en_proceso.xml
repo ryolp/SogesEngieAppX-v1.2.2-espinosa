@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayoutm"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tv_contador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/Blue" />
+
+    <TextView
+        android:id="@+id/tv_indica_corr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:text="N"
+        android:visibility="gone"
+        android:textColor="@color/LightSkyBlue" />
+
+    <TextView
+        android:id="@+id/tv_indica_filtro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/tv_indica_corr" 
+        android:text="F"
+        android:visibility="gone"
+        android:textColor="@color/LightSalmon" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" >
+
+        <LinearLayout
+            android:id="@+id/ll_button_bar1"
+            
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" >
+
+            <Button
+                android:id="@+id/button1"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:layout_marginLeft="-3dip"
+           		android:layout_marginRight="-3dip"
+           		android:layout_marginTop="-3dip"
+            	android:layout_marginBottom="-3dip"
+                android:text="@string/str_lectura"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/button2"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:layout_marginLeft="-3dip"
+           		android:layout_marginRight="-3dip"
+           		android:layout_marginTop="-3dip"
+            	android:layout_marginBottom="-3dip"
+                android:text="@string/str_buscar"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/button3"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:layout_marginLeft="-3dip"
+           		android:layout_marginRight="-3dip"
+           		android:layout_marginTop="-3dip"
+            	android:layout_marginBottom="-3dip"
+                android:enabled="true"
+                android:text="@string/str_anomalia"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ll_button_bar1" >
+
+            <Button
+                android:id="@+id/button4"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:layout_marginLeft="-3dip"
+           		android:layout_marginRight="-3dip"
+           		android:layout_marginTop="-3dip"
+            	android:layout_marginBottom="-3dip"
+                android:text="@string/m_str_anterior"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/button5"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-3dip"
+                android:layout_marginLeft="-3dip"
+                android:layout_marginRight="-3dip"
+                android:layout_marginTop="-3dip"
+                android:layout_weight="0.3333"
+                android:onClick="verFotos"
+                android:textStyle="bold"
+                android:text="@string/str_fotos" />
+
+            <Button
+                android:id="@+id/button6"
+				style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".3333"
+                android:layout_marginLeft="-3dip"
+           		android:layout_marginRight="-3dip"
+           		android:layout_marginTop="-3dip"
+            	android:layout_marginBottom="-3dip"
+                android:text="@string/m_str_siguiente"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </RelativeLayout>
+    
+   <LinearLayout
+       android:id="@+id/linearLayout1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/relativeLayout1"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentRight="true"
+       android:background="@color/green"
+       android:orientation="vertical" >
+        
+        <TextView
+		           android:id="@+id/tv_respuesta"
+		           android:layout_width="match_parent"
+		           android:layout_height="wrap_content"
+		           android:background="@color/HotPink"
+		           android:ellipsize="marquee"
+		           android:focusableInTouchMode="true"
+		           android:lines="1"
+		           android:marqueeRepeatLimit="marquee_forever"
+		           android:scrollHorizontally="true"
+		           android:text="¿Esta cortado?"
+		           android:textAppearance="?android:attr/textAppearanceLarge"
+		           android:textColor="@color/white"
+		           android:gravity="center"
+		           android:visibility="gone"
+		           android:typeface="normal" />
+        
+       <LinearLayout
+                android:id="@+id/cuadricula"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+                   
+                <LinearLayout
+                    android:id="@+id/celda0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+
+                    <TextView
+                        android:id="@+id/label_campo0"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Póliza"
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/campo0"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="00000000"
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/celda1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+
+                    <TextView
+                        android:id="@+id/label_campo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Tar."
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/campo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="RE."
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:id="@+id/celda2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:gravity="center" 
+                    android:orientation="vertical" >
+                    
+                    <TextView
+                        android:id="@+id/label_campo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Ub."
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/campo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="A"
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:id="@+id/celda3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25" 
+                    android:gravity="center"
+                    android:orientation="vertical" >
+                    
+                    <TextView
+                        android:id="@+id/label_campo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Edo."
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/campo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:id="@+id/celda4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+                    
+                    <TextView
+                        android:id="@+id/label_campo4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Est."
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/campo4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:gravity="center"
+                        android:background="@drawable/bordes_cuadricula"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+
+            </LinearLayout>
+              
+
+        
+        <TextView
+            android:id="@+id/tv_caseta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusableInTouchMode="true"
+            android:lines="1"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:text="M:0000000000"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"
+            android:textSize="43sp"
+            android:typeface="normal" />
+
+        <!-- quite el android:focusable="true" por si hay algun problema -->
+		<!-- quite el android:focusable="true" por si hay algun problema -->
+		<TextView
+		    android:id="@+id/tv_mensaje"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@color/HotPink"
+		    android:ellipsize="marquee"
+		    android:focusableInTouchMode="true"
+		    android:lines="1"
+		    android:marqueeRepeatLimit="marquee_forever"
+		    android:scrollHorizontally="true"
+		    android:text="¿Esta cortado?"
+		    android:textAppearance="?android:attr/textAppearanceLarge"
+		    android:textColor="@color/white"
+		    android:gravity="center"
+		    android:textSize="43sp"
+		    android:visibility="gone"
+		    android:typeface="normal" />
+		          
+	    <LinearLayout
+	        android:id="@+id/linearLayout2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	         >
+            
+	        <TextView
+	            android:id="@+id/tv_lectura"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight=".70"
+	            android:ellipsize="marquee"
+	            android:focusableInTouchMode="true"
+	            android:lines="1"
+	            android:marqueeRepeatLimit="marquee_forever"
+	            android:scrollHorizontally="true"
+	            android:text="L:"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
+	            android:textColor="@color/white"
+	            android:textSize="43sp" />
+	
+	        <TextView
+	            android:id="@+id/tv_anomalia"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight=".30"
+	            android:ellipsize="marquee"
+	            android:focusableInTouchMode="true"
+	            android:lines="1"
+	            android:marqueeRepeatLimit="marquee_forever"
+	            android:scrollHorizontally="true"
+	            android:text="R:"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
+	            android:textColor="@color/white"
+	            android:textSize="43sp" />
+	
+	    </LinearLayout>
+
+           
+	    
+
+    </LinearLayout>
+    
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:id="@+id/RelativeLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+	        
+            <LinearLayout
+                android:id="@+id/ll_limites"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone" >
+                
+                 <TextView
+                       android:id="@+id/textView9"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignBaseline="@+id/tv_min"
+		                android:layout_alignBottom="@+id/tv_min"
+		                android:layout_toRightOf="@+id/tv_min"
+		                
+		                android:text="@string/str_lecturaAnterior" />
+                   
+                   <TextView
+		                android:id="@+id/tv_lecturaAnterior"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignBottom="@+id/textView9"
+		                android:layout_alignParentRight="true"
+		                android:layout_toRightOf="@+id/textView9"
+		                android:paddingLeft="5dp"
+		                android:text="Large Text"
+		                android:textAppearance="?android:attr/textAppearanceLarge" />
+		        
+                   <TextView
+		                android:id="@+id/textView6"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                 android:paddingLeft="20dp"
+		                android:text="@string/str_min" />
+                   
+                   <TextView
+		                android:id="@+id/tv_min"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_toRightOf="@+id/textView6"
+		                android:paddingLeft="20dp"
+		                android:text="Large Text"
+		                android:textAppearance="?android:attr/textAppearanceLarge" />
+                   
+                   <TextView
+		                android:id="@+id/textView8"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignBaseline="@+id/tv_min"
+		                android:layout_alignBottom="@+id/tv_min"
+		                android:layout_toRightOf="@+id/tv_min"
+		                android:paddingLeft="20dp"
+		                android:text="@string/str_max" />
+                   
+                   <TextView
+		                android:id="@+id/tv_max"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignBottom="@+id/textView8"
+		                android:layout_alignParentRight="true"
+		                android:layout_toRightOf="@+id/textView8"
+		                android:paddingLeft="5dp"
+		                android:text="Large Text"
+		                android:textAppearance="?android:attr/textAppearanceLarge" />
+                   
+                  
+            </LinearLayout>
+
+			<androidx.cardview.widget.CardView
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:layout_marginHorizontal="20dp"
+				app:cardCornerRadius="10dp"
+				android:layout_marginTop="20dp"
+				>
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="match_parent">
+
+					<TextView
+						android:id="@+id/tv_nueva_datos_sap1"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textColor="@color/black"
+						android:layout_centerVertical="true"
+						android:layout_marginStart="20dp"
+						android:text="@string/TYPE_OF_SERVICE" />
+
+					<TextView
+						android:id="@+id/tv_nueva_datos_sap2"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textColor="@color/black"
+						android:layout_alignParentEnd="true"
+						android:layout_centerVertical="true"
+						android:layout_marginEnd="20dp"
+						android:text="@string/Reconexon" />
+
+				</RelativeLayout>
+			</androidx.cardview.widget.CardView>
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="140dp"
+				android:layout_marginTop="15dp">
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="140dp">
+
+					<androidx.cardview.widget.CardView
+						android:layout_width="match_parent"
+						android:layout_height="120dp"
+						android:layout_marginHorizontal="20dp"
+						android:layout_marginTop="10dp"
+						app:cardCornerRadius="10dp"
+						app:cardElevation="3dp">
+
+						<TextView
+							android:id="@+id/tv_nueva_direccion"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:layout_marginStart="30dp"
+							android:gravity="center_vertical"
+							android:paddingHorizontal="40dp"
+							android:text="Victoria Reyna#2231-D\nCintrika, Entre Victoria Imperial\nVictoria Emperatriz\nMaltos, 871972"
+							android:textColor="@color/black" />
+					</androidx.cardview.widget.CardView>
+
+				</RelativeLayout>
+				<ImageView
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:src="@drawable/pin_svg"
+					android:layout_marginStart="40dp" />
+			</RelativeLayout>
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="80dp"
+				android:layout_marginTop="10dp">
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="80dp">
+
+					<androidx.cardview.widget.CardView
+						android:layout_width="match_parent"
+						android:layout_height="60dp"
+						android:layout_marginHorizontal="20dp"
+						android:layout_marginTop="10dp"
+						app:cardCornerRadius="10dp"
+						app:cardElevation="3dp">
+
+						<TextView
+							android:id="@+id/tv_nueva_datos_cliente"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:layout_marginStart="30dp"
+							android:gravity="center_vertical"
+							android:paddingHorizontal="40dp"
+							android:text="@string/RichardAbhianaJr"
+							android:textColor="@color/black" />
+					</androidx.cardview.widget.CardView>
+
+				</RelativeLayout>
+
+				<ImageView
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:src="@drawable/avatar_svg"
+					android:layout_marginStart="40dp" />
+			</RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_advertencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/Yellow"
+                android:gravity="center"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/Black"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll_generica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            
+
+            <TextView
+                android:id="@+id/tv_comentarios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <TextView
+                android:id="@+id/tv_contadorOpcional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Large Text"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/b_repetir_anom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignParentRight="true"
+        android:text="Repetir"
+        android:visibility="visible" />
+
+</RelativeLayout>
