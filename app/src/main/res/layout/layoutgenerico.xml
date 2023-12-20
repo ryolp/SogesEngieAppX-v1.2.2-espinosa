@@ -24,26 +24,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-        android:layout_centerVertical="true"  >
+            android:layout_centerVertical="true"  >
 
             <Button
-            android:id="@+id/im_b_anterior"
+                android:id="@+id/im_b_anterior"
                 style="@style/AppTheme.RoundedCornerMaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text=""
-            android:visibility="invisible"
-            android:background="@android:color/transparent"
-            android:onClick="getAntLect" />
-            
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:text=""
+                android:visibility="invisible"
+                android:background="@android:color/transparent"
+                android:onClick="getAntLect" />
 
-        
-
-        
-        <Button
+            <Button
                 android:id="@+id/im_b_siguiente"
-            style="@style/AppTheme.RoundedCornerMaterialButton"
+                style="@style/AppTheme.RoundedCornerMaterialButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
@@ -60,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/str_lectura"
+            android:fontFamily="@font/lato"
             android:layout_centerVertical="true"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -77,11 +74,16 @@
     
     <TextView
         android:id="@+id/tv_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_contendedorLabel"
         android:text="@string/str_lectura"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="@color/SteelBlue"
+        android:gravity="center"
+        android:textColor="@color/White"
+        android:fontFamily="@font/lato"
+        android:textStyle="bold"
         android:visibility="gone" />
 
     <include
@@ -97,8 +99,8 @@
         android:id="@+id/et_generico"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/tv_label"
+        android:layout_alignParentLeft="true"
         android:ems="10"
         android:imeActionLabel="Capturar"
         android:inputType="number" />

@@ -99,9 +99,14 @@ Vector <Entry> objetosAMostar;
 			if (cib==null){
 				continue;
 			}
-			
-			objetosAMostar.add( new XmlTextView(cib.mensaje, "20", "TextView", null, true, "", 0,Typeface.ITALIC) );
-			objetosAMostar.add(new XmlEditText(cib.texto, "20", "EditText",null, true,String.valueOf(campo),String.valueOf(cib.longitud), cib.tipo,String.valueOf(campo))); 
+			if (!cib.mensaje.equals("Agente")) {
+				objetosAMostar.add(new XmlTextView(cib.mensaje, "20", "TextView", null, true, "", 0, Typeface.ITALIC));
+				objetosAMostar.add(new XmlEditText(cib.texto, "20", "EditText", null, true, String.valueOf(campo), String.valueOf(cib.longitud), cib.tipo, String.valueOf(campo)));
+			} else {
+				Vector <Configuracion.XmlSpinnerItem> agentesDelSpin = null;
+				objetosAMostar.add(new XmlTextView(cib.mensaje, "20", "TextView", null, true, "", 0, Typeface.ITALIC));
+				objetosAMostar.add(new XmlSpinner(cib.mensaje,"20", "Spinner",true, String.valueOf(campo), String.valueOf(campo), null, agentesDelSpin));
+			}
 		}
 		
 		agregaCampos();
@@ -144,7 +149,9 @@ Vector <Entry> objetosAMostar;
 				 }
 				 if (tmp.type.equals("Spinner")){
 					 Spinner sp_view= (Spinner) view.findViewWithTag(tmp.view_name);
-					 texto= String.valueOf(sp_view.getSelectedItemPosition());
+// CE, 09/10/23, En el caso de Engie, queremos extraer el nombre del Agente
+//					 texto= String.valueOf(sp_view.getSelectedItemPosition());
+					 texto = String.valueOf(sp_view.getSelectedItem());
 					 dbField= ((XmlSpinner)tmp).dbField;
 				 }
 				 
@@ -332,11 +339,24 @@ Vector <Entry> objetosAMostar;
 			    		
 			    		
 			    		ArrayList<String> spinnerArray = new ArrayList<String>();
-			    		
-			    		for(XmlSpinnerItem sp:entry.items){
-			    			spinnerArray.add(sp.label);
-			    		}
-			    		
+//			    		for(XmlSpinnerItem sp:entry.items){
+//			    			spinnerArray.add(sp.label);
+//			    		}
+						spinnerArray.add("7 Eleven");
+						spinnerArray.add("American Express");
+						spinnerArray.add("Arteli");
+						spinnerArray.add("App Engie");
+						spinnerArray.add("BBVA-Bancomer CIE");
+						spinnerArray.add("Caja Bienestar");
+						spinnerArray.add("Caja Popular Gonzalo Vega");
+						spinnerArray.add("Citibanamex");
+						spinnerArray.add("Elektra");
+						spinnerArray.add("HEB");
+						spinnerArray.add("Mi Cuenta");
+						spinnerArray.add("OXXO");
+						spinnerArray.add("Soriana");
+						spinnerArray.add("Super Q");
+						spinnerArray.add("Otro");
 			    		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 			    		//Estilo usado
 			    		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

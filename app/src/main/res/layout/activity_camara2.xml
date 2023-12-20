@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -9,23 +10,25 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/controles"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/previewView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-
     </LinearLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnCambiarCamara"
@@ -35,25 +38,62 @@
             android:adjustViewBounds="true"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_cambiar_camara" />
+            android:src="@drawable/ic_cambiar_camara"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/ib_firmar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_lecturas"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/ib_firmar"
+            app:layout_constraintStart_toEndOf="@id/btnCambiarCamara"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tv_indicador"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/red" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imgGrabando"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_recording_24"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_indicador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/White"
+                    android:gravity="center_horizontal"
+                    android:text="Medium Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/red"
+                    android:textSize="24dp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -72,7 +112,7 @@
                     android:text="@string/lbl_tdl_indica_medidor"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
-                    android:textSize="24dp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/txtMedidor"
@@ -84,129 +124,130 @@
                     android:text="@string/str_ejemplo"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
-                    android:textSize="24dp" />
+                    android:textSize="24sp" />
 
             </LinearLayout>
         </LinearLayout>
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/controlesCapturarRegresar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <ImageButton
-            android:id="@+id/ib_firmar"
+            android:id="@+id/ib_flash"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentRight="true"
             android:adjustViewBounds="true"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_lecturas" />
-    </RelativeLayout>
+            android:src="@drawable/ic_con_flash"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/ib_bajarResolucion"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_disminuir_24"
+            app:layout_constraintEnd_toStartOf="@id/ib_subirResolucion"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/ib_subirResolucion"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_nuevo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/controles"
+        android:id="@+id/controlesCapturarRegresar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight=".3333">
-
-            <Button
-                android:id="@+id/btnCapturarFoto"
-                style="@style/AppTheme.RoundedCornerMaterialButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight=".25"
-                android:text="@string/str_captura" />
-
-            <Button
-                android:id="@+id/btnCapturarVideo"
-                style="@style/AppTheme.RoundedCornerMaterialButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight=".25"
-                android:text="@string/str_captura_video" />
-
-            <Button
-                android:id="@+id/camara_b_otra"
-                style="@style/AppTheme.RoundedCornerMaterialButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight=".25"
-                android:text="@string/lbl_camara_otra" />
-
-            <Button
-                android:id="@+id/btnRegresar"
-                style="@style/AppTheme.RoundedCornerMaterialButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight=".25"
-                android:text="@string/lbl_regresar"
-                android:visibility="visible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/msj_espere"
+        <Button
+            android:id="@+id/btnCapturarFoto"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".3333"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight=".25"
+            android:text="@string/str_captura"
+            android:visibility="gone" />
 
-            <ProgressBar
-                android:id="@+id/progressBar1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnCapturarVideo"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight=".25"
+            android:text="@string/str_captura_video" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/str_espere"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/camara_b_otra"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight=".25"
+            android:text="@string/lbl_camara_otra"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnRegresar"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight=".25"
+            android:text="@string/lbl_regresar"
+            android:visibility="visible" />
+
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/ib_flash"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_above="@+id/controles"
-        android:layout_alignParentLeft="true"
-        android:adjustViewBounds="true"
-        android:padding="5dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_con_flash" />
+    <LinearLayout
+        android:id="@+id/msj_espere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <ImageButton
-        android:id="@+id/ib_subirResolucion"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_above="@+id/controles"
-        android:layout_alignParentRight="true"
-        android:adjustViewBounds="true"
-        android:padding="5dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_action_nuevo" />
-
-    <ImageButton
-        android:id="@+id/ib_bajarResolucion"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_above="@+id/controles"
-        android:layout_toLeftOf="@id/ib_subirResolucion"
-        android:adjustViewBounds="true"
-        android:padding="5dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_disminuir_24" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_espere"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

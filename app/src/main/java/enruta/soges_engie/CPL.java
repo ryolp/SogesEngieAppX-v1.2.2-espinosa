@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
@@ -58,7 +59,7 @@ public class CPL extends AppCompatActivity {
 
     // RL, 2022-07-14, Campos para validación SMS
 
-    private ImageView iv_nosotros;
+//    private ImageView iv_nosotros;
     private TextView lblMensaje;
     private int clicksLogo = 0;
     private Date fechaClickLogo = null;
@@ -72,8 +73,6 @@ public class CPL extends AppCompatActivity {
     // RL, 2023-07-10, Migración del Cortrex
 
     private DialogoMensaje mDialogoMsg = null;
-
-    private Button btnProbarCamara;
 
     private ActionBar actionBar;
 
@@ -89,8 +88,6 @@ public class CPL extends AppCompatActivity {
 
         esconderAdministrador();
 
-        inicializarProbarCamara();
-
         inicializarControles();
 
         showAppVersion();
@@ -98,30 +95,13 @@ public class CPL extends AppCompatActivity {
         estableceVariablesDePaises();
     }
 
-    private void inicializarProbarCamara()
-    {
-        btnProbarCamara = (Button)findViewById(R.id.btnProbarCamara);
-
-        btnProbarCamara.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                probarVideo();
-            }
-        });
-    }
-
-    private void probarVideo() {
-        Intent camara = new Intent(this, Camara2Activity.class);
-        startActivityForResult(camara, FOTO_PROBAR_VIDEO);
-    }
-
-
     private void showAppVersion() {
         String version;
 
         try {
             version = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ", " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            tv_version.setText(version);
+//CE, 11/10/23, Por diseño de la pantalla, vamos a quitar el numero de version
+//            tv_version.setText(version);
 
         } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
@@ -146,8 +126,8 @@ public class CPL extends AppCompatActivity {
 //			 globales.tdlg= new TomaDeLecturasColombia(this);
 //			 break;
         }
-
-        iv_logo.setImageResource(globales.logo);
+// CE, 11/10/23, Vamos a trabajar en el Rediseño
+//        iv_logo.setImageResource(globales.logo);
 
     }
 
@@ -204,13 +184,11 @@ public class CPL extends AppCompatActivity {
     private void hacerAutenticacion(int opcionLogin) {
         if (!esSesionActiva()) {
             Intent intent = new Intent(this, LoginActivity.class);
-
             intent.putExtra("opcionLogin", opcionLogin);
-
+            intent.putExtra("ultimousuario", getStringValue("ultimousuario"));
             startActivityForResult(intent, LOGIN);
         }
         else {
-
             switch (opcionLogin) {
                 case ADMINISTRADOR:
                     entrarAdministrador();
@@ -275,6 +253,10 @@ public class CPL extends AppCompatActivity {
                 break;
             case LOGIN:
                 procesarLogin(bu_params);
+                openDatabase();
+                db.execSQL("update ruta set verDatos=0, fechaDeInicio='' where lectura='' AND anomalia=''");
+                closeDatabase();
+                break;
         }
     }
 
@@ -400,7 +382,7 @@ public class CPL extends AppCompatActivity {
 
     private void inicializarControles() {
         iv_logo = (ImageView) findViewById(R.id.iv_logo);
-        iv_nosotros = (ImageView) findViewById(R.id.iv_nosotros);
+//        iv_nosotros = (ImageView) findViewById(R.id.iv_nosotros);
         tv_version = (TextView) findViewById(R.id.tv_version_lbl);
         lblMensaje = (TextView) findViewById(R.id.txtMensaje);
         btnAdministrador = (Button) findViewById(R.id.b_admon);
@@ -723,7 +705,7 @@ public class CPL extends AppCompatActivity {
         }
 
         if (globales.sesionEntity == null) {
-            mostrarMensaje("Aviso", "Sesión finalizadao. Autenticarse otra vez.");
+            mostrarMensaje("Aviso", "Sesión finalizada. Favor de autenticarse otra vez.");
             return;
         }
 
@@ -747,6 +729,9 @@ public class CPL extends AppCompatActivity {
 
         globales.setUsuario(globales.sesionEntity.NumCPL);
 
+// CE, 11/12/23, Vamos a quitar esta linea porque esta marcando error
+//        setStringValue("ultimousuario", globales.sesionEntity.Usuario);
+
         Intent intent = new Intent(this, Main.class);
         intent.putExtra("rol", ii_perfil);
         intent.putExtra("esSuperUsuario", esSuperUsuario);
@@ -754,4 +739,25 @@ public class CPL extends AppCompatActivity {
         startActivityForResult(intent, MAIN);
     }
 
+    public void setStringValue(String key, String value) {
+        // openDatabase();
+        db.execSQL("Update config set value='" + value + "' where key='" + key + "'");
+        // closeDatabase();
+    }
+
+    public String getStringValue(String key) {
+        String value = "";
+        openDatabase();
+        Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
+                null);
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+            value = c.getString(c.getColumnIndex("value"));
+        } else {
+            db.execSQL("Insert into config (key, value) values ('" + key + "', '" + value + "')");
+        }
+        c.close();
+        closeDatabase();
+        return value;
+    }
 }

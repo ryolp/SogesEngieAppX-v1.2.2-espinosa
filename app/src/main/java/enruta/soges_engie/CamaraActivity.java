@@ -17,14 +17,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -33,6 +38,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -52,24 +58,34 @@ public class CamaraActivity extends AppCompatActivity {
     public static int PERMANENTE = 0;
     public static int ANOMALIA = 2;
 
-    public final static int TIPO_FOTO_ORDEN = 0;
-    public final static int TIPO_FOTO_EMPLEADO = 1;
-
     /*Estados del Flash*/
 
     public final static int SIN_FLASH = 0;
     public final static int CON_FLASH = 1;
     public final static int AUTO = 3;
 
+    /*TIPOS DE FOTOS*/
+
+    public final static int TIPO_FOTO_LECTURA = 0;
+    public final static int TIPO_FOTO_EMPLEADO = 1;
+    public final static int TIPO_FOTO_MEDIDOR_NO_REGISTRADO = 2;
+    public final static int TIPO_FOTO_MEDIDOR_CAMBIO_MEDIDOR = 3;
+
+    private final static int PEDIR_FIRMA = 51;
+    private final static int TOMAR_VIDEO = 52;
+
     CamaraActivity ca;
 
     private Camera mCamera;
     private CamaraPreview mPreview;
     private TextView tv_indicador;
+    private ImageView iv_logo_soges;
     private Button captureButton, backButton, otraButton;
     private FrameLayout fotoPreview, cPreview;
     private long secuencial;
     private String is_terminacion = "-A";
+    private String is_cintillo1 = "";
+    private String is_cintillo2 = "";
     private ContentValues mCv_datos;
     private boolean otraFoto = false;
     private String ls_nombre, caseta;
@@ -131,6 +147,8 @@ public class CamaraActivity extends AppCompatActivity {
         secuencial = bu_params.getInt("secuencial");
         caseta = bu_params.getString("caseta");
         is_terminacion = bu_params.getString("terminacion");
+        is_cintillo1 = bu_params.getString("cintillo1");
+        is_cintillo2 = bu_params.getString("cintillo2");
 //        try{
 //        	if (!bu_params.getString("anomalia").equals("")){
 //            	is_terminacion="_"+bu_params.getString("anomalia");
@@ -152,6 +170,8 @@ public class CamaraActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.camara_b_regresa);
         otraButton = (Button) findViewById(R.id.camara_b_otra);
         ib_flash = (ImageButton) findViewById(R.id.ib_flash);
+
+        iv_logo_soges = (ImageView) findViewById(R.id.iv_logo_soges);
 
         btnBajarResolucion = (ImageButton) findViewById(R.id.ib_bajarResolucion);
         btnSubirResolucion = (ImageButton) findViewById(R.id.ib_subirResolucion);
@@ -182,7 +202,6 @@ public class CamaraActivity extends AppCompatActivity {
             btnFirmar.setVisibility(View.GONE);
         }
 
-
         if (!globales.tomaMultiplesFotos && cantidad > 1) {
             cantidad = 1;
         }
@@ -191,6 +210,18 @@ public class CamaraActivity extends AppCompatActivity {
 
         mostrarInformacion();
         inicializarEventosBotones();
+
+        txtNumMedidor.setVisibility(View.GONE);
+        lblNumMedidor.setVisibility(View.GONE);
+
+        if (is_terminacion.equals("Firma")) {
+//            hacerFirmar();
+        } else {
+            btnFirmar.setVisibility(View.GONE);
+        }
+        if (is_terminacion.equals("Video")) {
+            hacerVideo();
+        }
     }
 
     /**
@@ -211,7 +242,7 @@ public class CamaraActivity extends AppCompatActivity {
                                 //mCamera.takePicture(null, null, mPicture);
                                 otraFoto = true;
                                 //tv_indicador.setVisibility(View.GONE);
-
+                                iv_logo_soges.setVisibility(View.GONE);
                                 ib_flash.setVisibility(View.GONE);
                                 btnFirmar.setVisibility(View.GONE);
                                 btnSubirResolucion.setVisibility(View.GONE);
@@ -236,6 +267,8 @@ public class CamaraActivity extends AppCompatActivity {
                                     ib_flash.setVisibility(View.GONE);
                                 }
 
+                                iv_logo_soges.setVisibility(View.VISIBLE);
+
                                 if (tieneZoom) {
                                     btnBajarResolucion.setVisibility(View.VISIBLE);
                                     btnSubirResolucion.setVisibility(View.VISIBLE);
@@ -244,9 +277,9 @@ public class CamaraActivity extends AppCompatActivity {
                                     btnSubirResolucion.setVisibility(View.GONE);
                                 }
                                 if (is_terminacion.equals("Check")) {
-                                    btnCambiarCamara.setVisibility(View.GONE);
                                     btnBajarResolucion.setVisibility(View.GONE);
                                     btnSubirResolucion.setVisibility(View.GONE);
+                                    btnFirmar.setVisibility(View.GONE);
                                 } else btnCambiarCamara.setVisibility(View.VISIBLE);
                             } catch (Throwable t) {
                                 mostrarMensaje("Error", "Ocurrió un error inesperado en la cámara. Contactar a soporte.", t, null);
@@ -280,9 +313,9 @@ public class CamaraActivity extends AppCompatActivity {
                                     btnSubirResolucion.setVisibility(View.GONE);
                                 }
                                 if (is_terminacion.equals("Check")) {
-                                    btnCambiarCamara.setVisibility(View.GONE);
                                     btnBajarResolucion.setVisibility(View.GONE);
                                     btnSubirResolucion.setVisibility(View.GONE);
+                                    btnFirmar.setVisibility(View.GONE);
                                 } else btnCambiarCamara.setVisibility(View.VISIBLE);
 
                                 iniciaCamara();
@@ -305,6 +338,7 @@ public class CamaraActivity extends AppCompatActivity {
                             otraFoto = false;
                             mostrarInformacion();
 
+                            iv_logo_soges.setVisibility(View.VISIBLE);
                             if (tieneFlash) {
                                 ib_flash.setVisibility(View.VISIBLE);
                             } else ib_flash.setVisibility(View.GONE);
@@ -316,9 +350,9 @@ public class CamaraActivity extends AppCompatActivity {
                                 btnSubirResolucion.setVisibility(View.GONE);
                             }
                             if (is_terminacion.equals("Check")) {
-                                btnCambiarCamara.setVisibility(View.GONE);
                                 btnBajarResolucion.setVisibility(View.GONE);
                                 btnSubirResolucion.setVisibility(View.GONE);
+                                btnFirmar.setVisibility(View.GONE);
                             } else btnCambiarCamara.setVisibility(View.VISIBLE);
 
                             guardarFotoBD();
@@ -621,6 +655,7 @@ public class CamaraActivity extends AppCompatActivity {
             ByteArrayInputStream imageStream = new ByteArrayInputStream(foto);
             Bitmap theImage = rotateImage(imageStream);
 
+            agregarInfoImagen(theImage, infoFoto);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             theImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
@@ -648,11 +683,9 @@ public class CamaraActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (globales.puedoCancelarFotos && !otraFoto) {
-
             try {
                 mCamera.stopPreview();
                 mPreview.setCamera(null);
-
                 globales.camaraFrontal = 0;
                 tieneCamaraFrontal = false;
                 if (mCamera != null) {
@@ -660,14 +693,12 @@ public class CamaraActivity extends AppCompatActivity {
                     mCamera.release();
                     mCamera = null;
                 }
-
                 finish();
             } catch (Throwable t) {
                 mostrarMensaje("Error", "Ocurrió un error inesperado en la cámara. Contactar a soporte.", t, null);
             }
         }
     }
-
 
     public void regresar() {
         try {
@@ -680,11 +711,12 @@ public class CamaraActivity extends AppCompatActivity {
                 mCamera.release();
                 mCamera = null;
             }
-
+// CE, 14/12/23, Vamos a pedir la firma al final de la foto
+            if (is_terminacion.equals("Firma")) {
+                hacerFirmar();
+            }
             Intent resultado = new Intent();
-
             resultado.putExtra("idFoto", mIdFoto);
-
             setResult(Activity.RESULT_OK);
         } catch (Throwable t) {
             mostrarMensaje("Error", "Ocurrió un error inesperado en la cámara. Contactar a soporte.", t, null);
@@ -831,9 +863,9 @@ public class CamaraActivity extends AppCompatActivity {
 
     public void muestraPreview() throws Exception {
         try {
-//            DatosEnvioEntity infoFoto = new DatosEnvioEntity();
-//            DBHelper dbHelper = new DBHelper(this);
-//            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            DatosEnvioEntity infoFoto = new DatosEnvioEntity();
+            DBHelper dbHelper = new DBHelper(this);
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             ImageView imageView = new ImageView(this);
             int padding = /*context.getResources().getDimensionPixelSize(R.dimen.padding_medium)*/0;
@@ -845,9 +877,9 @@ public class CamaraActivity extends AppCompatActivity {
             Bitmap theImage = rotateImage(imageStream);
             //theImage =resizeImage(imageStream);
 
-//            infoFoto = getInfoFoto();
-//
-//            agregarInfoImagen(theImage, infoFoto);
+            infoFoto = getInfoFoto();
+
+            agregarInfoImagen(theImage, infoFoto);
 
             imageView.setImageBitmap(theImage);
 
@@ -1167,6 +1199,33 @@ public class CamaraActivity extends AppCompatActivity {
         RL, 2023-01-02, Se regresa estructura con información adicional de la foto.
      */
 
+    protected void hacerFirmar2() {
+        final Intent intent = new Intent(this, Input.class);
+//        String strEncabezadoDelDialogo = "Quién Atendió";
+//        String strCuerpoDelDialogo = "\nEescriba quién atendió y llene la Encuesta de Satisfacción\n";
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage(strCuerpoDelDialogo)
+//                .setTitle(strEncabezadoDelDialogo)
+//                .setCancelable(false)
+//                .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+                        intent.putExtra("tipo", Input.COMENTARIOS);
+                        intent.putExtra("comentarios", "");
+                        intent.putExtra("anomaliaquepidelectura", "RECONEXION EFECTIVA");
+                        String strEscribaSusComentarios = "\nESCRIBA EL NOMBRE DE LA PERSONA QUE ATENDIÓ:\n";
+                        // Con esto generamos la etiqueta que tendra el input
+                        intent.putExtra("label", strEscribaSusComentarios + "");
+                        //Aqui mandamos el comportamiento de input, en otras palabras, le daremos la anomalia para que pueda configurarlo como se le de la gana
+                        intent.putExtra("behavior", "A - RECONEXION EFECTIVA");
+                        // Tambien debo mandar que etiqueta quiero tener
+                        startActivityForResult(intent, TomaDeLecturas.COMENTARIOS);
+//                        dialog.cancel();
+//                    }
+//                });
+//        AlertDialog alert = builder.create();
+//        alert.show();
+    }
+
     protected void hacerFirmar() {
         try {
             DatosEnvioEntity infoFoto;
@@ -1189,13 +1248,24 @@ public class CamaraActivity extends AppCompatActivity {
             //padParaFirmar.putExtra("anomalia", is_anomalia);
             padParaFirmar.putExtra("ls_nombre", infoFoto.nombreArchivo);
             padParaFirmar.putExtra("idOrden", infoFoto.idOrden);
+            padParaFirmar.putExtra("EncuestaDeSatisfaccion", "0");
             // vengoDeFotos = true;
-            startActivityForResult(padParaFirmar, 1);
+            startActivityForResult(padParaFirmar, PEDIR_FIRMA);
 //        startActivity(padParaFirmar);
-
+            hacerFirmar2();
             //        Utils.showMessageLong(this, "Firmar");
         } catch (Throwable t) {
             mostrarMensaje("Error", "Ocurrió un error inesperado al abrir ventana para firmar. Contactar a soporte.", t, null);
+        }
+    }
+
+    protected void hacerVideo() {
+        try {
+            final Intent video = new Intent(this, Camara2Activity.class);
+            video.putExtra("idOrden", globales.tll.getLecturaActual().is_idOrden);
+            startActivityForResult(video, TOMAR_VIDEO);
+        } catch (Throwable t) {
+            mostrarMensaje("Error", "Ocurrió un error inesperado al abrir ventana para grabar video. Contactar a soporte.", t, null);
         }
     }
 
@@ -1235,22 +1305,158 @@ public class CamaraActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle bu_params;
-//        switch (requestCode) {
+        switch (requestCode) {
+            case TOMAR_VIDEO:
+                if (resultCode == Activity.RESULT_OK) {
+                    preguntarSiBorrarPasoLitraje();
+                } else {
+                }
+                break;
+            default:
 //            case FIRMA:
-        if (data == null) {
+                if (data == null) {
 //                    mensajeOK(getString(R.string.msj_main_operacion_cancelada));
-            return;
-        }
-        if (resultCode == Activity.RESULT_OK) {
+                    return;
+                }
+                if (resultCode == Activity.RESULT_OK) {
 //                    if (bu_params.getString("mensaje").length() > 0)
 //                        mensajeOK(bu_params.getString("mensaje"));
-        } else {
+                } else {
 //                    mensajeOK(getString(R.string.msj_main_operacion_cancelada));
+                }
+                break;
         }
-//                break;
-//        }
     }
 
+    private void preguntarSiBorrarPasoLitraje() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Pasó la prueba de Litraje?")
+                .setCancelable(false)
+                .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        marcarComoNoEfectiva();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void marcarComoNoEfectiva() {
+        globales.tll.getLecturaActual().setAnomalia("J");
+        final Intent intent = new Intent(this, Input.class);
+        String strEncabezadoDelDialogo = "No pasó litraje";
+        String strCuerpoDelDialogo = "Escriba sus Comentarios y tome la Foto de Salida";
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(strCuerpoDelDialogo)
+                .setTitle(strEncabezadoDelDialogo)
+                .setCancelable(false)
+                .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        intent.putExtra("tipo", Input.COMENTARIOS);
+                        intent.putExtra("comentarios", "");
+                        intent.putExtra("anomaliaquepidelectura", "NO PASÓ LITRAJE");
+                        String strEscribaSusComentarios = "\nESCRIBA SUS COMENTARIOS:\n";
+                        // Con esto generamos la etiqueta que tendra el input
+                        intent.putExtra("label",strEscribaSusComentarios	+ "");
+                        //Aqui mandamos el comportamiento de input, en otras palabras, le daremos la anomalia para que pueda configurarlo como se le de la gana
+                        intent.putExtra("behavior", "J - NO PASO LITRAJE");
+                        // Tambien debo mandar que etiqueta quiero tener
+                        startActivityForResult(intent, TomaDeLecturas.COMENTARIOS);
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void agregarInfoImagen(Bitmap bitmap, DatosEnvioEntity info) {
+        Canvas canvas;
+        int width;
+        int height;
+        int width_rect;
+        int height_rect;
+        String texto1 = "Serie Medidor";
+        String texto2 = "Lectura";
+        int x = 0;
+        int y = 0;
+        int margenTop = 30;
+        int margen = 5;
+        int top = 0;
+        int left = 0;
+        int right = 0;
+        int bottom = 0;
+        Rect rect = new Rect();
+
+        if (mTipoFoto != TIPO_FOTO_LECTURA)
+            return;
+
+        if (info == null)
+            return;
+
+// CE, 14/10/23, Por lo pronto no podemos configurarlo desde el Servidor
+//        if (!globales.getAgregarEtiquetaFotos())
+//            return;
+
+//        texto1 = "M: " + info.SerieMedidor;
+        texto1 = is_cintillo1;
+        texto2 = is_cintillo2;
+
+        canvas = new Canvas(bitmap);
+
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
+
+        Paint paintTexto = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintTexto.setColor(Color.BLACK);
+        paintTexto.setTextSize(20);
+        paintTexto.setShadowLayer(1f, 0f, 1f, Color.DKGRAY);
+
+        Rect boundsTexto1 = new Rect();
+        paintTexto.getTextBounds(texto1, 0, texto1.length(), boundsTexto1);
+
+        Rect boundsTexto2 = new Rect();
+        paintTexto.getTextBounds(texto2, 0, texto2.length(), boundsTexto2);
+
+        Paint paintRectContorno = new Paint();
+        paintRectContorno.setAntiAlias(true);
+        paintRectContorno.setColor(Color.RED);
+        paintRectContorno.setStyle(Paint.Style.STROKE);
+        paintRectContorno.setStrokeWidth(4);
+
+        Paint paintRectRelleno = new Paint();
+        paintRectContorno.setAntiAlias(true);
+        paintRectContorno.setColor(Color.WHITE);
+        paintRectContorno.setStyle(Paint.Style.FILL);
+
+        width_rect = Math.max(boundsTexto1.width(), boundsTexto2.width());
+        height_rect = boundsTexto1.height() + margen + boundsTexto2.height();
+
+        x = (bitmap.getWidth() - width_rect) / 2;
+
+        left = x - margen;
+        top = margenTop - margen - boundsTexto1.height();
+        right = left + width_rect + 2 * margen;
+        bottom = top + height_rect + 2 * margen;
+
+        canvas.drawRect(left, top, right, bottom, paintRectRelleno);
+        canvas.drawRect(left - 4, top - 4, right + 8, bottom + 8, paintRectContorno);
+
+        // y = (bitmap.getHeight() + boundsTexto1.height())/5;
+
+        y = margenTop;
+
+        canvas.drawText(texto1, x, y, paintTexto);
+
+        y += margen + boundsTexto1.height();
+
+        canvas.drawText(texto2, x, y, paintTexto);
+    }
 
     /* -------------------------------------------------------------------------------------------
         Muestra el diálogo o ventana para mostrar mensajes diversos o de error.
@@ -1279,5 +1485,41 @@ public class CamaraActivity extends AppCompatActivity {
 
     private void mostrarMensaje(String titulo, String mensaje) {
         mostrarMensaje(titulo, mensaje, "", null);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        if (!otraFoto) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        try {
+                            ca.mensajeEspere();
+                            captureButton.setEnabled(false);
+                            mCamera.autoFocus(mAutoFocusCallback);
+
+                            //mCamera.takePicture(null, null, mPicture);
+                            otraFoto = true;
+                            //tv_indicador.setVisibility(View.GONE);
+                            iv_logo_soges.setVisibility(View.GONE);
+                            ib_flash.setVisibility(View.GONE);
+                            btnFirmar.setVisibility(View.GONE);
+                            btnSubirResolucion.setVisibility(View.GONE);
+                            btnBajarResolucion.setVisibility(View.GONE);
+                            btnCambiarCamara.setVisibility(View.GONE);
+                            txtNumMedidor.setVisibility(View.GONE);
+                            lblNumMedidor.setVisibility(View.GONE);
+                        } catch (Throwable t) {
+                            mostrarMensaje("Error", "Ocurrió un error inesperado en la cámara. Contactar a soporte.", t, null);
+                        }
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

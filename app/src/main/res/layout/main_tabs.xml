@@ -7,59 +7,176 @@
     android:orientation="vertical"
     tools:context="enruta.soges_engie.Main">
 
-    <TextView
-        android:id="@+id/tv_version"
-        app:layout_constraintTop_toTopOf="parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="@string/version"
-        style="@style/Estilo_Titulo_Version" />
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:layout_alignParentLeft="true"
-        app:layout_constraintBottom_toTopOf="@+id/botones"
-        app:layout_constraintTop_toBottomOf="@+id/tv_version">
-
-    </androidx.viewpager.widget.ViewPager>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/EngieBoton"
+        android:elevation="4dp"
+        android:gravity="center"
+        app:title="Mi Resumen"
+        app:titleTextColor="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <LinearLayout
-        android:id="@+id/botones"
+        android:id="@+id/botones1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="30dp"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tv_version"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="57dp"
+            android:background="@color/navy"
+            android:gravity="right"
+            android:textSize="20sp"
+            android:text="@string/version"
+            style="@style/Estilo_Titulo_Version" />
+
+        <TextView
+            android:id="@+id/tv_espacio_sin_texto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_usuario"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="16dp"
+            android:text=""
+            android:textSize="0sp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btnOperacion"
+            style="@style/AppTheme.RoundedCornerMaterialButton.BigGreen"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:fontFamily="@font/lato_black"
+            android:textSize="22sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="Hacer Check..." />
+
+        <Button
+            android:id="@+id/b_lecturas"
+            style="@style/AppTheme.RoundedCornerMaterialButton.BigGreen"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:fontFamily="@font/lato_black"
+            android:textSize="26sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="INICIAR LABORES" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="160dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="1dp"
+            android:weightSum="2"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnOperacion"
-                style="@style/AppTheme.RoundedCornerMaterialButton.Keyboard"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
+            <ImageView
+                android:id="@+id/iv_mapa_de_la_ruta"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_weight="1"
-                android:text="Hacer Check..." />
+                android:src="@drawable/mapa_de_la_ruta" />
 
-            <Button
-                android:id="@+id/b_lecturas"
-                style="@style/AppTheme.RoundedCornerMaterialButton.Keyboard"
+            <ImageView
+                android:id="@+id/iv_check_de_seguridad"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_weight="1"
+                android:src="@drawable/check_de_seguridad" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginHorizontal="1dp"
+            android:weightSum="2"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Mapa de la Ruta"
+                android:textColor="@color/black"
+                android:textSize="19sp"
+                app:fontFamily="@font/lato_bold2" />
+
+            <TextView
+                android:id="@+id/tv_sap_medidor"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:gravity="center"
+                android:text="Check de Seguridad"
+                android:textColor="@color/black"
+                android:textSize="19sp"
+                app:fontFamily="@font/lato_bold2" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_resumen_general"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_usuario"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="16dp"
+            android:text="RESUMEN GENERAL"
+            android:textSize="32sp"
+            android:textColor="@color/navy"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible"
+            app:fontFamily="@font/lato_bold2"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_alignParentLeft="true"
+            app:layout_constraintBottom_toTopOf="@+id/botones"
+            app:layout_constraintTop_toBottomOf="@+id/tv_version">
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <LinearLayout
+            android:id="@+id/botones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:text="@string/m_str_lecturas" />
+                android:orientation="vertical">
+
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

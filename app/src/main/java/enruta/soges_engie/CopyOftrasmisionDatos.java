@@ -320,12 +320,12 @@ public class CopyOftrasmisionDatos extends AppCompatActivity {
 		   				mostrarMensaje(MENSAJE, "Espere...");
 		   				//serial.close();
 		   				yaAcabo=true;
-		   				muere(true, "La informacion ha sido exportada con exito");
+		   				muere(true, "La información ha sido exportada con éxito");
 		   				c.close();
 		   			} catch (Throwable e) {
 		   				// TODO Auto-generated catch block
 		   				e.printStackTrace();
-		   			  muere(true, "Ocurrio un problema al importar.\n Verifique que se encuentre conectado a internet y que el servidor se encuentre disponible. Error:"+e.getMessage());
+		   			  muere(true, "Ocurrió un problema al importar.\n Verifique que se encuentre conectado a internet y que el servidor se encuentre disponible. Error:"+e.getMessage());
 		   			}
 		   	        finally{
 		   	        	closeDatabase();

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
- <color name="colorPrimary">#FFFFFF</color>
+ <color name="colorPrimary">#132663</color>
+ <color name="colorPrimaryVariant">#00A2E9</color>
+
  <color name="colorPrimaryDark">#FFFFFF</color>
  <color name="colorAccent">#D3D3D3</color>
+
+ <color name="EngieDx">#f39313</color>
+ <color name="EngieRx">#67ae6e</color>
+ <color name="EngieRm">#e73439</color>
+ <color name="EngieRr">#4bb0b9</color>
+
+ <color name="EngieBoton">#00A2E9</color>
+ <color name="EngieBotonGris">#F2F2F2</color>
 
  <color name="white">#FFFFFF</color>
  <color name="yellow">#FFFF00</color>

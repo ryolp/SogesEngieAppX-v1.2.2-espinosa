@@ -23,6 +23,7 @@ public class SesionEntity {
     public long idArchivoUnidad;
     public String MensajeLecturista = "";
     public boolean hacerSincronizacion = false;
+    public ParametrosCelular Parametros;
 
     public SesionEntity() {
 
@@ -40,6 +41,7 @@ public class SesionEntity {
         this.empleado = loginResponseEntity.Empleado;
         this.Token = loginResponseEntity.Token;
         this.MensajeLecturista = loginResponseEntity.MensajeLecturista;
+        this.Parametros = loginResponseEntity.Parametros;
 
         inicializarHoraVencimiento();
     }

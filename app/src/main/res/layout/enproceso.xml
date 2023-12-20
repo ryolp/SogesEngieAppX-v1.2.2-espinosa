@@ -31,6 +31,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="68dp"
         android:gravity="center"
+        android:fontFamily="@font/lato"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -42,6 +43,7 @@
         android:layout_below="@+id/linearLayout1"
         android:layout_marginTop="49dp"
         android:gravity="center"
+        android:fontFamily="@font/lato"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 "

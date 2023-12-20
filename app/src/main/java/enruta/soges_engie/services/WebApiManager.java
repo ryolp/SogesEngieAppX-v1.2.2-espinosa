@@ -16,6 +16,8 @@ import enruta.soges_engie.entities.LoginResponseEntity;
 import enruta.soges_engie.entities.PuntoGpsRequest;
 import enruta.soges_engie.entities.PuntoGpsResponse;
 import enruta.soges_engie.interfaces.IWebApi;
+import enruta.soges_engie.entities.ReenviarPasswordRequest;
+import enruta.soges_engie.entities.ReenviarPasswordResponse;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -229,15 +231,16 @@ public class WebApiManager {
 
         try {
 
-            // RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), foto);
+            RequestBody fileRequestBody = RequestBody.create(foto, MediaType.parse("image/jpeg"));
 
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, RequestBody.create(MediaType.parse("image/*"), foto));
+            //MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, RequestBody.create(MediaType.parse("image/*"), foto));
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, fileRequestBody);
 
-            RequestBody ruta = RequestBody.create(MediaType.parse("text/plain"), req.ruta);
-            RequestBody carpeta = RequestBody.create(MediaType.parse("text/plain"), req.carpeta);
-            RequestBody nombreArchivo = RequestBody.create(MediaType.parse("text/plain"), req.nombre);
-            RequestBody serieMedidor = RequestBody.create(MediaType.parse("text/plain"), req.serieMedidor);
-            RequestBody idOrden= RequestBody.create(MediaType.parse("text/plain"), String.valueOf(req.idOrden));
+            RequestBody ruta = RequestBody.create(req.ruta, MediaType.parse("text/plain") );
+            RequestBody carpeta = RequestBody.create(req.carpeta, MediaType.parse("text/plain") );
+            RequestBody nombreArchivo = RequestBody.create(req.nombre, MediaType.parse("text/plain"));
+            RequestBody serieMedidor = RequestBody.create(req.serieMedidor, MediaType.parse("text/plain"));
+            RequestBody idOrden= RequestBody.create(String.valueOf(req.idOrden), MediaType.parse("text/plain") );
 
             Call<SubirFotoResponse> call = service.subirFoto(filePart, ruta, carpeta, nombreArchivo, serieMedidor, idOrden);
 
@@ -250,18 +253,18 @@ public class WebApiManager {
         }
     }
 
-    public SubirFotoResponse subirVideo(SubirFotoRequest req, byte[] foto) throws Exception {
+    public SubirFotoResponse subirVideo(SubirFotoRequest req, byte[] video) throws Exception {
         try {
 
-            // RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), foto);
+            RequestBody fileRequestBody = RequestBody.create(video, MediaType.parse("video/mp4"));
 
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, RequestBody.create(MediaType.parse("image/*"), foto));
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", req.nombre, fileRequestBody);
 
-            RequestBody ruta = RequestBody.create(MediaType.parse("text/plain"), req.ruta);
-            RequestBody carpeta = RequestBody.create(MediaType.parse("text/plain"), req.carpeta);
-            RequestBody nombreArchivo = RequestBody.create(MediaType.parse("text/plain"), req.nombre);
-            RequestBody serieMedidor = RequestBody.create(MediaType.parse("text/plain"), req.serieMedidor);
-            RequestBody idOrden= RequestBody.create(MediaType.parse("text/plain"), String.valueOf(req.idOrden));
+            RequestBody ruta = RequestBody.create(req.ruta, MediaType.parse("text/plain") );
+            RequestBody carpeta = RequestBody.create(req.carpeta, MediaType.parse("text/plain") );
+            RequestBody nombreArchivo = RequestBody.create(req.nombre, MediaType.parse("text/plain"));
+            RequestBody serieMedidor = RequestBody.create(req.serieMedidor, MediaType.parse("text/plain"));
+            RequestBody idOrden= RequestBody.create(String.valueOf(req.idOrden), MediaType.parse("text/plain"));
 
             Call<SubirFotoResponse> call = service.subirVideo(filePart, ruta, carpeta, nombreArchivo, serieMedidor, idOrden);
 
@@ -284,6 +287,13 @@ public class WebApiManager {
         else
             return null;
     }
+    
+        public void reenviarPassword(ReenviarPasswordRequest request, Callback<ReenviarPasswordResponse> callBack) {
+        Call<ReenviarPasswordResponse> call = service.reenviarPassword(request);
+
+        call.enqueue(callBack);
+    }
+
 
     public SubirDatosResponse subirDatosDebug(SubirDatosRequest request) throws Exception {
         Call<SubirDatosResponse> call = service.subirDatosDebug(request);

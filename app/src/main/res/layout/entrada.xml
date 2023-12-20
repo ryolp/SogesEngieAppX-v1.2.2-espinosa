@@ -13,6 +13,7 @@
         android:layout_alignParentLeft="true"
         android:fillViewport="true"
         android:gravity="center"
+        android:fontFamily="@font/lato"
         android:text="@string/msj_main_no_hay_itinerarios"
         android:textSize="25sp"
         

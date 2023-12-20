@@ -78,6 +78,8 @@ public class Lectura {
 	String is_numAviso = "";
 	String is_cuentaContrato = "";
 	String is_idMaterialSolicitado = "";
+	String is_CancelarEnApp = "";
+	String is_TextoLibreSAP = "";
 
 	String is_EncuestaDeSatisfaccion = "";
 	String is_MedidorInstalado = "";
@@ -90,6 +92,12 @@ public class Lectura {
 	String is_ClienteYaPagoMonto="";
 	String is_ClienteYaPagoFecha="";
 	String is_ClienteYaPagoAgente="";
+	String is_QuienAtendio="";
+	String is_MarcaInstalada="";
+	String is_SeQuitoTuberia="";
+	String is_TuberiaRetirada="";
+	String is_MarcaRetirada="";
+	String is_MedidorRetirado="";
 //************************************************************************************************************************************
 
 	private Resources res;
@@ -111,13 +119,13 @@ public class Lectura {
 	public String getTipoDeOrden() {
 		String strTipoDeOrden="DESCONOCIDO";
 		if (is_tipoDeOrden.equals("TO002"))
-			strTipoDeOrden = "DESCONEXION";
+			strTipoDeOrden = "DESCONEXIÓN";
 		if (is_tipoDeOrden.equals("TO003"))
-			strTipoDeOrden = "RECONEXION";
+			strTipoDeOrden = "RECONEXIÓN";
 		if (is_tipoDeOrden.equals("TO004"))
 			strTipoDeOrden= "REC/REMO";
 		if (is_tipoDeOrden.equals("TO005"))
-			strTipoDeOrden= "REMOCION";
+			strTipoDeOrden= "REMOCIÓN";
 
 		return strTipoDeOrden;
 	}
@@ -245,6 +253,8 @@ public class Lectura {
 			is_numAviso = Utils.getString(c, "NumAviso", "");
 			is_cuentaContrato = Utils.getString(c, "CuentaContrato", "");
 			is_idMaterialSolicitado = Utils.getString(c, "idMaterialSolicitado", "");
+//			is_CancelarEnApp = Utils.getString(c, "CancelarEnApp", "");
+			is_TextoLibreSAP = Utils.getString(c, "TextoLibreSAP", "");
 
 			is_EncuestaDeSatisfaccion = Utils.getString(c, "EncuestaDeSatisfaccion", "");
 			is_MedidorInstalado = Utils.getString(c, "MedidorInstalado", "");
@@ -257,6 +267,12 @@ public class Lectura {
 			is_ClienteYaPagoMonto = Utils.getString(c, "ClienteYaPagoMonto", "");
 			is_ClienteYaPagoFecha = Utils.getString(c, "ClienteYaPagoFecha", "");
 			is_ClienteYaPagoAgente = Utils.getString(c, "ClienteYaPagoAgente", "");
+			is_QuienAtendio = Utils.getString(c, "QuienAtendio", "");
+			is_MarcaInstalada = Utils.getString(c, "MarcaInstalada", "");
+			is_SeQuitoTuberia = Utils.getString(c, "SeQuitoTuberia", "");
+			is_TuberiaRetirada = Utils.getString(c, "TuberiaRetirada", "");
+			is_MarcaRetirada = Utils.getString(c, "MarcaRetirada", "");
+			is_MedidorRetirado = Utils.getString(c, "MedidorRetirado", "");
 //************************************************************************************************************************************
 
 			ls_mensaje= Utils.getString(c, "mensaje", "");
@@ -432,8 +448,9 @@ public class Lectura {
 			
 		}
 		
-		if(!is_anomalia.equals(""))
-			is_lectura="30";
+// CE, 12/10/23, Vamos a dejar la lectura capturada
+//		if(!is_anomalia.equals(""))
+//			is_lectura="30";
 
 		cv_params.put("lectura", is_lectura);
 		cv_params.put("consumo", is_consumo);
@@ -488,6 +505,12 @@ public class Lectura {
 		cv_params.put("ClienteYaPagoMonto", is_ClienteYaPagoMonto);
 		cv_params.put("ClienteYaPagoFecha", is_ClienteYaPagoFecha);
 		cv_params.put("ClienteYaPagoAgente", is_ClienteYaPagoAgente);
+		cv_params.put("QuienAtendio", is_QuienAtendio);
+		cv_params.put("MarcaInstalada", is_MarcaInstalada);
+		cv_params.put("SeQuitoTuberia", is_SeQuitoTuberia);
+		cv_params.put("TuberiaRetirada", is_TuberiaRetirada);
+		cv_params.put("MarcaRetirada", is_MarcaRetirada);
+		cv_params.put("MedidorRetirado", is_MedidorRetirado);
 //************************************************************************************************************************************
 
 		String params[] = { String.valueOf(secuenciaReal) };
@@ -540,8 +563,10 @@ public class Lectura {
 		globales.tll.getLecturaActual().is_ClienteYaPagoMonto = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_MONTO));
 		globales.tll.getLecturaActual().is_ClienteYaPagoFecha = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_FECHA));
 		globales.tll.getLecturaActual().is_ClienteYaPagoAgente = bu_params.getString(String.valueOf(CLIENTE_YA_PAGO_AGENTE));
-		if ((Float.parseFloat(globales.tll.getLecturaActual().is_ClienteYaPagoMonto)+100.0) < Float.parseFloat(globales.tll.getLecturaActual().is_vencido)) {
-			return true;
+		if (!globales.tll.getLecturaActual().is_vencido.equals("")) {
+			if ((Float.parseFloat(globales.tll.getLecturaActual().is_ClienteYaPagoMonto) + 100.0) < Float.parseFloat(globales.tll.getLecturaActual().is_vencido)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -793,9 +818,11 @@ public class Lectura {
 //				+ dondeEsta.trim();
 //
 //		return ls_cadena;
-		
-		String direccion=is_calle + " #" +numeroDePortal.trim();
-		
+
+// CE, 03/11/23, La direccion ya viene completa en el mismo campo
+//		String direccion=is_calle + " #" +numeroDePortal.trim();
+		String direccion=is_calle;
+
 		return direccion.trim();
 	}
 	
@@ -928,8 +955,9 @@ public class Lectura {
 
 		ls_preview=globales.tdlg.getDescripcionDeBuscarMedidor(this,
 				tipoDeBusqueda, textoBuscado);
-		
-		ls_preview += "<br>" + (globales.mostrarRowIdSecuencia?contadorAlterno:secuencia) + " " + context.getString(R.string.de) + " " +totalMedidores;
+
+// CE, 05/11/23, Vamos a mostrar un listado mas conciso para mostrar mas renglones en la pantalla
+//		ls_preview += "<br>" + (globales.mostrarRowIdSecuencia?contadorAlterno:secuencia) + " " + context.getString(R.string.de) + " " +totalMedidores;
 
 		// ls_preview +="\n"+ getDireccion();
 		// ls_preview += "<br>" +is_colonia.trim();

@@ -51,6 +51,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -150,6 +151,8 @@ public class Main extends AppCompatActivity implements TabListener {
     private Thread mThreadPuntosGps = null;     // RL, 2023-09, Thread para registrar periodicamente los puntos GPS
     private DialogoMensaje mDialogoMsg = null;  // RL, 2023-09, Clase para mostrar un dialogo de mensajes al usuario
     private Button btnOperacion;                // RL, 2023-09, Botón para Check-In, Check-Out y Check de Seguridad
+    private ImageView ivCheckDeSeguridad;
+    private ImageView ivMapaDeLaRuta;
     private OperacionesMgr mOperacionesMgr = null;
 
     /* ====================================================================================
@@ -171,7 +174,20 @@ public class Main extends AppCompatActivity implements TabListener {
 
             mHandler = new Handler();
 
-//		
+            Toolbar mTopToolbar;
+            mTopToolbar = (Toolbar) findViewById(R.id.main);
+            setSupportActionBar(mTopToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setLogo(getDrawable(R.drawable.soges_blanco));
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+
+//
 //		openDatabase();
 //		db.execSQL("update ruta set verDatos=0");
 //		closeDatabase();
@@ -233,14 +249,11 @@ public class Main extends AppCompatActivity implements TabListener {
                 globales.passwordBD = "Sis#web#apps@2022";
 //		}
             }
-
-
             //actualizaResumen();
             agregaRegistrosConfig();
 
             globales.calidadDeLaFoto = getIntValue("calidad_foto", globales.calidadDeLaFoto);
             globales.sonidos = getIntValue("sonidos", 0) == 0;
-
 
             tv_versionNum = (TextView) findViewById(R.id.tv_version);
 
@@ -286,10 +299,7 @@ public class Main extends AppCompatActivity implements TabListener {
             } else {
                 estableceVariablesDeClave();
             }
-
             cargarOrdenes();
-
-
             actualizaTabs();
 		/*View customNav = LayoutInflater.from(this).inflate(R.layout.configuracion, null);
 		getActionBar().setCustomView(customNav);*/
@@ -310,47 +320,20 @@ public class Main extends AppCompatActivity implements TabListener {
         if (globales.tdlg == null)
             return;
         viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getSupportActionBar();
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         int li_tabSelected = ii_lastSelectedTab;
 
         viewPager.setAdapter(mAdapter);
 
+//*****************************************************************************
+// CE, 22/10/23, Ya no vamos a usar el ActionBar
+/*
+        actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(false);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
             actionBar.removeAllTabs();
-            // Adding Tabs
-//            for (int tab_name : tabs) {
-//                actionBar.addTab(actionBar.newTab().setText(tab_name)
-//                        .setTabListener(this));
-//            }
         }
-
-//     // Create a tab listener that is called when the user changes tabs.
-//        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-//            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-//                // When the tab is selected, switch to the
-//                // corresponding page in the ViewPager.
-//            	viewPager.setCurrentItem(tab.getPosition());
-//            }
-//
-//			@Override
-//			public void onTabReselected(Tab tab, FragmentTransaction ft) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//            
-//        };
-
-
         viewPager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
@@ -363,7 +346,8 @@ public class Main extends AppCompatActivity implements TabListener {
                 });
         viewPager.setCurrentItem(li_tabSelected);
         //getActionBar().setSelectedNavigationItem(li_tabSelected);
-
+*/
+//************************************************************************
         inicializarControlesCheck();
     }
 
@@ -401,7 +385,7 @@ public class Main extends AppCompatActivity implements TabListener {
                 break;
             case CPL.LECTURISTA:
                 mi_config.setVisible(true);
-                mi_borrarRuta.setVisible(false);
+                mi_borrarRuta.setVisible(true);
                 mi_lecturas.setVisible(false);
                 b_lecturas.setVisibility(View.VISIBLE);
                 if (globales.mostrarGrabarEnSD) {
@@ -472,8 +456,6 @@ public class Main extends AppCompatActivity implements TabListener {
             } else {
                 ls_folio += ls_letraAct;
             }
-
-
         }
         return ls_folio;
     }
@@ -481,7 +463,6 @@ public class Main extends AppCompatActivity implements TabListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         final Main main = this;
         AlertDialog.Builder builder;
-
         try {
             String ls_opciones[] = {getString(R.string.lbl_configuracion_modo_WIFI), getString(R.string.lbl_configuracion_modo_BT)};
             switch (item.getItemId()) {
@@ -541,16 +522,11 @@ public class Main extends AppCompatActivity implements TabListener {
 //			 		break;
 //
 //			 }
-
                     break;
                 case R.id.m_exportar:
                     openDatabase();
-
                     db.execSQL("delete from fotos where temporal=" + CamaraActivity.TEMPORAL + " or temporal=" + CamaraActivity.ANOMALIA);
-
-
                     closeDatabase();
-
                     //aqui verificamos si hay una transmision predeterminada
                     switch (tipoDeTransmisionPredeterminada()) {
                         case 0: //Mostrar todas
@@ -586,11 +562,10 @@ public class Main extends AppCompatActivity implements TabListener {
                                             }
                                             lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
                                             lrs.putExtra("transmiteFotos", true);
-                                            lrs.putExtra("transmitirTodo", false);
+                                            lrs.putExtra("transmitirTodo", true);
+                                            lrs.putExtra("exportar", true);
                                             if (ejecutar)
                                                 startActivityForResult(lrs, EXPORTAR);
-
-
                                         }
                                     });
                             builder.show();
@@ -599,7 +574,8 @@ public class Main extends AppCompatActivity implements TabListener {
                             lrs = new Intent(main, trasmisionDatos.class);
                             lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
                             lrs.putExtra("transmiteFotos", true);
-                            lrs.putExtra("transmitirTodo", false);
+                            lrs.putExtra("transmitirTodo", true);
+                            lrs.putExtra("exportar", true);
                             startActivityForResult(lrs, EXPORTAR);
                             break;
                         case 2: //bt
@@ -610,10 +586,7 @@ public class Main extends AppCompatActivity implements TabListener {
                                 startActivityForResult(lrs, EXPORTAR);
                             }
                             break;
-
                     }
-			
-			
 			/*lrs = new Intent(this, trasmisionDatos.class);
     		lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
     		lrs.putExtra("transmiteFotos", true);
@@ -631,7 +604,6 @@ public class Main extends AppCompatActivity implements TabListener {
                     break;
                 case R.id.m_filtrar:
                     lrs = new Intent(this, Filtrado.class);
-
                     startActivity(lrs);
                     break;
                 case R.id.m_exportarTodo:
@@ -639,6 +611,7 @@ public class Main extends AppCompatActivity implements TabListener {
                     lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
                     lrs.putExtra("transmiteFotos", true);
                     lrs.putExtra("transmitirTodo", true);
+                    lrs.putExtra("exportar", true);
                     startActivityForResult(lrs, EXPORTAR);
                     break;
                 case R.id.m_configuracion:
@@ -652,38 +625,28 @@ public class Main extends AppCompatActivity implements TabListener {
                 case R.id.m_cambiarUsuario:
                     Intent intent = new Intent();
                     intent.putExtra("opcion", CPL.CAMBIAR_USUARIO);
-
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                     break;
-
                 case R.id.m_borrarruta:
                     builder = new AlertDialog.Builder(this);
-
-
                     builder.setMessage(R.string.str_warning_borrarRuta)
                             .setCancelable(false).setPositiveButton(R.string.continuar, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     openDatabase();
                                     TransmisionesPadre.borrarRuta(db);
                                     closeDatabase();
-
                                     //actualizaResumen();
                                     actualizaTabs();
-
                                     Toast.makeText(main, R.string.msj_main_ruta_borrada, Toast.LENGTH_SHORT).show();
-
                                 }
                             }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
-
                                 }
                             });
                     builder.show();
-
                     break;
-
                 case R.id.m_acercaDe:
                     AlertDialog alert = null;
                     LayoutInflater inflater = this.getLayoutInflater();
@@ -727,14 +690,12 @@ public class Main extends AppCompatActivity implements TabListener {
                     cadena += "\nporcentaje_lectura " + getDoubleValue("porcentaje_lectura", globales.porcentaje_lectura);
                     cadena += "\nporcentaje_info " + getDoubleValue("porcentaje_info", globales.porcentaje_info);
                     //closeDatabase();
-
                     mensajeOK(cadena);
                     break;
                 case R.id.m_grabarEnSD:
                     GrabarSDCard();
                     break;
                 case R.id.m_cierreForzado://Mensaje de si o no
-
                     builder = new AlertDialog.Builder(this);
                     builder.setMessage("¿Esta seguro de realizar el cierre forzado?")
                             .setCancelable(false)
@@ -752,6 +713,7 @@ public class Main extends AppCompatActivity implements TabListener {
                                     Intent lrs = new Intent(main, trasmisionDatos.class);
                                     lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
                                     lrs.putExtra("transmiteFotos", true);
+                                    lrs.putExtra("transmiteVideos", true);
                                     startActivityForResult(lrs, EXPORTAR);
                                 }
                             });
@@ -771,6 +733,8 @@ public class Main extends AppCompatActivity implements TabListener {
                 case R.id.m_VerMapaDeTodos:
                     verMapaDeTodos();
                     break;
+                case R.id.m_exportarVideos:
+                    exportarVideos();
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -780,7 +744,7 @@ public class Main extends AppCompatActivity implements TabListener {
         return true;
     }
 
-    private void verMapaDeTodos() {
+    public void verMapaDeTodos() {
         Lectura lectura;
         String miLatitud = "";
         String miLongitud = "";
@@ -801,13 +765,17 @@ public class Main extends AppCompatActivity implements TabListener {
             TodasLasLecturas tll;
             tll = new TodasLasLecturas(this.getApplicationContext(), 0);// Se buscaran las lecturas desde el principio
             uri = tll.getTodosLosPuntosGPS();
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (uri.equals("")) {
+                Toast.makeText(this, "No hay datos que mostrar en el Mapa", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
-            intent.setPackage("com.google.android.apps.maps");
+                intent.setPackage("com.google.android.apps.maps");
 //            if (intent.resolveActivity(MainActivity.this.getPackageManager()) != null) {
                 this.startActivity(intent);
 //            }
+            }
         } catch (Throwable t) {
             Utils.showMessageLong(this, t.getMessage());
         }
@@ -1214,7 +1182,7 @@ public class Main extends AppCompatActivity implements TabListener {
     }
 
     public void setSizes() {
-        tv_versionNum.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float) (porcentaje * versionFontSize));
+//        tv_versionNum.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float) (porcentaje * versionFontSize));
         //tv_resumen.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)(porcentaje * infoFontSize));
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + 0);
         // based on the current position you can then cast the page to the correct
@@ -1549,20 +1517,14 @@ public class Main extends AppCompatActivity implements TabListener {
                     + "', " + value + ")");
         }
         c.close();
-
         closeDatabase();
-
         return value;
     }
 
     private void GrabarSDCard() {
-
-
         mensajeEspere();
         Thread thread = new Thread() {
-
             public void run() {
-
                 byte[] foto = null;
                 String medidor = null;
                 byte[] nombreFotoByte = null;
@@ -1578,12 +1540,10 @@ public class Main extends AppCompatActivity implements TabListener {
                 OutputStream fo = null;
                 openDatabase();
                 try {
-
-
+// CE, 20/11/23, Vamos a mostrar la opciones de Grabar las Fotos en la memoria del celular, pero no vamos a exportar todo lo demas
+/*
                     //String csEstatusDelProceso = "Se exportara las lecturas,\nconteste SI a todas las preguntas.\n";
                     //siMensaje.setText(csEstatusDelProceso);
-
-
                     c = db.rawQuery("Select count(*) canti from ruta", null);
                     c.moveToFirst();
                     totalDeMedidores = Utils.getInt(c, "canti", 0);
@@ -1594,53 +1554,39 @@ public class Main extends AppCompatActivity implements TabListener {
                                 mensajeOK("No hay medidores a exportar");
                             }
                         });
-
                         c.close();
                         closeDatabase();
                         return;
                     }
-
                     c.close();
-
-
                     //Del encabezado
                     c = db.rawQuery("select registro from encabezado", null);
                     c.moveToFirst();
                     medidor = new String(c.getBlob(c.getColumnIndex("registro")));
                     c.close();
-
                     nombreFoto = medidor.substring(11, 21).trim();
                     nombreLote = medidor.substring(23, 30).trim();
-
-
 //					borrarArchivo("apps/lecturasentrada/" +nombreLote+"/"+nombreFoto);
                     //
 //					serial.open("http://www.espinosacarlos.com", "apps/lecturasentrada/"+nombreLote, nombreFoto,
 //							Serializacion.ESCRITURA, 0, 0);
-
                     filecon = new File(Environment.getExternalStorageDirectory().toString() + "/SISTOLE/");
                     if (!filecon.exists()) {
                         filecon.mkdir();
                     }
-
                     filecon = new File(Environment.getExternalStorageDirectory().toString() + "/SISTOLE/" + nombreLote);
-
                     if (!filecon.exists()) {
                         filecon.mkdir();
                     }
-
                     filecon = new File(Environment.getExternalStorageDirectory().toString() + "/SISTOLE/" + nombreLote + "/" + nombreLote + "-" + nombreFoto);
                     if (filecon.exists()) {
                         filecon.delete();
                         //filecon =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "nombreLote/"+nombreFoto);
                     }
-
                     if (!filecon.exists()) {
                         filecon.createNewFile();
                     }
-
                     //csEstatusDelProceso += "Exportando lecturas\n.";
-
                     if (!filecon.exists()) {
                         throw new Throwable("El archivo no pudo ser creado, verifique que cuente con espacio y pueda escribir en la SD.");
                     }
@@ -1651,18 +1597,17 @@ public class Main extends AppCompatActivity implements TabListener {
                         //serial.write(c.getString(c.getColumnIndex("TextoSalida")));
                         c.moveToNext();
                         fo.write((c.getString(c.getColumnIndex("TextoSalida")) + "\r\n").getBytes("ISO-8859-1"));
-
                     }
                     //serial.close();
-
                     c.close();
                     fo.close();
 //						bRutaDescargada	= true;
 //						establecerRutaComoDescargada();
-
                     //csEstatusDelProceso += "\nLas lecturas ha sido grabadas.\nExportando fotografias\n.";
 //						siMensaje.setText(csEstatusDelProceso);
-
+*/
+                    nombreFoto = "SDCARD";
+                    nombreLote = "SDCARD";
                     c = db.rawQuery("Select count(*) canti from fotos", null);
                     c.moveToFirst();
                     totalDeFotos = Utils.getInt(c, "canti", 0);
@@ -1675,12 +1620,8 @@ public class Main extends AppCompatActivity implements TabListener {
                                 mensajeOK("Ha terminado el proceso de exportacion a la SDCard.");
                             }
                         });
-
-
                         return;
                     }
-
-
                     String strTamano = "";
                     byte[] tamano = null;
                     //OutputStream out = null;
@@ -1688,20 +1629,20 @@ public class Main extends AppCompatActivity implements TabListener {
                     // Always check whether the file or directory exists.
                     // Create the file if it doesn't exist.
                     //if(!filecon.exists()) {
-                    filecon = new File(Environment.getExternalStorageDirectory().toString() + "/SISTOLE/" + nombreLote + "/" + nombreFoto.substring(0, 6) + ".DAT");
-
+// CE, 20/11/23, Vamos a cambiar el nombre de la foto
+//                    filecon = new File(Environment.getExternalStorageDirectory().toString() + "/SOGES/" + nombreLote + "/" + nombreFoto.substring(0, 6) + ".DAT");
+                    String dir = "";
+                    dir = getApplicationContext().getFilesDir().getAbsolutePath() + "/SOGES/SDCARD/";
+                    filecon = new File(dir + "SDCARD.DAT");
                     if (!filecon.exists()) {
                         filecon.createNewFile();
                     }
-
                     if (!filecon.exists()) {
                         throw new Throwable("El archivo no pudo ser creado, verifique que cuente con espacio y pueda escribir en la SD.");
                     }
-
                     fo = new FileOutputStream(filecon);
 //					serial.open("http://www.espinosacarlos.com", "apps/lecturasentrada/"+nombreFoto.substring(0,6)+".DAT", nombreFoto,
 //							Serializacion.ESCRITURA, 0, 0);
-
 //			 	        	filecon.create();
 //					        out = filecon.openOutputStream();
 //						int nAvance = 1;
@@ -1713,7 +1654,6 @@ public class Main extends AppCompatActivity implements TabListener {
                         String ls_nombre = "0" + c.getString(c.getColumnIndex("nombre")).toUpperCase();
                         foto = c.getBlob(c.getColumnIndex("foto"));
                         byte[] fotoByte = new byte[ls_nombre.length() + foto.length];
-
                         for (int i = 0; i < ls_nombre.length(); i++)
                             fotoByte[i] = ls_nombre.getBytes()[i];
                         for (int i = 0; i < foto.length; i++)
@@ -1740,26 +1680,18 @@ public class Main extends AppCompatActivity implements TabListener {
 //						   	}catch(IOException ioe) {
 //								log.log("Error al escribir a memoria: " + ioe);	
 //						   	}
-
                         c.moveToNext();
                     }
                     //}
-
                     fo.close();
-
-
                     //Marcamos como descargada
-                    db.execSQL("update encabezado set descargada=1");
-
-
+//                    db.execSQL("update encabezado set descargada=1");
                     mHandler.post(new Runnable() {
                         public void run() {
                             //alert.dismiss();
                             mensajeOK("Ha terminado el proceso de exportacion a la SDCard.");
                         }
                     });
-
-
 //				csEstatusDelProceso += "\nHa terminado el proceso de exportacion a la SDCard.";
 //				siMensaje.setText(csEstatusDelProceso);
                 } catch (final Throwable e) {
@@ -1767,10 +1699,8 @@ public class Main extends AppCompatActivity implements TabListener {
                     if (c != null) {
                         if (!c.isClosed()) {
                             c.close();
-
                         }
                     }
-
                     if (fo != null) {
                         try {
                             fo.close();
@@ -1779,8 +1709,6 @@ public class Main extends AppCompatActivity implements TabListener {
                             e1.printStackTrace();
                         }
                     }
-
-
                     mHandler.post(new Runnable() {
                         public void run() {
                             //alert.dismiss();
@@ -1794,12 +1722,9 @@ public class Main extends AppCompatActivity implements TabListener {
                         alert.dismiss();
                     }
                 });
-
             }
         };
-
         thread.start();
-
     }
 
 //	private void borrarArchivo(String ls_ruta) throws Throwable {
@@ -2450,6 +2375,8 @@ public class Main extends AppCompatActivity implements TabListener {
     private void inicializarControlesCheck() {
         b_lecturas = (Button) this.findViewById(R.id.b_lecturas);
         btnOperacion = (Button) this.findViewById(R.id.btnOperacion);
+        ivCheckDeSeguridad = (ImageView) this.findViewById(R.id.iv_check_de_seguridad);
+        ivMapaDeLaRuta = (ImageView) this.findViewById(R.id.iv_mapa_de_la_ruta);
 
         btnOperacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2460,6 +2387,25 @@ public class Main extends AppCompatActivity implements TabListener {
 
                 if (globales.sesionEntity.empleado.RequiereCheckSeguridad)
                     hacerCheckSeguridad();
+            }
+        });
+
+        ivCheckDeSeguridad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (globales == null) return;
+                if (globales.sesionEntity == null) return;
+                if (globales.sesionEntity.empleado == null) return;
+
+                if (globales.sesionEntity.empleado.RequiereCheckSeguridad)
+                    hacerCheckSeguridad();
+            }
+        });
+
+        ivMapaDeLaRuta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verMapaDeTodos();
             }
         });
 
@@ -2494,20 +2440,31 @@ public class Main extends AppCompatActivity implements TabListener {
                     btnOperacion.setText("Hacer Check Seguridad");
                     btnOperacion.setVisibility(View.VISIBLE);
                     btnOperacion.setEnabled(true);
-                    b_lecturas.setEnabled(false);
+// CE, 19/10/23, Vamos a mostrar o esconder los botones
+//                    b_lecturas.setEnabled(false);
+                    b_lecturas.setVisibility(View.GONE);
                 }
                 else {
                     btnOperacion.setVisibility(View.GONE);
                     btnOperacion.setEnabled(false);
-                    b_lecturas.setEnabled(habilitarLecturas);
+// CE, 19/10/23, Vamos a mostrar o esconder los botones
+//                    b_lecturas.setEnabled(habilitarLecturas);
+                    if (habilitarLecturas)
+                        b_lecturas.setVisibility(View.VISIBLE);
+                    else
+                        b_lecturas.setVisibility(View.GONE);
                 }
             } else {
-                b_lecturas.setVisibility(View.VISIBLE);
-                b_lecturas.setEnabled(false);
+// CE, 19/10/23, Vamos a mostrar o esconder los botones
+//                b_lecturas.setVisibility(View.VISIBLE);
+//                b_lecturas.setEnabled(false);
+                b_lecturas.setVisibility(View.GONE);
 
                 btnOperacion.setText("---");
                 btnOperacion.setVisibility(View.VISIBLE);
-                btnOperacion.setEnabled(false);
+// CE, 19/10/23, Vamos a mostrar o esconder los botones
+//                btnOperacion.setEnabled(false);
+                btnOperacion.setVisibility(View.GONE);
             }
         } else {
             b_lecturas.setVisibility(View.GONE);
@@ -2586,6 +2543,8 @@ public class Main extends AppCompatActivity implements TabListener {
         camara.putExtra("secuencial", globales.sesionEntity.empleado.idEmpleado);
         camara.putExtra("caseta", Long.toString(globales.sesionEntity.empleado.idEmpleado));
         camara.putExtra("terminacion", "Check");
+        camara.putExtra("cintillo1", "Check de Seguridad");
+        camara.putExtra("cintillo2", globales.sesionEntity.empleado.InfoAlias);
         camara.putExtra("temporal", 0);
         camara.putExtra("cantidad", 1);
         camara.putExtra("anomalia", "SinAnomalia");
@@ -2598,6 +2557,7 @@ public class Main extends AppCompatActivity implements TabListener {
         Intent lrs = new Intent(this, trasmisionDatos.class);
         lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
         lrs.putExtra("transmiteFotos", true);
+        lrs.putExtra("transmiteVideos", true);
         startActivityForResult(lrs, TRANSMISION);
     }
 
@@ -2664,6 +2624,8 @@ public class Main extends AppCompatActivity implements TabListener {
         camara.putExtra("secuencial", globales.sesionEntity.empleado.idEmpleado);
         camara.putExtra("caseta", Long.toString(globales.sesionEntity.empleado.idEmpleado));
         camara.putExtra("terminacion", "Check");
+        camara.putExtra("cintillo1", "Check de Seguridad");
+        camara.putExtra("cintillo2", globales.sesionEntity.empleado.InfoAlias);
         camara.putExtra("temporal", 0);
         camara.putExtra("cantidad", 1);
         camara.putExtra("anomalia", "SinAnomalia");
@@ -2677,10 +2639,24 @@ public class Main extends AppCompatActivity implements TabListener {
         startActivityForResult(camara, FOTO_PROBAR_VIDEO);
     }
 
+    public void prenderCampana(boolean valor) {
+        globales.bPrenderCampana = valor;
+    }
+
     private void cerrarSesion() {
         globales.sesionEntity = null;
         finalizarActivity();
         finish();
+    }
+
+    private void exportarVideos() {
+        lrs = new Intent(this, trasmisionDatos.class);
+        lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+        lrs.putExtra("transmiteFotos", false);
+        lrs.putExtra("transmiteVideos", true);
+        lrs.putExtra("transmitirTodo", true);
+        lrs.putExtra("exportar", true);
+        startActivityForResult(lrs, EXPORTAR);
     }
 }
 

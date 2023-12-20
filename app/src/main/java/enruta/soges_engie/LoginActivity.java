@@ -18,6 +18,9 @@ import enruta.soges_engie.clases.AutenticadorMgr;
 import enruta.soges_engie.entities.LoginRequestEntity;
 import enruta.soges_engie.entities.LoginResponseEntity;
 import enruta.soges_engie.entities.SesionEntity;
+import enruta.soges_engie.clases.ReenviarPasswordMgr;
+import enruta.soges_engie.entities.ReenviarPasswordRequest;
+import enruta.soges_engie.entities.ReenviarPasswordResponse;
 
 /* ====================================================================================
     LoginActivity:
@@ -50,7 +53,7 @@ public class LoginActivity extends Activity {
     private TextView lblCodigoSMS;
     private EditText txtCodigoSMS;
     private Button btnEntrar;
-    private Button btnAutenticar;
+    private Button btnAutenticar, btn_olvide_mi_contrasena;;
     private Button btnValidarSMS;
     private int mIntentosAutenticacion = 0;
     private int mIntentosCodigoSMS = 0;
@@ -62,6 +65,7 @@ public class LoginActivity extends Activity {
     private AutenticadorMgr mAutenticadorMgr = null;
 
     private int mOpcionLogin = 0;
+    private String mUltimoUsuario = "";
 
     /* ====================================================================================
         Creación del activity
@@ -85,6 +89,7 @@ public class LoginActivity extends Activity {
     private void obtenerParametros() {
         Bundle bu_params = getIntent().getExtras();
         mOpcionLogin = bu_params.getInt("opcionLogin", 0);
+        mUltimoUsuario = bu_params.getString("ultimousuario", "");
     }
 
 
@@ -103,6 +108,7 @@ public class LoginActivity extends Activity {
         txtCodigoSMS = (EditText) findViewById(R.id.txtCodigoSMS);
 
         btnAutenticar = (Button) findViewById(R.id.btnAutenticar);
+        btn_olvide_mi_contrasena = (Button) findViewById(R.id.btn_olvide_mi_contrasena);
         btnValidarSMS = (Button) findViewById(R.id.btnValidarSMS);
         btnEntrar = (Button) findViewById(R.id.b_entrar);
 
@@ -125,6 +131,8 @@ public class LoginActivity extends Activity {
 
         tv_contrasena.setVisibility(View.VISIBLE);
         et_contrasena.setVisibility(View.VISIBLE);
+// CE, 14/10/23, Quieren que la contraseña se vea
+//        et_contrasena.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         et_contrasena.setInputType(InputType.TYPE_CLASS_TEXT);
         et_contrasena.setFilters(new InputFilter[]{});
 
@@ -137,7 +145,13 @@ public class LoginActivity extends Activity {
         et_usuario.setFocusableInTouchMode(true);
         et_usuario.setFocusable(true);
         et_usuario.setEnabled(true);
-        et_usuario.requestFocus();
+
+        if (mUltimoUsuario.equals(""))
+            et_usuario.requestFocus();
+        else {
+            et_usuario.setText(mUltimoUsuario);
+            et_contrasena.requestFocus();
+        }
     }
 
 
@@ -150,6 +164,13 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View view) {
                 autenticar(view);
+            }
+        });
+
+        btn_olvide_mi_contrasena.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                olvideMiContrasena(et_usuario.getText().toString().trim());
             }
         });
 
@@ -371,6 +392,31 @@ public class LoginActivity extends Activity {
             });
         }
     }
+
+    private void olvideMiContrasena(String usuario) {
+        try {
+            final ReenviarPasswordMgr mgr = new ReenviarPasswordMgr(this);
+
+            mgr.setCallback(new ReenviarPasswordMgr.ReenviarPasswordCallBack() {
+                @Override
+                public void enExito(ReenviarPasswordRequest request, ReenviarPasswordResponse resp) {
+                    showMessageLong("Revise sus mensajes SMS");
+                }
+
+                @Override
+                public void enFallo(ReenviarPasswordRequest request, ReenviarPasswordResponse resp) {
+                    mostrarMensaje("Alerta", "Ha ocurrido un problema inesperado", resp.MensajeError, null);
+                }
+            });
+            if (usuario.equals(""))
+                showMessageShort("Escriba el usuario para el cual quiere solicitar su contraseña");
+            else{
+                mgr.reenviarPassword(usuario, "");
+                showMessageShort("Se ha solicitado la contraseña del usuario: " + usuario);
+            }
+        } catch (Throwable t) {
+            mostrarMensaje("Alerta", "Ha ocurrido un problema inesperado", t.getMessage(), null);
+        }    }
 
     /* ====================================================================================
         Realizar el proceso de autenticación
@@ -730,6 +776,8 @@ public class LoginActivity extends Activity {
 
         tv_contrasena.setVisibility(View.VISIBLE);
         et_contrasena.setVisibility(View.VISIBLE);
+// CE, 14/10/23, Quieren que la contraseña se vea
+//        et_contrasena.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         et_contrasena.setInputType(InputType.TYPE_CLASS_TEXT);
         et_contrasena.setFilters(new InputFilter[]{});
 

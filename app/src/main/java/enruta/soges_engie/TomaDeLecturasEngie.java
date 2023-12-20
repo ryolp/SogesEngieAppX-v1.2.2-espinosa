@@ -1,6 +1,7 @@
 package enruta.soges_engie;
 
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Vector;
 
 import android.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.TextView;
@@ -48,6 +50,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     MensajeEspecial mj_ubicacionVacia;
     MensajeEspecial mj_anomalia_seis;
     MensajeEspecial mj_ver_datos;
+    MensajeEspecial mj_ver_datosFotoDeLlegada;
     //	MensajeEspecial mj_habitado;
     Hashtable<String, Integer> ht_calidades;
 
@@ -62,10 +65,13 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 "sospechosa", "lecturista", "fechaEnvio", "fechaDeInicio", "fecha", "hora", "comentarios", "latitud", "longitud", "poliza", "habitado", "registro"});
         //globales.tlc.getListaDeCamposFormateado();
 
-        mj_ver_datos = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Foto de Llegada", VER_DATOS);
-        mj_ver_datos.color = R.color.blue;
+        mj_ver_datos = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Iniciar Servicio", VER_DATOS);
+        mj_ver_datos.color = R.color.EngieBoton;
 
-        mj_estaCortado = new MensajeEspecial("¿Sigue Cortado?", PREGUNTAS_SIGUE_CORTADO);
+         mj_ver_datosFotoDeLlegada = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Foto de Llegada", VER_DATOS);
+         mj_ver_datosFotoDeLlegada.color = R.color.EngieBoton;
+
+         mj_estaCortado = new MensajeEspecial("¿Sigue Cortado?", PREGUNTAS_SIGUE_CORTADO);
         mj_estaCortado.cancelable = false;
         Vector<Respuesta> respuesta = new Vector<Respuesta>();
         respuesta.add(new Respuesta("0", "Con Sellos"));
@@ -87,10 +93,15 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         mj_consumocero.cancelable = false;*/
 
         respuesta = new Vector<Respuesta>();
+         respuesta.add(new Respuesta("EX", "X-Expander"));
         respuesta.add(new Respuesta("JC", "J-Junta Ciega"));
-        respuesta.add(new Respuesta("EX", "X-Expander"));
-        respuesta.add(new Respuesta("SR", "S-Sello Rojo"));
-        respuesta.add(new Respuesta("TP", "T-Tapón"));
+        respuesta.add(new Respuesta("DJ", "D-Doble Junta Ciega"));
+        respuesta.add(new Respuesta("CV", "V-Cierre de Válvula"));
+        respuesta.add(new Respuesta("SR", "S-Sello Rojo / Marbete"));
+         respuesta.add(new Respuesta("TP", "T-Tapón de Bloqueo"));
+// CE, 09/11/23, Por lo pronto no vamos a agregar estas opciones que nos había solicitado
+//         respuesta.add(new Respuesta("RZ", "R-Raizer"));
+//         respuesta.add(new Respuesta("LL", "L-Cierre de Llaves"));
         mj_consumocero = new MensajeEspecial("Seleccione el Material Utilizado", respuesta, PREGUNTAS_CONSUMO_CERO);
         mj_consumocero.cancelable = false;
 //*********************************************************************************************
@@ -139,15 +150,14 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
         globales.mensajeDeConfirmar = R.string.msj_lecturas_verifique_1;
 
-        globales.mostrarNoRegistrados = true;
+        globales.mostrarNoRegistrados = false;
         globales.tipoDeValidacion = Globales.CON_SMS;
         globales.mensajeContraseñaLecturista = R.string.str_login_msj_lecturista;
         globales.controlCalidadFotos = 0;
 
-        globales.sonidoCorrecta = Sonidos.NINGUNO;
-        globales.sonidoIncorrecta = Sonidos.BEEP;
-        globales.sonidoConfirmada = Sonidos.NINGUNO;
-
+        globales.sonidoCorrecta = Sonidos.BEEP;
+        globales.sonidoIncorrecta = Sonidos.URGENT;
+        globales.sonidoConfirmada = Sonidos.BEEP;
 
         globales.mostrarMacBt = false;
         globales.mostrarMacImpresora = false;
@@ -294,22 +304,29 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         agregarAnomalia(db, "4", "B - Reja Perimetral ", 1, 1);
         agregarAnomalia(db, "5", "C - Medidor interno  ", 1, 1);
         agregarAnomalia(db, "7", "D - Cliente no permitió. Cliente agresivo ", 1, 1);
-        agregarAnomalia(db, "8", "E - Cliente se reabre el servicio ", 1, 0, "I");
+        agregarAnomalia(db, "8", "E - Se encontró servicio abierto ", 1, 1, "I");
         agregarAnomalia(db, "9", "F - Retiro de válvula o regulador ", 1, 1);
         agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1,"M",1);
         agregarAnomalia(db, "11", "H - Dirección incorrecta del servicio ", 1, 1);
         agregarAnomalia(db, "12", "I - Condición insegura ", 1, 1);
-        agregarAnomalia(db, "14", "J - No usuario ", 1, 0, "I");
+        agregarAnomalia(db, "14", "J - No usuario ", 1, 1, "I");
         agregarAnomalia(db, "15", "K - Faltante de tubería ", 1, 1, "I");
-        agregarAnomalia(db, "16", "L - Duplicada ", 0, 0, "D");
+        agregarAnomalia(db, "16", "L - Duplicada ", 0, 0, "I");
+        agregarAnomalia(db, "46", "L - Duplicada ", 0, 0);
         agregarAnomalia(db, "17", "M - Medidor enrejado ", 1, 1);
         agregarAnomalia(db, "18", "N - No enviada a campo ", 0, 0, "D");
         agregarAnomalia(db, "19", "O - Toma compartida ", 1, 1);
         agregarAnomalia(db, "20", "R - Zona de riesgo ", 1, 1);
         agregarAnomalia(db, "21", "S - Sin válvula ", 1, 1);
         agregarAnomalia(db, "22", "V - Vigilancia no permite ", 1, 1);
-        agregarAnomalia(db, "23", "X - Órdenes erróneas ", 0, 0, "D");
+        agregarAnomalia(db, "23", "X - Órdenes erróneas ", 0, 0);
+        agregarAnomalia(db, "43", "X - Órdenes erróneas ", 0, 0, "I");
         agregarAnomalia(db, "24", "Z - Otro ", 1, 1);
+        agregarAnomalia(db, "31", "E - Se encontró medidor instalado ", 1, 1, "R");
+        agregarAnomalia(db, "32", "J - No usuario ", 1, 1, "R");
+        agregarAnomalia(db, "33", "K - Faltante de tubería ", 1, 1, "R");
+        agregarAnomalia(db, "16", "L - Duplicada ", 0, 0, "R");
+        agregarAnomalia(db, "43", "X - Órdenes erróneas ", 0, 0, "R");
         agregarAnomalia(db, "99", "Texto libre", 1, 1, "D");
 
         db.execSQL("Delete from codigosEjecucion");
@@ -433,6 +450,18 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         if (ls_lectAct.equals("")) {
             return NO_SOSPECHOSA + "|" + "No se ha ingresado ninguna lectura";
         }
+
+// CE, 11/10/23, Las lecturas deben tener exactamente 3 decimales y de 1 a 5 enteros
+        int nPosicionDelPunto = 0;
+        nPosicionDelPunto = ls_lectAct.indexOf('.');
+        if (nPosicionDelPunto == 0)
+            return NO_SOSPECHOSA + "|" + "Las lecturas deben tener al menos un número entero";
+        if (nPosicionDelPunto > 5)
+            return NO_SOSPECHOSA + "|" + "Las lecturas deben tener un máximo de cinco enteros";
+        if (nPosicionDelPunto == -1)
+            return NO_SOSPECHOSA + "|" + "Las lecturas deben tener exactamente tres decimales";
+        if (nPosicionDelPunto != ls_lectAct.length()-4)
+            return NO_SOSPECHOSA + "|" + "Las lecturas deben tener exactamente tres decimales";
 
 //*****************************************************************************************
 // CE, 04/10/23, Vamos a aceptar cualquier lectura escrita por el técnico
@@ -692,12 +721,93 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //            infoFoto.Regional = lect.mRegional;
 //            infoFoto.Porcion = lect.mPorcion;
         } catch (Exception e){
-            throw new Exception("Error al obtener inforrmación de la lectura");
+            throw new Exception("Error al obtener información de la lectura");
         }
 
         return infoFoto;
     }
 
+    public String getDatosSAP(Lectura lectura, int nCampo) throws Exception {
+        String strCardViewMedidor = "";
+        switch (nCampo){
+            case 1:
+                strCardViewMedidor = lectura.is_serieMedidor;
+                break;
+            case 2:
+                strCardViewMedidor = lectura.is_cuentaContrato;
+                break;
+            case 3:
+                strCardViewMedidor = lectura.poliza;
+                break;
+            case 4:
+                strCardViewMedidor = lectura.is_numAviso;
+                break;
+        }
+        return strCardViewMedidor;
+    }
+
+    public String getDatosDelCliente(Lectura lectura) throws Exception {
+        String strClienteMasSaldo = "";
+        strClienteMasSaldo = lectura.getNombreCliente().trim();
+        if (!lectura.is_vencido.equals(""))
+            if ((lectura.getTipoDeOrden().equals("DESCONEXIÓN") || lectura.getTipoDeOrden().equals("REMOCIÓN")))
+                strClienteMasSaldo += "\nSALDO:  $ " + lectura.is_vencido;
+        return strClienteMasSaldo;
+//        return lectura.getNombreCliente().trim();
+    }
+
+    public String getDatosDireccion(Lectura lectura) throws Exception {
+        String strNuevaDireccion = "";
+        String comodin = "";
+        if (!lectura.is_numOrden.equals("0")) {
+            strNuevaDireccion += lectura.is_comollegar1;
+// CE, 25/10/23, Vamos a empezar a recibir la direccion en un solo campo, por eso no necesitamos mostrar los demas
+            //            strNuevaDireccion += lectura.is_calle + " No. " + lectura.numeroDeEdificio.trim() + (!lectura.numeroDePortal.trim().equals("") ? " - " + lectura.numeroDePortal.trim() : "");
+            strNuevaDireccion += lectura.is_calle;
+            if (!lectura.getColonia().equals("")) {
+                strNuevaDireccion += "\n" + lectura.getColonia();
+            }
+            if (!lectura.is_entrecalles.equals("")) {
+                strNuevaDireccion += "\n" + lectura.is_entrecalles;
+            }
+            if (!lectura.is_escalera.trim().equals("")) {
+                comodin = "\n" + "Esc: " + lectura.is_escalera.trim();
+            }
+            if (!lectura.is_piso.trim().equals("")) {
+                if (!comodin.equals(""))
+                    comodin += " ";
+                comodin += "Piso: " + lectura.is_piso.trim();
+            }
+            if (!lectura.is_puerta.trim().equals("")) {
+                if (!comodin.equals(""))
+                    comodin += " ";
+                comodin += "Puerta: " + lectura.is_puerta.trim();
+            }
+            if (!comodin.equals("")) {
+                strNuevaDireccion += comodin;
+            }
+            if (lectura.miLatitud.equals("") || lectura.miLongitud.equals(""))
+                strNuevaDireccion = strNuevaDireccion + "\nMedidor sin Punto GPS";
+            else if ((globales.location == null)) {
+                strNuevaDireccion = strNuevaDireccion + "\nTécnico sin Ubicación Actual";
+            } else {
+                try {
+                    float distanciaEnMetros = 0;
+                    Location origen = new Location("Origen");
+                    origen.setLatitude(globales.location.getLatitude());
+                    origen.setLongitude(globales.location.getLongitude());
+                    Location destino = new Location("Destino");
+                    destino.setLatitude(Float.parseFloat(lectura.miLatitud));
+                    destino.setLongitude(Float.parseFloat(lectura.miLongitud));
+                    distanciaEnMetros = origen.distanceTo(destino);
+                    strNuevaDireccion = strNuevaDireccion + "\nDISTANCIA: " + String.format(Locale.US, "%,.0f", distanciaEnMetros) + " MTS.";
+                } catch (Exception e){
+                    throw new Exception("Error al obtener punto GPS del técnico");
+                }
+            }
+        }
+        return strNuevaDireccion;
+    }
 
     public Vector<String> getInformacionDelMedidor(Lectura lectura) throws Exception {
         if (lectura == null)
@@ -709,7 +819,9 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         String comodin = "";
 
         //datos.add(lectura.is_tipoDeOrden);
-        datos.add("Medidor: " + lectura.is_serieMedidor);
+        String strCardViewMedidor = "";
+        strCardViewMedidor = "Medidor: " + lectura.is_serieMedidor;
+//        datos.add("Medidor: " + lectura.is_serieMedidor);
 
  /*       if (lectura.is_tipoDeOrden.equals("TO002")){
             datos.add("Tipo de Orden: Desconexión");
@@ -724,11 +836,18 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             datos.add("Tipo de Orden: Orden manual");
         }*/
 //        datos.add("Tipo de Orden: " + lectura.getTipoDeOrden());
+/*
         datos.add("Cuenta Contrato: "+lectura.is_cuentaContrato);
         datos.add("Interlocutor: "+lectura.poliza);
         datos.add("Aviso SAP: "+lectura.is_numAviso);
- //       if (globales.esSuperUsuario) {
-            datos.add("Adeudo: " + lectura.is_vencido);
+        datos.add("Adeudo: " + lectura.is_vencido);
+*/
+        strCardViewMedidor += "\nCuenta Contrato: "+lectura.is_cuentaContrato;
+        strCardViewMedidor += "\nInterlocutor: "+lectura.poliza;
+        strCardViewMedidor += "\nAviso SAP: "+lectura.is_numAviso;
+        strCardViewMedidor += "\nAdeudo: " + lectura.is_vencido;
+        datos.add(strCardViewMedidor);
+/*
             if (!lectura.is_EncuestaDeSatisfaccion.equals("")) {
                 datos.add("Encuesta: " + lectura.is_EncuestaDeSatisfaccion);
             }
@@ -736,16 +855,14 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 datos.add("Material: " + lectura.is_idMaterialUtilizado);
             }
  //       }
-        if (!lectura.is_MensajeOut.equals("")) {
-            datos.add("****************************");
-            datos.add(lectura.is_MensajeOut);
-            datos.add("****************************");
-        }
-
+*/
+        String strNuevaDireccion = "";
         if (!lectura.is_numOrden.equals("0")) {
             datos.add(lectura.is_comollegar1);
+            strNuevaDireccion += lectura.is_comollegar1;
 //			if (lectura.verDatos){
             datos.add(lectura.is_calle + " #" + lectura.numeroDeEdificio.trim() + (!lectura.numeroDePortal.trim().equals("") ? "-" + lectura.numeroDePortal.trim() : ""));
+            strNuevaDireccion += lectura.is_calle + " #" + lectura.numeroDeEdificio.trim() + (!lectura.numeroDePortal.trim().equals("") ? "-" + lectura.numeroDePortal.trim() : "");
 //			}
 //			else{
 //				datos.add(lectura.is_calle );
@@ -753,13 +870,13 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //
             if (!lectura.getColonia().equals("")) {
                 datos.add(lectura.getColonia());
-
-
+                strNuevaDireccion += lectura.getColonia();
             }
 
 
             if (!lectura.is_entrecalles.equals("")) {
                 datos.add(lectura.is_entrecalles);
+                strNuevaDireccion += lectura.is_entrecalles;
             }
 
 //			if (lectura.verDatos){
@@ -786,13 +903,13 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
             if (!comodin.equals("")) {
                 datos.add(comodin);
+                strNuevaDireccion += comodin;
             }
-
 //			if (lectura.verDatos){
             datos.add(lectura.getNombreCliente().trim());
 //			}
-
-
+//            TomaDeLecturas.setDatoEnTextView(2,lectura.getNombreCliente().trim());
+//            TomaDeLecturas.setDatoEnTextView(3,strNuevaDireccion);
         }
 
 
@@ -823,6 +940,16 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             datos.add("Agente: " + lectura.is_ClienteYaPagoAgente);
         }
 
+ //       if (!lectura.is_CancelarEnApp.equals("")) datos.add("CancelarEnApp: " + lectura.is_CancelarEnApp);
+
+        if (!lectura.is_QuienAtendio.equals("")) datos.add("QuienAtendio: " + lectura.is_QuienAtendio);
+        if (!lectura.is_MarcaInstalada.equals("")) datos.add("MarcaInstalada: " + lectura.is_MarcaInstalada);
+        if (!lectura.is_SeQuitoTuberia.equals("")) datos.add("SeQuitoTuberia: " + lectura.is_SeQuitoTuberia);
+        if (!lectura.is_TuberiaRetirada.equals("")) datos.add("TuberiaRetirada: " + lectura.is_TuberiaRetirada);
+        if (!lectura.is_MarcaRetirada.equals("")) datos.add("MarcaRetirada: " + lectura.is_MarcaRetirada);
+        if (!lectura.is_MedidorRetirado.equals("")) datos.add("MedidorRetirado: " + lectura.is_MedidorRetirado);
+
+        if (!lectura.is_TextoLibreSAP.equals("")) datos.add("\n" + lectura.is_TextoLibreSAP);
         //}
 
 
@@ -949,15 +1076,16 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //		else if (tipo%3==0)
 //			return mj_sellos;
 //
-
 //		if (globales.tll.getLecturaActual().is_ubicacion.trim().equals("")){
 //			return mj_ubicacionVacia;
 //		}
 
         if (!globales.tll.getLecturaActual().verDatos) {
-            return mj_ver_datos;
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+                return mj_ver_datosFotoDeLlegada;
+            else
+                return mj_ver_datos;
         }
-//
         return null;
     }
 
@@ -1061,6 +1189,8 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         String queActualizar = "";
         boolean actualizar = false;
 
+// CE, 11/10/23, Esta funcionalidad no aplica para Engie
+/*
         if (anomalia.equals("Y")) {
             //Cambiamos Nombre del cliente
             queActualizar = "cliente='" + comentarios + "'";
@@ -1084,26 +1214,30 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             actualizar = false;
             globales.tll.getLecturaActual().is_advertencias = comentarios;
         }
-
+*/
         if (actualizar) {
             openDatabase();
             db.execSQL("Update ruta set " + queActualizar + " where cast(secuenciaReal as integer)=" + globales.tll.getLecturaActual().secuenciaReal);
             closeDatabase();
         }
-
     }
 
     @Override
     public void RealizarModificacionesDeAnomalia(String anomalia) {
+// CE, 11/10/23, Esta funcionalidad no aplica para Engie
+/*
         if (anomalia.startsWith("1")) {
             globales.tll.getLecturaActual().is_ubicacion = anomalia.substring(1);
         }
+*/
     }
 
     @Override
     public void DeshacerModificacionesDeAnomalia(String anomalia) {
         // TODO Auto-generated method stub
 
+// CE, 11/10/23, Esta funcionalidad no aplica para Engie
+/*
         if (anomalia.equals("2")) {
             RealizarModificacionesDeAnomalia(anomalia, "");
         } else if (anomalia.equals("E")) {
@@ -1114,6 +1248,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         } else if (anomalia.equals("B")) {
             globales.tll.getLecturaActual().serieMedidorReal = "";
         }
+*/
     }
 
     @Override
@@ -1279,7 +1414,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 cib_config.obligatorio = true;
                 break;
             case CLIENTE_YA_PAGO_FECHA:
-                cib_config = new ComentariosInputBehavior("Fecha de Pago", InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS, globales.tlc.getLongCampo("ClienteYaPagoFecha"), "");
+                cib_config = new ComentariosInputBehavior("Fecha de Pago (ddmmyyyy)", InputType.TYPE_CLASS_NUMBER, globales.tlc.getLongCampo("ClienteYaPagoFecha"), "");
                 cib_config.obligatorio = true;
                 break;
             case CLIENTE_YA_PAGO_AGENTE:
@@ -1367,10 +1502,10 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         }else if (anomalia.equals("cliente_ya_pago") || anomalia.equals("G")) {
             openDatabase();
             if (globales.tll.getLecturaActual().setClienteYaPago(bu_params)) {
-                    Toast.makeText(this.context, "El Monto es inferior al Adeudo. Proceda con la Desconexión/Remoción", Toast.LENGTH_LONG).show();
-/*                AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-                builder.setMessage("El Monto pagado es inferior al Adeudo. Favor de proceder con la Desconexión o Remoción")
-                        .setTitle("Proceder con la Orden")
+//                    Toast.makeText(this.context, "El Monto es inferior al Adeudo. Proceda con la Desconexión/Remoción", Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+                builder.setMessage("El Monto pagado es insuficiente. Debe proceder a realizar la Desconexión/Remoción")
+                        .setTitle("Realizar la Desconexión/Remoción")
                         .setCancelable(false)
                         .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id){
@@ -1378,7 +1513,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                             }
                         });
                 AlertDialog alert = builder.create();
-                alert.show();*/
+                alert.show();
             }
             closeDatabase();
         } else {
@@ -1471,6 +1606,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         globales.tlc.add(new Campo(22, "ClienteYaPagoMonto", 507, 10, Campo.I, " ", false));
         globales.tlc.add(new Campo(22, "ClienteYaPagoFecha", 507, 10, Campo.I, " ", false));
         globales.tlc.add(new Campo(22, "ClienteYaPagoAgente", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "QuienAtendio", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "MarcaInstalada", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "SeQuitoTuberia", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "TuberiaRetirada", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "MarcaRetirada", 507, 50, Campo.I, " ", false));
+        globales.tlc.add(new Campo(22, "MedidorRetirado", 507, 50, Campo.I, " ", false));
 //************************************************************************************************************************************
 
         //globales.tlc.add(new Campo(3, "situacionDelSuministro", 97, 1, Campo.D, " "));
@@ -1572,7 +1713,9 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     @Override
     public String getMensajedeAdvertencia() {
         // TODO Auto-generated method stub
-        return globales.tll.getLecturaActual().is_advertencias.trim();
+// CE, 09/10/23, Vamos a mostrar el campo MensajeOut en la parte superior
+//        return globales.tll.getLecturaActual().is_advertencias.trim();
+        return globales.tll.getLecturaActual().is_MensajeOut.trim();
     }
 
     @Override
@@ -1640,21 +1783,21 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //	}
 
     @Override
-    public String getDescripcionDeBuscarMedidor(Lectura lectura,
-                                                int tipoDeBusqueda, String textoBuscado) {
+    public String getDescripcionDeBuscarMedidor(Lectura lectura, int tipoDeBusqueda, String textoBuscado) {
         String ls_preview = "";
-
         switch (tipoDeBusqueda) {
+// CE, 14/10/23, Ya solamente existe un tipo de Buscar Medidor
             case BuscarMedidorTabsPagerAdapter.MEDIDOR:
+/*
                 ls_preview += "IC:" + lectura.poliza + "<br>";
                 ls_preview += lectura.is_comollegar1 + "<br>";
-                //ls_preview =lectura.is_comollegar1 +"<br>" /*+ Lectura.marcarTexto(lectura.is_serieMedidor, textoBuscado, false)*/;
+                //ls_preview =lectura.is_comollegar1 +"<br>" // Lectura.marcarTexto(lectura.is_serieMedidor, textoBuscado, false);
                 if (!lectura.getColonia().equals(""))
                     ls_preview += "<br>" + lectura.getColonia();
                 ls_preview += "<br>" + lectura.getDireccion();
                 ls_preview += "<br>" + lectura.is_entrecalles;
                 break;
-
+*/
             case BuscarMedidorTabsPagerAdapter.DIRECCION:
 /*                if (lectura.is_tipoDeOrden.equals("TO002"))
                     ls_preview += "DESCONEXION" + "<br>";
@@ -1665,18 +1808,36 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 if (lectura.is_tipoDeOrden.equals("TO005"))
                     ls_preview += "REMOCION" + "<br>";*/
 
-                ls_preview += lectura.getTipoDeOrden() + "<br>";
+// CE, 05/11/23, Vamos a mostrar un listado mas conciso para mostrar mas renglones en la pantalla
+//                ls_preview += lectura.getTipoDeOrden() + "<br>";
 
-//                ls_preview += "IC:  " + lectura.poliza + "<br>";
-                ls_preview += "Medidor:  " + lectura.is_serieMedidor + "<br>";
-                ls_preview += "Cuenta Contrato:  " + lectura.is_cuentaContrato + "<br>";
-                ls_preview += "Aviso SAP:  " + lectura.is_numAviso + "<br>";
+//                ls_preview += "Medidor:  " + lectura.is_serieMedidor + "(" + lectura.miLatitud + "," + lectura.miLongitud + ")<br>";
+                String strGPS = "";
+                float distanciaEnMetros = 0;
+                if (lectura.miLatitud.equals("") || lectura.miLongitud.equals(""))
+                    strGPS = " (Sin GPS)";
+                else {
+                    Location origen = new Location("Origen");
+                    origen.setLatitude(globales.location.getLatitude());
+                    origen.setLongitude(globales.location.getLongitude());
+//                    origen.setLatitude(Float.parseFloat(lectura.miLatitud));
+//                    origen.setLongitude(Float.parseFloat(lectura.miLongitud));
+                    Location destino = new Location("Destino");
+                    destino.setLatitude(Float.parseFloat(lectura.miLatitud));
+                    destino.setLongitude(Float.parseFloat(lectura.miLongitud));
+                    distanciaEnMetros = origen.distanceTo(destino);
+                    strGPS = " (" + String.format(Locale.US,"%,.0f",distanciaEnMetros) + " MTS.)";
+                }
+                ls_preview += "M: " + lectura.is_serieMedidor + strGPS + "<br>";
+
+//                ls_preview += "Cuenta Contrato:  " + lectura.is_cuentaContrato + "<br>";
+//                ls_preview += "Aviso SAP:  " + lectura.is_numAviso + "<br>";
 //                ls_preview += lectura.is_comollegar1 + "<br>";
-                if (!lectura.getColonia().equals(""))
-                    ls_preview += "<br>"
-                            + Lectura.marcarTexto(lectura.getColonia(), textoBuscado, true);
-                ls_preview += "<br>" + lectura.getDireccion();
-                ls_preview += "<br>" + lectura.is_entrecalles;
+//                if (!lectura.getColonia().equals(""))
+//                    ls_preview += "<br>"
+//                            + Lectura.marcarTexto(lectura.getColonia(), textoBuscado, true);
+                ls_preview += lectura.getDireccion();
+//                ls_preview += "<br>" + lectura.is_entrecalles;
                 break;
 
             case BuscarMedidorTabsPagerAdapter.NUMERO:

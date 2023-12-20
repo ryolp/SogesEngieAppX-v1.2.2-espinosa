@@ -208,6 +208,8 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " numSecuencia default 0, MensajeOut default '', miLatitud default '0.0', miLongitud default '0.0', NumAviso default '', CuentaContrato default '', idMaterialSolicitado default 0, "
 				+ " EncuestaDeSatisfaccion default 0, MedidorInstalado default '', idMarcaInstalada default 0, LecturaReal default '0.0', idMaterialUtilizado default '', "
 				+ " ClienteYaPagoMonto default '', ClienteYaPagoFecha default '', ClienteYaPagoAgente default '', "
+				+ " CancelarEnApp default 0, TextoLibreSAP default '', "
+				+ " QuienAtendio default '', MarcaInstalada default '', SeQuitoTuberia default '', TuberiaRetirada default '', MarcaRetirada default '', MedidorRetirado default '', "
 				+ " idTipoDeReconexion default 0, idTipoDeRemocion default 0, Repercusion default '')");
 		//Usuarios
 		db.execSQL("CREATE TABLE usuarios (usuario , contrasena , nombre, rol default 1, fotosControlCalidad default 1, baremo default 75)");
@@ -222,6 +224,10 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE usoAnomalias (anomalia, veces default 0, fecha )");
 		
 		db.execSQL("CREATE TABLE rutaGPS (id INTEGER PRIMARY KEY, latitud, longitud, PTN, fecha, tipo)");
+
+		//videos
+		db.execSQL("CREATE TABLE videos (idVideo INTEGER PRIMARY KEY, secuencial, nombre default '', envio default 1, "
+				+ " idArchivo default 0, idTarea default 0, idOrden default 0, fecha default '', carpeta default '', ruta default '', uri default '')");
 	}
 
 	@Override
@@ -289,6 +295,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			verifyColumnInTable(db, "ruta", "NumAviso", "''");
 			verifyColumnInTable(db, "ruta", "CuentaContrato", "''");
 			verifyColumnInTable(db, "ruta", "idMaterialSolicitado", "0");
+//			verifyColumnInTable(db, "ruta", "CancelarEnApp", "0");
+			verifyColumnInTable(db, "ruta", "TextoLibreSAP", "''");
 			verifyColumnInTable(db, "ruta", "EncuestaDeSatisfaccion", "''");
 			verifyColumnInTable(db, "ruta", "MedidorInstalado", "''");
 			verifyColumnInTable(db, "ruta", "idMarcaInstalada", "0");
@@ -300,6 +308,13 @@ public class DBHelper extends SQLiteOpenHelper {
 			verifyColumnInTable(db, "ruta", "ClienteYaPagoFecha", "''");
 			verifyColumnInTable(db, "ruta", "ClienteYaPagoMonto", "''");
 			verifyColumnInTable(db, "ruta", "ClienteYaPagoAgente", "''");
+
+			verifyColumnInTable(db, "ruta", "QuienAtendio", "''");
+			verifyColumnInTable(db, "ruta", "MarcaInstalada", "''");
+			verifyColumnInTable(db, "ruta", "SeQuitoTuberia", "''");
+			verifyColumnInTable(db, "ruta", "TuberiaRetirada", "''");
+			verifyColumnInTable(db, "ruta", "MarcaRetirada", "''");
+			verifyColumnInTable(db, "ruta", "MedidorRetirado", "''");
 
 			verifyColumnInTable(db, "fotos", "idArchivo", "0");
 			verifyColumnInTable(db, "fotos", "idTarea", "0");

@@ -11,6 +11,8 @@ import enruta.soges_engie.entities.LoginRequestEntity;
 import enruta.soges_engie.entities.LoginResponseEntity;
 import enruta.soges_engie.entities.PuntoGpsRequest;
 import enruta.soges_engie.entities.PuntoGpsResponse;
+import enruta.soges_engie.entities.ReenviarPasswordRequest;
+import enruta.soges_engie.entities.ReenviarPasswordResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -109,4 +111,6 @@ public interface IWebApi {
     @POST("api/operaciones/SubirDatosDebug")
     Call<SubirDatosResponse> subirDatosDebug(@Body SubirDatosRequest request);
 
+    @POST("api/loginv2/reenviarPassword")
+    Call<ReenviarPasswordResponse>reenviarPassword(@Body ReenviarPasswordRequest req);
 }

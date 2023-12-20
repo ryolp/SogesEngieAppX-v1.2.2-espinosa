@@ -93,7 +93,7 @@ public class PantallaAnomaliasFragment extends Fragment {
 			tipoAnomalia="I";
 		}
 		else if (tipoAnomalia.equals("TO004")){   // Rec-Remo
-			tipoAnomalia="I";
+			tipoAnomalia="R";
 		}
 		else{
 			tipoAnomalia="M";
@@ -413,24 +413,26 @@ public class PantallaAnomaliasFragment extends Fragment {
 						Intent intent = new Intent(pa_papa, Input.class);
 						intent.putExtra("tipo", Input.COMENTARIOS);
 						intent.putExtra("comentarios", "");
+						intent.putExtra("anomaliaquepidelectura", c.getString(c.getColumnIndex("anomalia")));
 
+						String strEscribaSusComentarios = "";
+//						strEscribaSusComentarios=c.getString(c.getColumnIndex("anomalia")) + " - " + c.getString(c.getColumnIndex("desc"));
+						if (c.getString(c.getColumnIndex("anomalia")).equals("E"))
+							strEscribaSusComentarios="ESCRIBA LA LECTURA DEL MEDIDOR: \n\n";
+						else
+							strEscribaSusComentarios="ESCRIBA SUS COMENTARIOS PARA LA REPERCUSION: \n\n" + c.getString(c.getColumnIndex("anomalia")) + " - " + c.getString(c.getColumnIndex("desc")) + "\n\n";
 						// Con esto generamos la etiqueta que tendra el input
-						intent.putExtra("label",
-								c.getString(c.getColumnIndex("anomalia")) + " - "
-										+ c.getString(c.getColumnIndex("desc"))
-										+ "");
+						intent.putExtra("label",strEscribaSusComentarios	+ "");
 						
 //						String codigoAnomalia="";
 //						if (globales.convertirAnomalias)
 //							codigoAnomalia=pa_papa.is_anomalia.is_conv;
 //						else
 //							codigoAnomalia=anom.is_anomalia;
-						
 						//Aqui mandamos el comportamiento de input, en otras palabras, le daremos la anomalia para que pueda configurarlo como se le de la gana
 						intent.putExtra("behavior", pa_papa.is_anomaliaSelec);
 						// Tambien debo mandar que etiqueta quiero tener
 						pa_papa.startActivityForResult(intent, TomaDeLecturas.COMENTARIOS);
-						
 				}
 				else if (campos!=null && (c.getInt(c.getColumnIndex("mens"))==1 || c.getInt(c.getColumnIndex("capt"))==1)){
 					//Tiene mas datos a guardar

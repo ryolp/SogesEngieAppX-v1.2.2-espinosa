@@ -54,9 +54,7 @@
     <ListView
         android:id="@+id/anom_lv_lista"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        >
-    </ListView>
+        android:layout_height="match_parent"></ListView>
 
     <GridView
         android:id="@+id/anom_gv_lista"

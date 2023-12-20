@@ -84,7 +84,11 @@ public abstract class TomaDeLecturasGenerica {
 	public abstract String getNombreFoto(Globales globales, SQLiteDatabase db, long secuencial, String is_terminacion );
 	
 	public abstract  Vector<String> getInformacionDelMedidor( Lectura lectura) throws Exception;
-	
+
+	public abstract  String getDatosSAP(Lectura lectura, int nCampo) throws Exception;
+	public abstract  String getDatosDelCliente(Lectura lectura) throws Exception;
+	public abstract  String getDatosDireccion(Lectura lectura) throws Exception;
+
 	public abstract  MensajeEspecial getMensaje();
 	
 	/**

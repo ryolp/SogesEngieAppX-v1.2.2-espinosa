@@ -50,6 +50,11 @@ public class Input extends TomaDeLecturasPadre {
     final static int FOTOS = 2;
     final static int FOTOS_CC = 3;
 
+    public final static int REMOCION_MARCA_MEDIDOR = 16;
+    public final static int REMOCION_SERIE_MEDIDOR = 17;
+    public final static int REMOCION_TUBERIA = 18;
+    public final static int REMOCION_OBSERVACIONES = 19;
+
     final static int CAPTURA_Y_REGRESA = 0;
     final static int CAPTURA_Y_ANOMALIA = 1;
     final static int CAPTURA_Y_SIGUIENTE = 2;
@@ -58,6 +63,8 @@ public class Input extends TomaDeLecturasPadre {
 
     final static int PANTALLA_CODIGOS = 4;
     final static int PANTALLA_COMENTARIOS = 5;
+    final static int INPUT_REMOCION_EFECTIVA = 6;
+    final static int PANTALLA_QUIEN_ATENDIO = 7;
 
     final static String HEXATECLADO = "procentaje_hexateclado";
     final static String TECLADO = "porcentaje_teclado";
@@ -79,12 +86,13 @@ public class Input extends TomaDeLecturasPadre {
     boolean mostrado = false;
     LinearLayout tl_teclado;
 
+    String strAnomaliaQuePideLectura = "";
+
     boolean sospechosa = false;
     boolean requiereFoto = false;
     boolean obligatorio = false;
 
     boolean validar = true, salir = true, esLecturaValida = true, pregunteConsumo = false;
-    ;
 
     Lectura lectura;
 
@@ -132,22 +140,45 @@ public class Input extends TomaDeLecturasPadre {
             b_aceptar = (Button) findViewById(R.id.b_continuar);
             tv_medidor = (TextView) findViewById(R.id.tv_medidor);
             rl_contenedorLabel = (RelativeLayout) findViewById(R.id.ll_contendedorLabel);
-
+            strAnomaliaQuePideLectura= "";
 //		final TextView tv = (TextView) findViewById(R.id.tv_label);
 
             switch (ii_tipo) {
                 case LECTURA:
 
-                    getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+// CE, 14/10/23, Vamos a quitar el teclado del SISTOLE para tener el teclado normal de Android
+//                    getWindow().setSoftInputMode(
+//                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
                     ls_lectura = bu_params.getString("act");
                     il_lect_max = bu_params.getLong("max");
                     il_lect_min = bu_params.getLong("min");
                     validar = bu_params.getBoolean("validar");
                     modo = bu_params.getInt("modo");
+//***********************************************************************************************
+// CE, 14/10/23, Vamos a quitar el teclado del SISTOLE para tener el teclado normal de Android
+                    tecladoActual = NINGUNO;
 
+                    ViewTreeObserver vto = tv_label.getViewTreeObserver();
+                    setDatosInicial();
+//                    esconderTeclado();
+                    i_teclado.setVisibility(View.GONE);
+                    et_generico.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+                    et_generico.setEnabled(true);
+                    et_generico.requestFocus();
+                    et_generico.setOnEditorActionListener(new OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView arg0, int arg1,
+                                                      KeyEvent arg2) {
+                            // TODO Auto-generated method stub
+                            capturaLectura();
+                            et_generico.setEnabled(true);
+                            et_generico.requestFocus();
+                            return false;
+                        }
+                    });
+/*
                     tecladoActual = TECLADO;
-
                     porcentaje = globales.porcentaje_teclado;
                     et_generico.setKeyListener(null);
 
@@ -205,6 +236,8 @@ public class Input extends TomaDeLecturasPadre {
                         punto.setTag(".");
                         punto.setText(".");
                     }
+//***********************************************************************************************
+*/
 
 //			 mensajeOK( "Favor de ingresar la lectura del medidor", "Teclado");
 
@@ -222,12 +255,14 @@ public class Input extends TomaDeLecturasPadre {
                             tv_label.setVisibility(View.VISIBLE);
                         }
                     } catch (Throwable e) {
-
                     }
                     ls_comentarios = bu_params.getString("comentarios");
-                    et_generico.setText(ls_comentarios);
+                    strAnomaliaQuePideLectura = bu_params.getString("anomaliaquepidelectura");
                     i_teclado.setVisibility(View.GONE);
                     b_aceptar.setVisibility(View.VISIBLE);
+                    et_generico.setText(ls_comentarios);
+                    et_generico.setEnabled(true);
+                    et_generico.requestFocus();
                     et_generico
                             .setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                 public void onFocusChange(View v, boolean hasFocus) {
@@ -236,9 +271,7 @@ public class Input extends TomaDeLecturasPadre {
                                     }
                                 }
                             });
-
                     et_generico.setOnEditorActionListener(new OnEditorActionListener() {
-
                         @Override
                         public boolean onEditorAction(TextView arg0, int arg1,
                                                       KeyEvent arg2) {
@@ -247,34 +280,34 @@ public class Input extends TomaDeLecturasPadre {
                             return false;
                         }
                     });
-
-                    et_generico.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-                    try {
+                    if (strAnomaliaQuePideLectura.equals("E"))
+                        et_generico.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+                    else
+                        et_generico.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+// CE, 12/11/23, Ya no estamos usando la lógica del "behavior"
+                    behavior = bu_params.getString("behavior");
+/*                    try {
                         behavior = bu_params.getString("behavior");
                         ComentariosInputBehavior cib = globales.tdlg.getAvisoMensajeInput(behavior);
-                        et_generico.setInputType(cib.tipo);
+                        if (!strAnomaliaQuePideLectura.equals("E"))
+                            et_generico.setInputType(cib.tipo);
                         et_generico.setText(cib.texto);
                         obligatorio = cib.obligatorio;
                         et_generico.setFilters(new InputFilter[]{new InputFilter.LengthFilter(cib.longitud)});
                         tv_label.setText(tv_label.getText().toString() + "\n\n" + cib.mensaje);
-
                     } catch (Throwable e) {
                         et_generico.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                     }
-
+*/
                     b_aceptar.setOnClickListener(new OnClickListener() {
-
                         @Override
                         public void onClick(View arg0) {
                             // TODO Auto-generated method stub
                             captura();
                         }
-
                     });
-
                     mostrarTeclado();
                     break;
-
                 case MAC:
                     tecladoActual = HEXATECLADO;
                     porcentaje = globales.porcentaje_hexateclado;
@@ -309,9 +342,7 @@ public class Input extends TomaDeLecturasPadre {
                         }
 
                     });
-
                     tv_info.setVisibility(View.GONE);
-
                     et_generico
                             .setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                 public void onFocusChange(View v, boolean hasFocus) {
@@ -320,18 +351,13 @@ public class Input extends TomaDeLecturasPadre {
                                     }
                                 }
                             });
-
                     et_generico.setOnClickListener(new OnClickListener() {
-
                         @Override
                         public void onClick(View v) {
                             // TODO Auto-generated method stub
                             esconderTeclado();
-
                         }
-
                     });
-
                     esconderTeclado();
                     break;
             }
@@ -349,6 +375,10 @@ public class Input extends TomaDeLecturasPadre {
      * (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
      * mgr.hideSoftInputFromWindow(et_generico.getWindowToken(), 0); }
      */
+
+    @Override
+    protected void rutinaDespuesDeTomarFotoDeLlegada(final int requestCode, final int resultCode) {
+    }
 
     public void mostrarTeclado() {
         /*
@@ -379,7 +409,6 @@ public class Input extends TomaDeLecturasPadre {
                             mgr.hideSoftInputFromWindow(
                                     et_generico.getWindowToken(), 0);
                         }
-
                     }
                 });
     }
@@ -415,14 +444,12 @@ public class Input extends TomaDeLecturasPadre {
         } catch (Throwable e) {
             li_opcion = 1;
         }
-
         // Agregamos el texto dependiendo de donde este el puntero
         li_selectEnd = et_generico.getSelectionEnd();
         li_selectIni = et_generico.getSelectionStart();
         if (li_opcion == -1 && et_generico.getSelectionStart() > 0)
             li_selectIni--;
         ls_antes = et_generico.getText().toString().substring(0, li_selectIni);
-
         ls_completa = ls_antes
                 + ls_opcion
                 + et_generico.getText().toString()
@@ -440,7 +467,6 @@ public class Input extends TomaDeLecturasPadre {
     public void toFin() {
         int li_selectEnd = et_generico.getText().toString().length();
         Selection.setSelection((Editable) et_generico.getText(), li_selectEnd);
-
     }
 
 //	private int validaLectura(String ls_lectAct) {
@@ -526,29 +552,27 @@ public class Input extends TomaDeLecturasPadre {
                                     sospechosa = true;
                                     il_lectConf++;
                                 }
-
-                                if (globales.sonidos)
-                                    sonidos.playSoundMedia(globales.sonidoIncorrecta);
+// CE, 09/11/23, Por lo pronto, nos pidieron que no tenga sonido la App
+//                                if (globales.sonidos)
+//                                    sonidos.playSoundMedia(globales.sonidoIncorrecta);
                                 return;
                             }
-
                         }
-
                         esLecturaValida = true;
+                        if (globales.sonidos) {
+// CE, 09/11/23, Por lo pronto, nos pidieron que no tenga sonido la App
+//                            if (!sospechosa) {
+//                                sonidos.playSoundMedia(globales.sonidoCorrecta);
+//                            } else {
+//                                sonidos.playSoundMedia(globales.sonidoConfirmada);
+//                            }
+                        }
 //				globales.is_lectura = et_generico.getText().toString();
                         MensajeEspecial me = globales.tdlg.mensajeDeConsumo(et_generico.getText().toString());
                         if (me != null) {
                             muestraRespuestaSeleccionada(me);
                             esLecturaValida = false;
                             return;
-                        }
-
-                        if (globales.sonidos) {
-                            if (!sospechosa) {
-                                sonidos.playSoundMedia(globales.sonidoCorrecta);
-                            } else {
-                                sonidos.playSoundMedia(globales.sonidoConfirmada);
-                            }
                         }
                     } else {
                         esLecturaValida = true;
@@ -557,56 +581,79 @@ public class Input extends TomaDeLecturasPadre {
 //			if (salir)
 //				captura();
 
-                    Intent intent = new Intent(this, Input.class);
-                    intent.putExtra("tipo", Input.COMENTARIOS);
-                    intent.putExtra("comentarios", "");
-                    String is_desc = "";
+                    if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN")) {
+                        Intent intent = new Intent(this, RemocionEfectiva.class);
+                        intent.putExtra("campos","");
+                        intent.putExtra("label", "\nREMOCION EFECTIVA\n");
+                        intent.putExtra("anomalia", "");
+                        startActivityForResult(intent, TomaDeLecturas.INPUT_REMOCION_EFECTIVA);
+                    } else {
+                        Intent intent = new Intent(this, Input.class);
+                        intent.putExtra("tipo", Input.COMENTARIOS);
+                        intent.putExtra("comentarios", "");
+                        intent.putExtra("anomaliaquepidelectura", "");
+                        String is_desc = "";
 
-// CE, 10/10/23, Ya nos vamos a buscar la descricpion de ningun codigo
-//                    openDatabase();
-//                    Cursor c = db.rawQuery("Select desc from codigosEjecucion where anomalia='" + this.et_generico.getText().toString() + "'", null);
-//                    c.moveToFirst();
-//                    is_desc = Utils.getString(c, "desc", "");
-//                    closeDatabase();
+                        // CE, 10/10/23, Ya nos vamos a buscar la descricpion de ningun codigo
+                        //                    openDatabase();
+                        //                    Cursor c = db.rawQuery("Select desc from codigosEjecucion where anomalia='" + this.et_generico.getText().toString() + "'", null);
+                        //                    c.moveToFirst();
+                        //                    is_desc = Utils.getString(c, "desc", "");
+                        //                    closeDatabase();
 
-//********************************************************************
-// CE, 01/10/23, Vamos a mostrar textos diferentes dependiendo de la Operacion
-                    String is_NuevoMensajePorMostrar = "";
-                    if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
-                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
-                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
-                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
-                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
-                        is_NuevoMensajePorMostrar = "ESCRIBA EL NOMBRE DEL CLIENTE";
-                    else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
-                        is_NuevoMensajePorMostrar = "ESCRIBA EL NUMERO DE MEDIDOR INSTALADO";
-                    else
-                        is_NuevoMensajePorMostrar = "ESCRIBA SUS OBSERVACIONES";
-//                        is_NuevoMensajePorMostrar = this.et_generico.getText().toString() + " - " + is_desc + "";
-//********************************************************************
+                        //********************************************************************
+                        // CE, 01/10/23, Vamos a mostrar textos diferentes dependiendo de la Operacion
+                        int numPantalla = PANTALLA_COMENTARIOS;
+                        String is_NuevoMensajePorMostrar = "";
+                        if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
+                            is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                        else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
+                            is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                        else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+                            if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
+                                    (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
+                                is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                            } else {
+                                numPantalla = PANTALLA_QUIEN_ATENDIO;
+//                                is_NuevoMensajePorMostrar = "\nESCRIBA EL NOMBRE DE LA PERSONA QUE ATENDIÓ\n";
+                                is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                            }
+                        } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO")) {
+                            if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
+                                    (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
+                                is_NuevoMensajePorMostrar = "\nESCRIBA EL NÚMERO DE MEDIDOR QUE FUE INSTALADO\n";
+                            } else {
+                                numPantalla = PANTALLA_QUIEN_ATENDIO;
+//                                is_NuevoMensajePorMostrar = "\nESCRIBA EL NOMBRE DE LA PERSONA QUE ATENDIÓ\n";
+                                is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                            }
+                        } else
+                            is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
+                        //                        is_NuevoMensajePorMostrar = this.et_generico.getText().toString() + " - " + is_desc + "";
+                        //********************************************************************
 
-                    // Con esto generamos la etiqueta que tendra el input
-                    intent.putExtra("label",
-                            ""
-                                    + is_NuevoMensajePorMostrar
-                                    + "");
+                        // Con esto generamos la etiqueta que tendra el input
+                        intent.putExtra("label",
+                                ""
+                                        + is_NuevoMensajePorMostrar
+                                        + "");
 
-//			String codigoAnomalia="";
-//			if (globales.convertirAnomalias)
-//				codigoAnomalia=pa_papa.is_anomalia.is_conv;
-//			else
-//				codigoAnomalia=anom.is_anomalia;
+                        //			String codigoAnomalia="";
+                        //			if (globales.convertirAnomalias)
+                        //				codigoAnomalia=pa_papa.is_anomalia.is_conv;
+                        //			else
+                        //				codigoAnomalia=anom.is_anomalia;
 
-                    //Aqui mandamos el comportamiento de input, en otras palabras, le daremos la anomalia para que pueda configurarlo como se le de la gana
-//			intent.putExtra("behavior", pa_papa.is_anomaliaSelec);
-                    // Tambien debo mandar que etiqueta quiero tener
-                    startActivityForResult(intent, PANTALLA_COMENTARIOS);
+                        //Aqui mandamos el comportamiento de input, en otras palabras, le daremos la anomalia para que pueda configurarlo como se le de la gana
+                        //			intent.putExtra("behavior", pa_papa.is_anomaliaSelec);
+                        // Tambien debo mandar que etiqueta quiero tener
 
-
+// CE, 22/10/23, Vamos a agregar una pantalla para preguntar quien atendio
+//                        startActivityForResult(intent, PANTALLA_COMENTARIOS);
+                        startActivityForResult(intent, numPantalla);
+                    }
                     break;
-
                 case MAC:
-
                     if (et_generico.getText().toString().length() != 12) {
                         Toast.makeText(
                                 this,
@@ -614,7 +661,6 @@ public class Input extends TomaDeLecturasPadre {
                                 Toast.LENGTH_LONG).show();
                         return;
                     }
-
                     // captura();
                     Intent resultado = new Intent();
                     resultado.putExtra("input", agregaDosPuntos());
@@ -627,10 +673,34 @@ public class Input extends TomaDeLecturasPadre {
         }
     }
 
-    public void captura() {
+    private String PuedoContinuar(String strLectura) {
+        if (!strAnomaliaQuePideLectura.equals("E"))
+            return "";
+        if (strLectura.equals(""))
+            return "No se ha ingresado ninguna lectura";
+// CE, 11/10/23, Las lecturas deben tener exactamente 3 decimales y de 1 a 5 enteros
+        int nPosicionDelPunto = 0;
+        nPosicionDelPunto = strLectura.indexOf('.');
+        if (nPosicionDelPunto == 0)
+            return "Las lecturas deben tener al menos un número entero";
+        if (nPosicionDelPunto > 5)
+            return "Las lecturas deben tener un máximo de cinco enteros";
+        if (nPosicionDelPunto == -1)
+            return "Las lecturas deben tener exactamente tres decimales";
+        if (nPosicionDelPunto != strLectura.length()-4)
+            return "Las lecturas deben tener exactamente tres decimales";
+        return "";
+    }
 
+    public void captura() {
         capturando = true;
         String input = et_generico.getText().toString();
+        String ls_respuesta = "";
+        ls_respuesta = PuedoContinuar(input);
+        if (!ls_respuesta.equals("")) {
+            Toast.makeText(this, ls_respuesta, Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent resultado = new Intent();
         resultado.putExtra("input", input);
         if (behavior != null) {
@@ -639,9 +709,7 @@ public class Input extends TomaDeLecturasPadre {
                     capturando = false;
                     Toast.makeText(this, R.string.msj_campo_vacio_no_persnalizable, Toast.LENGTH_LONG).show();
                     return;
-
                 }
-
                 String ls_mensaje = globales.tdlg.validaCamposGenericos(behavior, resultado.getExtras());
                 if (!ls_mensaje.equals("")) {
                     Toast.makeText(this, ls_mensaje, Toast.LENGTH_LONG).show();
@@ -649,11 +717,15 @@ public class Input extends TomaDeLecturasPadre {
                 }
             }
         }
-
         resultado.putExtra("tipo", ii_tipo);
         resultado.putExtra("sospechosa", sospechosa);
         resultado.putExtra("confirmada", il_lectConf);
         resultado.putExtra("terminacion", globales.is_terminacion);
+
+// CE, 18/12/23, Aqui vamos a guardar quien atendio, porque despues no recibo el Focus para hacerlo
+        if (strAnomaliaQuePideLectura.equals("RECONEXION EFECTIVA"))
+            globales.tll.getLecturaActual().is_QuienAtendio = input;
+
         setResult(Activity.RESULT_OK, resultado);
         finish();
     }
@@ -674,17 +746,13 @@ public class Input extends TomaDeLecturasPadre {
                 }
                 if (action == KeyEvent.ACTION_UP) {
                     porcentaje += factorPorcentaje;
-
                     // porcentaje= getFloatValue("porcentaje", porcentaje);
-
                     setSizes();
                     openDatabase();
                     // Hay que utilizar el teclado utilizado
                     guardaValor(tecladoActual, porcentaje);
-
                     closeDatabase();
                 }
-
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 if (tecladoActual.equals(NINGUNO)) {
@@ -692,14 +760,11 @@ public class Input extends TomaDeLecturasPadre {
                 }
                 if (action == KeyEvent.ACTION_DOWN) {
                     // TODO
-
                     if ((porcentaje - factorPorcentaje) >= .05f) {
                         porcentaje -= factorPorcentaje;
                         // porcentaje= getFloatValue("porcentaje", porcentaje);
                     }
-
                     setSizes();
-
                     openDatabase();
                     guardaValor(tecladoActual, porcentaje);
                     closeDatabase();
@@ -710,16 +775,13 @@ public class Input extends TomaDeLecturasPadre {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.m_borrar_lect:
                 et_generico.setText("");
                 captura();
                 break;
         }
-
         return true;
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -750,9 +812,7 @@ public class Input extends TomaDeLecturasPadre {
 //			return true;
 //		}
 //		return false;
-
         return false;
-
     }
 
     @SuppressLint("NewApi")
@@ -781,7 +841,6 @@ public class Input extends TomaDeLecturasPadre {
             tecladoHeight = i_teclado.getHeight();
             totalHeight = tecladoHeight + infoHeight + genericoHeight;
         }
-
     }
 
     public void shrinkBotones() {
@@ -807,51 +866,40 @@ public class Input extends TomaDeLecturasPadre {
                 (Button) findViewById(R.id.teclado_capturaysalir),
                 (Button) findViewById(R.id.teclado_capturaysiguiente),
                 (Button) findViewById(R.id.teclado_b_punto)};
-
         for (Button boton : botones) {
             if (boton != null) {
                 boton.setTextSize((float) ((float) boton.getTextSize() - 0.5));
                 boton.append("\u200b");
             }
-
         }
     }
 
     public String agregaDosPuntos() {
         String ls_mac = et_generico.getText().toString();
         String ls_final = "";
-
         for (int i = 0; i < ls_mac.length(); i += 2) {
             try {
                 ls_final += ls_mac.substring(i, i + 2) + ":";
             } catch (Throwable e) {
             }
-
         }
-
         if (ls_final.endsWith(":"))
             ls_final = ls_final.substring(0, ls_final.length() - 1);
-
         return ls_final;
     }
 
     public String quitaDosPuntos(String ls_mac) {
         String ls_final = "";
-
         for (int i = 0; i < ls_mac.length(); i++) {
             if (!ls_mac.substring(i, i + 1).equals(":")) {
                 ls_final += ls_mac.substring(i, i + 1);
             }
-
         }
         return ls_final;
-
     }
 
     public void setSizes() {
-
         int i = 0;
-
         for (Button boton : botones) {
             if (boton != null) {
                 boton.setTextSize(TypedValue.COMPLEX_UNIT_SP,
@@ -859,7 +907,6 @@ public class Input extends TomaDeLecturasPadre {
                 //boton.append("\u200b");
             }
             i++;
-
         }
     }
 
@@ -867,28 +914,21 @@ public class Input extends TomaDeLecturasPadre {
         // openDatabase();
         // db.execSQL("delete from config where key='porcentaje' ");
         // closeDatabase();
-
         porcentaje = getDoubleValue(tecladoActual, porcentaje);
-
         int i = 0;
-
         for (Button boton : botones) {
             if (boton != null) {
                 sizeTeclasTeclado[i] = boton.getTextSize();
             }
             i++;
-
         }
-
         setSizes();
     }
 
     public int getIntValue(String key, int value) throws Exception {
         openDatabase();
-
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
                 null);
-
         if (c.getCount() > 0) {
             c.moveToFirst();
             value = Utils.getInt(c, "value", 0);
@@ -897,18 +937,14 @@ public class Input extends TomaDeLecturasPadre {
                     + "', " + value + ")");
         }
         c.close();
-
         closeDatabase();
-
         return value;
     }
 
     public double getDoubleValue(String key, double value) throws Exception {
         openDatabase();
-
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
                 null);
-
         if (c.getCount() > 0) {
             c.moveToFirst();
             value = Utils.getDouble(c, "value", 0);
@@ -917,9 +953,7 @@ public class Input extends TomaDeLecturasPadre {
                     + "', " + value + ")");
         }
         c.close();
-
         closeDatabase();
-
         return value;
     }
 
@@ -927,12 +961,10 @@ public class Input extends TomaDeLecturasPadre {
         // openDatabase();
         db.execSQL("Update config  set value=" + value + " where  key='" + key
                 + "'");
-
         // closeDatabase();
     }
 
     public void inicializarBototesTeclado() {
-
         if (tecladoActual.equals(TECLADO)) {
             Button botones[] = {(Button) findViewById(R.id.teclado_b_1),
                     (Button) findViewById(R.id.teclado_b_2),
@@ -978,9 +1010,7 @@ public class Input extends TomaDeLecturasPadre {
                     (Button) i_hexateclado.findViewById(R.id.teclado_b_borrar),
                     (Button) i_hexateclado.findViewById(R.id.pcl_b_capturar)};
             this.botones = botones;
-
         }
-
     }
 
     @Override
@@ -992,7 +1022,6 @@ public class Input extends TomaDeLecturasPadre {
             resultado.putExtra("confirmada", il_lectConf);
             setResult(Activity.RESULT_CANCELED, resultado);
         }
-
         super.finish();
         return;
     }
@@ -1018,24 +1047,18 @@ public class Input extends TomaDeLecturasPadre {
                 case DESC:
                     globales.tll.guardarLectura("0");
                     getAntLect();
-
                     break;
             }
         } else {
-
             capturaLectura();
             tipoDeCaptura = CAPTURA_Y_SIGUIENTE;
             if (!esLecturaValida)
                 return;
-
-
             if ((sospechosa || globales.fotoForzada || globales.bModificar))
                 tomarFoto(CamaraActivity.TEMPORAL, 1);
             else
                 guardar();
         }
-
-
     }
 
     public void capturaLectura() {
@@ -1045,7 +1068,6 @@ public class Input extends TomaDeLecturasPadre {
     }
 
     public void guardar() {
-
         capturando = true;
         // int respuesta= globales.tll.capturaLectura(is_lectura,
         // globales.tll.getLecturaActual().getAnomalia());
@@ -1053,14 +1075,12 @@ public class Input extends TomaDeLecturasPadre {
         Lectura ll_lectura = globales.tll.getLecturaActual();
         globales.estoyCapturando = true;
         try {
-
             if (globales.is_lectura.equals("") && globales.requiereLectura) {
                 Toast.makeText(this,
                         R.string.lbl_tdl_requiere_lectura,
                         Toast.LENGTH_LONG).show();
                 return;
             }
-
             //Verificamos si la localizacion es nula...
             if (deboTomarPuntoGPS()) {
                 //No podemos permitir que sea nula sin haber tenido el consentimiento del usuario, ok?...
@@ -1068,12 +1088,8 @@ public class Input extends TomaDeLecturasPadre {
                 esperarGPS();
                 return;
             }
-
             seguirConLaCapturaSinPunto = false;
-
-
             // Siguiente lectura
-
 //			if (globales.bModificar)
 //				globales.tll.getLecturaActual().intentos++;
 
@@ -1118,12 +1134,10 @@ public class Input extends TomaDeLecturasPadre {
                     getAntLect();
                     break;
             }
-
             if ((globales.sonLecturasConsecutivas && !globales.idMedidorUltimaLectura
                     .equals(globales.is_caseta))
                     || (!globales.tll.hayMasLecturas() && sonLecturasConsecutivas)) {
                 tomaFotosConsecutivas(globales.idMedidorUltimaLectura);
-
                 // Salimos de correccion
                 if (globales.bModificar) {
                     globales.bcerrar = false;
@@ -1133,17 +1147,12 @@ public class Input extends TomaDeLecturasPadre {
                     getSigLect();
                 }
             }
-
             if (!ll_lectura.getLectura().equals(""))
                 mandarAImprimir(ll_lectura);
-
             globales.moverPosicion = false;
-
         } catch (Throwable e) {
-
             // En caso de que sea la ultima lectura
             if (globales.sonLecturasConsecutivas && globales.bModificar) {
-
                 // Salimos de correccion
                 if (globales.bModificar) {
                     globales.bcerrar = false;
@@ -1159,11 +1168,9 @@ public class Input extends TomaDeLecturasPadre {
                     mandarAImprimir(ll_lectura);
                 // this.finish();
                 // Si es la ultima deberia salir
-
                 muere();
             }
         }
-
         pregunteConsumo = false;
         globales.estoyCapturando = false;
 
@@ -1198,7 +1205,6 @@ public class Input extends TomaDeLecturasPadre {
         capturando = false;
         globales.location = null;
         // estoyCapturando=false;
-
     }
 
     @Override
@@ -1223,7 +1229,6 @@ public class Input extends TomaDeLecturasPadre {
                             Toast.makeText(this, is_mensaje_direccion,
                                     Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     if (globales.sonLecturasConsecutivas && globales.estoyCapturando) {
                         globales.bcerrar = false;
@@ -1236,8 +1241,6 @@ public class Input extends TomaDeLecturasPadre {
                         getSigLect();
                         return;
                     } else {
-
-
                         if (globales.permiteDarVuelta) {
                             irALaPrimeraSinEjecutarAlTerminar();
                             globales.permiteDarVuelta = false;
@@ -1247,10 +1250,8 @@ public class Input extends TomaDeLecturasPadre {
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
-
                     // globales.bModificar=false;
                 }
-
                 // Si estoy tomando fotos consecutivas, no puedo cerrar ya que
                 // tengo una actividad hijo que depende de esta...
                 if (globales.bcerrar
@@ -1307,21 +1308,18 @@ public class Input extends TomaDeLecturasPadre {
         globales.is_presion = globales.is_presion == null ? ""
                 : globales.is_presion;
 
-
         // Voy a verificar lo de las lecturas consecutivas
         if (globales.tll.hayMasMedidoresIguales(globales.is_caseta)
                 && !globales.is_caseta.trim().equals("0"))
             globales.sonLecturasConsecutivas = true;
         else
             globales.sonLecturasConsecutivas = false;
-
         setDatosInicial();
     }
 
     private void setDatosInicial() {
         if (globales.tdlg == null)
             return;
-
         try {
             lectura = globales.tll.getLecturaActual();
         } catch (Throwable e1) {
@@ -1342,7 +1340,7 @@ public class Input extends TomaDeLecturasPadre {
 //		else
 //			et_generico.setHint(lectura.numerodeesferasReal
 //					+ " " + getString(R.string.lbl_esferas));
-        tv_medidor.setText(getString(R.string.lbl_tdl_indica_medidor) + globales.is_caseta);
+        tv_medidor.setText("Escriba la lectura\ndel medidor:\n\nM:" + globales.tll.getLecturaActual().is_serieMedidor);
 
         tv_medidor.setBackgroundResource(R.color.green);
         tv_medidor.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
@@ -1351,20 +1349,19 @@ public class Input extends TomaDeLecturasPadre {
         rl_contenedorLabel.setVisibility(View.VISIBLE);
         rl_contenedorLabel.setBackgroundResource(R.color.green);
 
+// CE, 23/10/23, En Engie no debemos dejar que presionen el numero de medidor
+/*
         tv_medidor.setClickable(true);
         final Input input = this;
         tv_medidor.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(input, PantallaCodigos.class);
-
                 startActivityForResult(intent, PANTALLA_CODIGOS);
             }
-
         });
-
+*/
         globales.tdlg.is_lectAnt = "";
     }
 
@@ -1378,11 +1375,9 @@ public class Input extends TomaDeLecturasPadre {
     //Capturar y anomalia
     public void capturarYAnomalia(View view) {
         // mensajeInput(PRESION);
-
         globales.is_lectura = et_generico.getText().toString();
         //Primero validamos la lectura...
         //Si la lectura es VACIA tal vez sea una anomalia sin lectura hay que poder capturarla, asi que hay que validar eso
-
         if (globales.is_lectura.length() != 0) {
             //Validamos la lectura
             capturaLectura();
@@ -1390,11 +1385,10 @@ public class Input extends TomaDeLecturasPadre {
             if (!esLecturaValida)
                 return;
         }
-        Intent anom = new Intent(this, PantallaAnomalias.class);
+        Intent anom = new Intent(this, PantallaAnomaliasActivity.class);
         anom.putExtra("secuencial", globales.il_lect_act);
         anom.putExtra("lectura", globales.is_lectura);
         anom.putExtra("anomalia", globales.is_presion);
-
         startActivityForResult(anom, ANOMALIA);
     }
 
@@ -1405,7 +1399,6 @@ public class Input extends TomaDeLecturasPadre {
                 if (globales.estoyTomandoFotosConsecutivas) {
                     tomaFotosConsecutivas(globales.idMedidorUltimaLectura);
                 } else {
-
                     guardar();
                 }
                 break;
@@ -1413,7 +1406,6 @@ public class Input extends TomaDeLecturasPadre {
                 if (resultCode == Activity.RESULT_OK) {
                     String ls_comentarios = "";
                     bu_params = data.getExtras();
-
                     // Tomamos la anomalia y la subAnomalia en caso de requerir
                     globales.tll.getLecturaActual().setAnomalia(
                             bu_params.getString("anomalia"));
@@ -1421,28 +1413,20 @@ public class Input extends TomaDeLecturasPadre {
                             bu_params.getString("subAnomalia"));
                     globales.tll.getLecturaActual().setComentarios(
                             bu_params.getString("comentarios"));
-
                     globales.is_presion = bu_params.getString("anomalia");
-
-
                     // Aqui manejamos el si requiere lectura o no
                     if (!bu_params.getString("anomalia").equals("")) {
                         if (globales.tll.getLecturaActual().subAnomalias.size() > 0) {
                             presentacionAnomalias();
                             // Hay que verificar si la anomalia es ausente
-
                         } else if (globales.tll.getLecturaActual().anomalias.size() > 0) {
-
                             presentacionAnomalias();
                         }
                     }
-
-
                     openDatabase();
                     db.execSQL("delete from fotos where temporal="
                             + CamaraActivity.ANOMALIA);
                     closeDatabase();
-
                     if (requiereFoto) {
                         tomarFoto(CamaraActivity.ANOMALIA, 1);
                         requiereFoto = false;
@@ -1451,15 +1435,11 @@ public class Input extends TomaDeLecturasPadre {
                     } else {
                         guardar();
                     }
-
                     //guardar();
-
-
                 } else {
                     captura();
                 }
                 break;
-
             case PANTALLA_CODIGOS:
                 if (resultCode == Activity.RESULT_OK) {
                     bu_params = data.getExtras();
@@ -1468,22 +1448,53 @@ public class Input extends TomaDeLecturasPadre {
                     et_generico.setText(bu_params.getString("anomalia"));
                     captura();
                 }
-
                 break;
-
+            case PANTALLA_QUIEN_ATENDIO:
+                if (resultCode == Activity.RESULT_OK) {
+                    bu_params = data.getExtras();
+                    globales.tll.getLecturaActual().is_QuienAtendio = bu_params.getString("input");
+                    if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE) ||
+                        (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE_ANTES) ||
+                        (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE) ||
+                        (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE_ANTES)) {
+                        Intent intent = new Intent(this, Input.class);
+                        intent.putExtra("tipo", Input.COMENTARIOS);
+                        intent.putExtra("comentarios", "");
+                        intent.putExtra("anomaliaquepidelectura", "");
+                        String is_desc = "";
+                        String is_NuevoMensajePorMostrar = "";
+                        is_NuevoMensajePorMostrar = "\nESCRIBA EL NÚMERO DE MEDIDOR QUE FUE INSTALADO\n";
+                        intent.putExtra("label",
+                                ""
+                                        + is_NuevoMensajePorMostrar
+                                        + "");
+                        startActivityForResult(intent, PANTALLA_COMENTARIOS);
+                    } else {
+                        captura();
+                    }
+                }
+                break;
             case PANTALLA_COMENTARIOS:
                 if (resultCode == Activity.RESULT_OK) {
                     bu_params = data.getExtras();
                     globales.tll.getLecturaActual().setComentarios(bu_params.getString("input"));
                     captura();
                 }
-
+                break;
+            case INPUT_REMOCION_EFECTIVA:
+                if (resultCode == Activity.RESULT_OK) {
+                    bu_params = data.getExtras();
+                    globales.tll.getLecturaActual().setComentarios(bu_params.getString("input"));
+                    globales.tll.getLecturaActual().is_MarcaRetirada = bu_params.getString(String.valueOf(REMOCION_MARCA_MEDIDOR));
+                    globales.tll.getLecturaActual().is_MedidorRetirado = bu_params.getString(String.valueOf(REMOCION_SERIE_MEDIDOR));
+                    globales.tll.getLecturaActual().is_TuberiaRetirada = bu_params.getString(String.valueOf(REMOCION_TUBERIA));
+                    captura();
+                }
                 break;
         }
     }
 
     public void presentacionAnomalias() {
-
         if (globales.tll.getLecturaActual().requiereLectura() == Anomalia.LECTURA_AUSENTE) {
             globales.requiereLectura = false;
             // if (globales.tll.getLecturaActual().anomalia.ii_lectura==0 ||
@@ -1491,12 +1502,9 @@ public class Input extends TomaDeLecturasPadre {
             // Si es ausente, tiene que borrar la lectura...
             globales.is_lectura = "";
             // }
-
         } else {
             globales.requiereLectura = true;
         }
-
-
         if (globales.tll.getLecturaActual().requiereFotoAnomalia() == 1)
             requiereFoto = true;
 //			tomarFoto(CamaraActivity.ANOMALIA);
@@ -1509,7 +1517,6 @@ public class Input extends TomaDeLecturasPadre {
         else
             is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_despues);
         getSigLect();
-
     }
 
     public void getAntLect(View view) {
@@ -1524,42 +1531,27 @@ public class Input extends TomaDeLecturasPadre {
     @Override
     protected void capturaDespuesDelPuntoGPS() {
         // TODO Auto-generated method stub
-
         guardar();
-
-
     }
-
 
     public void muestraRespuestaSeleccionada(final MensajeEspecial me) {
         if (me != null) {
-
-
             switch (me.tipo) {
                 case MensajeEspecial.MENSAJE_SI_NO:
-
                     preguntaSiNo(me);
-
                     break;
-
                 case MensajeEspecial.OPCION_MULTIPLE:
-
                     preguntaOpcionMultiple(me);
-
                     break;
-
             }
-
         }
     }
-
 
     public void regresaDeMensaje(MensajeEspecial me, int respuesta) {
         if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_CONSUMO_CERO || me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_SIGUE_CORTADO) {
             //Ya no validamos, ya lo hicimos
             pregunteConsumo = true;
             globales.ignorarContadorControlCalidad = true;
-
             globales.calidadOverride = globales.tdlg.cambiaCalidadSegunTabla(me.regresaValor(respuesta).substring(0, 1), me.regresaValor(respuesta));
 //			globales.ignorarGeneracionCalidadOverride=true;
             //regresamos a la funcion
@@ -1574,7 +1566,6 @@ public class Input extends TomaDeLecturasPadre {
                     capturarYAnomalia(tv_label);
                     break;
             }
-
         }
     }
 
@@ -1602,7 +1593,6 @@ public class Input extends TomaDeLecturasPadre {
         if (mDialogoMsg == null) {
             mDialogoMsg = new DialogoMensaje(this);
         }
-
         mDialogoMsg.mostrarMensaje(titulo, mensaje, t.getMessage());
     }
 }

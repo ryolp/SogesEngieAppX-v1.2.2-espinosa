@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -34,12 +35,14 @@ public class SignaturePadActivity extends Activity {
     Globales globales;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_MEDIA_VIDEO,
+        Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_AUDIO};
     private SignaturePad mSignaturePad;
     private Button mClearButton;
-    private Button mSaveButton;
-    private Button mSaveButton2;
-    private Button mSaveButton3;
+    private ImageButton mSaveButton;
+    private ImageButton mSaveButton2;
+    private ImageButton mSaveButton3;
     private Button mSaveButton4;
     private Button mSaveButton5;
 
@@ -99,17 +102,24 @@ public class SignaturePadActivity extends Activity {
                     mSaveButton2.setEnabled(false);
                     mSaveButton3.setEnabled(false);
                     mSaveButton4.setEnabled(false);
-                    mSaveButton5.setEnabled(false);
+//                    mSaveButton5.setEnabled(false);
                     mClearButton.setEnabled(false);
                 }
             });
 
-            mSaveButton = (Button) findViewById(R.id.save_button);
-            mSaveButton2 = (Button) findViewById(R.id.save_button2);
-            mSaveButton3 = (Button) findViewById(R.id.save_button3);
+            mSaveButton = (ImageButton) findViewById(R.id.save_button);
+            mSaveButton2 = (ImageButton) findViewById(R.id.save_button2);
+            mSaveButton3 = (ImageButton) findViewById(R.id.save_button3);
             mSaveButton4 = (Button) findViewById(R.id.save_button4);
             mSaveButton5 = (Button) findViewById(R.id.save_button5);
             mClearButton = (Button) findViewById(R.id.clear_button);
+
+            mSaveButton.setEnabled(false);
+            mSaveButton2.setEnabled(false);
+            mSaveButton3.setEnabled(false);
+            mSaveButton4.setEnabled(false);
+//                    mSaveButton5.setEnabled(false);
+            mClearButton.setEnabled(false);
 
             mClearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -256,7 +266,7 @@ public class SignaturePadActivity extends Activity {
                                         byte[] firmaAGuardar = out.toByteArray();
                                         long idFoto;
 
-                                        globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "5";
+                                        globales.tll.getLecturaActual().is_EncuestaDeSatisfaccion = "-1";
                                         cv_datos = new ContentValues(4);
                                         cv_datos.put("secuencial", secuencial);
                                         cv_datos.put("nombre", ls_nombre);

@@ -4,21 +4,32 @@
         android:icon="@drawable/ic_action_importar"
         android:orderInCategory="1"
         android:showAsAction="always"
-        android:title="@string/m_str_importar" />
+        android:title="@string/m_str_importar"
+        android:visible="false"/>
 
     <item
         android:id="@+id/m_exportar"
         android:icon="@drawable/ic_action_exportar"
         android:orderInCategory="2"
         android:showAsAction="always"
-        android:title="@string/m_str_exportar"></item>
+        android:title="@string/m_str_exportar"
+        android:visible="true"></item>
+
+    <item
+        android:id="@+id/m_exportarVideos"
+        android:icon="@drawable/ic_action_exportar"
+        android:orderInCategory="2"
+        android:showAsAction="never"
+        android:title="@string/m_str_exportar_videos"
+        android:visible="true"></item>
 
     <item
         android:id="@+id/m_lecturas"
         android:icon="@drawable/ic_lecturas"
         android:orderInCategory="3"
         android:showAsAction="always"
-        android:title="@string/m_str_lecturas"></item>
+        android:title="@string/m_str_lecturas"
+        android:visible="false"></item>
 
     <item
         android:id="@+id/m_filtrar"
@@ -29,15 +40,8 @@
     <item
         android:id="@+id/m_exportarTodo"
         android:title="@string/m_str_exportarTodo"
+        android:showAsAction="never"
         android:visible="false"></item>
-
-
-    <item
-        android:id="@+id/m_configuracion"
-        android:icon="@drawable/ic_action_configuracion"
-        android:orderInCategory="4"
-        android:showAsAction="always"
-        android:title="@string/str_configuracion"></item>
 
     <item
         android:id="@+id/m_borrarruta"
@@ -46,24 +50,16 @@
         android:visible="true"></item>
 
     <item
-        android:id="@+id/m_cerrarSesion"
-        android:orderInCategory="6"
-        android:title="Cerrar sesión"
-        android:visible="true" />
-
-    <item
         android:id="@+id/m_probarCamara"
         android:orderInCategory="7"
         android:title="Probar cámara"
-        android:visible="true" />
+        android:visible="false" />
 
     <item
         android:id="@+id/m_probarVideo"
         android:orderInCategory="8"
         android:title="Probar video"
-        android:visible="true" />
-
-
+        android:visible="false" />
 
     <item
         android:id="@+id/probar_bt"
@@ -71,14 +67,9 @@
         android:visible="false"/>
 
     <item
-        android:id="@+id/m_cambiarUsuario"
-        android:icon="@drawable/ic_action_cambiausr"
-        android:showAsAction="always"
-        android:title="@string/lbl_cambiarUsuario"/>
-
-    <item
         android:id="@+id/m_acercaDe"
-        android:title="@string/m_str_acercade"/>
+        android:title="@string/m_str_acercade"
+        android:visible="false"/>
     <item
         android:id="@+id/m_verTamanosLetra"
         android:title="Tamaños de Fuente"/>
@@ -87,14 +78,36 @@
         android:title="Grabar en SDCard"/>
     <item
         android:id="@+id/m_cierreForzado"
-        android:title="Cierre Forzado"/>
-
+        android:title="Cierre Forzado"
+        android:visible="true"/>
     <item
         android:id="@+id/m_VerMapaDeTodos"
-        android:icon="@drawable/ic_scanner_24"
-        android:orderInCategory="10"
-        android:showAsAction="never"
+        android:icon="@drawable/puntogps"
+        android:orderInCategory="1"
+        android:showAsAction="always"
         android:title="@string/str_ver_mapa_de_todos"/>
+    <item
+        android:id="@+id/m_configuracion"
+        android:icon="@drawable/ic_action_configuracion"
+        android:orderInCategory="2"
+        android:showAsAction="never"
+        android:title="@string/str_configuracion"
+        android:visible="true"></item>
+
+    <item
+        android:id="@+id/m_cambiarUsuario"
+        android:icon="@drawable/ic_action_cambiausr"
+        android:orderInCategory="30"
+        android:showAsAction="never"
+        android:title="@string/lbl_cambiarUsuario"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/m_cerrarSesion"
+        android:orderInCategory="40"
+        android:showAsAction="never"
+        android:title="Cerrar sesión"
+        android:visible="true" />
 
     <item
         android:id="@+id/m_salir"

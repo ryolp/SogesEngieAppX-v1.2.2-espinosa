@@ -78,6 +78,7 @@ public class PantallaCodigos extends Activity {
 					Intent intent = new Intent(pc, Input.class);
 					intent.putExtra("tipo", Input.COMENTARIOS);
 					intent.putExtra("comentarios", "");
+					intent.putExtra("anomaliaquepidelectura", "");
 
 					// Con esto generamos la etiqueta que tendra el input
 					intent.putExtra("label",

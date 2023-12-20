@@ -54,6 +54,13 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/iv_logo_soges"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="0dp"
+                android:src="@drawable/logo_soges_png" />
+
             <TextView
                 android:id="@+id/tv_indicador"
                 android:layout_width="wrap_content"
@@ -61,7 +68,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:text="Medium Text"
+                android:text=""
+                android:visibility="visible"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/red" />
 
@@ -79,7 +87,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/ib_cambiarCamara"
                     android:gravity="center_horizontal"
-                    android:text="@string/lbl_tdl_indica_medidor"
+                    android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
                     android:textSize="24dp" />
@@ -91,7 +99,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/ib_cambiarCamara"
                     android:gravity="center_horizontal"
-                    android:text="@string/str_ejemplo"
+                    android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
                     android:textSize="24dp" />
@@ -132,16 +140,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
                 android:layout_weight=".3333"
+                android:backgroundTint="@color/Orange"
                 android:text="@string/str_captura" />
 
             <Button
                 android:id="@+id/camara_b_otra"
-                style="@style/AppTheme.RoundedCornerMaterialButton"
+                style="@style/AppTheme.RoundedCornerMaterialButton.Navy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:layout_weight=".3333"
+                android:backgroundTint="@color/colorPrimaryVariant"
                 android:text="@string/lbl_camara_otra" />
 
             <Button
@@ -152,6 +162,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_weight=".3333"
                 android:text="@string/lbl_regresar"
+                android:backgroundTint="@color/LimeGreen"
                 android:visibility="visible" />
         </LinearLayout>
 

@@ -12,6 +12,7 @@ import java.util.Vector;
 import enruta.soges_engie.DBHelper;
 import enruta.soges_engie.Globales;
 import enruta.soges_engie.Lectura;
+import enruta.soges_engie.Main;
 import enruta.soges_engie.R;
 import enruta.soges_engie.TodasLasLecturas;
 import enruta.soges_engie.entities.OrdenEntity;
@@ -386,18 +387,26 @@ public class DescargarTareasMgr implements Runnable {
         cv_params.put("comentarios", "");
     }
 
+// CE, 24/10/23, Esta rutina la reescribió Reynol
+    public void borrarRegistro(OrdenEntity orden) throws Exception {
+// CE, 22/10/23, Hay que escribir esta rutina para borrar a los que ya pagaron
+        try {
+            mDb.execSQL("delete from ruta where CAST(idOrden as INTEGER) = CAST(" + String.valueOf(orden.idOrden) + " as INTEGER)");
+            mGlobales.bPrenderCampana = true;
+        } catch (Throwable t) {
+            throw new Exception("Error al borrar registro. " + t.getMessage());
+        }
+    }
+
     public void agregarRegistro(OrdenEntity orden) throws Exception {
         ContentValues cv_params = new ContentValues();
         Cursor c;
         long secuenciaReal;
         long idOrden;
         long id;
-
         try {
             // Obtener la última secuencia añadida.
-
             c = mDb.rawQuery("Select secuenciaReal from ruta order by secuenciaReal desc limit 1", null);
-
             if (c.getCount() > 0) {
                 c.moveToFirst();
                 secuenciaReal = Utils.getInt(c, "secuenciaReal", 0) + 1;
@@ -407,7 +416,7 @@ public class DescargarTareasMgr implements Runnable {
 
             // Buscar si ya existe una orden con el mismo idOrden
 
-            c = mDb.rawQuery("Select idOrden from ruta WHERE CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
+            c = mDb.rawQuery("Select idOrden, MensajeOut, vencido from ruta WHERE CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
 
             if (c.getCount() > 0) {
                 c.moveToFirst();
@@ -415,10 +424,25 @@ public class DescargarTareasMgr implements Runnable {
             }
             else
                 idOrden = 0;
-
             inicializarParams(cv_params);
-
-            if (idOrden == 0) {
+            if (idOrden != 0) {
+//                c = mDb.rawQuery("Select idOrden from ruta WHERE (NOT (MensajeOut LIKE '" + orden.MensajeOut + "')) AND CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
+//                if (c.getCount() > 0) {
+                String strMensajeApp = Utils.getString(c, "MensajeOut", "");
+                String strVencidoApp = Utils.getString(c, "vencido", "");
+                String strBalance = "3";
+// CE, 06/12/23, Vamos a marcar las que llegaron como nuevas
+//                String strEnvio = Utils.getString(c, "envio", "");
+//                if ((!strEnvio.equals(orden.envio)))
+//                    strBalance = "2";
+                if ((!strMensajeApp.equals(orden.MensajeOut)) || (!strVencidoApp.equals(orden.Vencido))) {
+                    mDb.execSQL("update ruta set MensajeOut='" + orden.MensajeOut + "', vencido='" + orden.Vencido + "', balance='" + strBalance + "' where CAST(idOrden as INTEGER) = CAST(" + String.valueOf(orden.idOrden) + " as INTEGER)");
+                    mGlobales.bPrenderCampana = true;
+                }
+//                }
+            } else {
+                String strBalance = "1";
+//                mGlobales.bPrenderCampana = true;
                 cv_params.put("indicador", orden.Indicador);
                 cv_params.put("secuenciaReal", secuenciaReal);
                 cv_params.put("numOrden", orden.NumOrden);
@@ -431,9 +455,9 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("poliza", orden.Poliza);
                 cv_params.put("cliente", orden.Cliente);
                 cv_params.put("calle", orden.Calle);
-                cv_params.put("numPortal", orden.NumExterior);
+                cv_params.put("numPortal", orden.NumInterior);
                 cv_params.put("piso", "");
-                cv_params.put("numEdificio", "");
+                cv_params.put("numEdificio", orden.NumExterior);
                 cv_params.put("colonia", orden.Colonia);
                 cv_params.put("municipio", orden.Municipio);
                 cv_params.put("entrecalles", orden.EntreCalles);
@@ -453,7 +477,9 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("consumo", "");
                 cv_params.put("SerieMedidor", orden.SerieMedidor);
                 cv_params.put("vencido", orden.Vencido);
-                cv_params.put("balance", orden.Balance);
+// CE, 06/12/23, Vamos a marcar las que llegaron como nuevas
+//                cv_params.put("balance", orden.Balance );
+                cv_params.put("balance", strBalance );
                 cv_params.put("ultimo_pago", orden.UltimoPago);
                 cv_params.put("fecha_utlimo_pago", orden.FechaUltimoPago);
                 cv_params.put("giro", orden.Giro);
@@ -465,6 +491,8 @@ public class DescargarTareasMgr implements Runnable {
                 cv_params.put("NumAviso", orden.NumAviso);
                 cv_params.put("CuentaContrato", orden.CuentaContrato);
                 cv_params.put("idMaterialSolicitado", orden.idMaterialSolicitado);
+//                cv_params.put("CancelarEnApp", orden.CancelarEnApp);
+                cv_params.put("TextoLibreSAP", orden.TextoLibreSAP);
                 cv_params.put("MensajeOut", orden.MensajeOut);
 //************************************************************************************************************************************
 
@@ -472,6 +500,40 @@ public class DescargarTareasMgr implements Runnable {
             }
         } catch (Throwable t) {
             throw new Exception("Error al agregar registro. " + t.getMessage());
+        }
+    }
+
+    public void borrarRegistro2(OrdenEntity orden) throws Exception {
+        Cursor c;
+        long secuenciaReal;
+        long nCant;
+
+        try {
+            // Buscar si ya existe una orden con el mismo idOrden
+
+            c = mDb.rawQuery("Select idOrden from ruta WHERE CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
+
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+
+                if (orden.idOrden > 0)
+                {
+                    String whereClause="idOrden=?";
+                    String whereArgs[] = { String.valueOf(orden.idOrden) };
+
+                    nCant = mDb.delete("ruta", whereClause, whereArgs);
+                }
+            }
+        } catch (Throwable t) {
+            throw new Exception("Error al borrar registro. " + t.getMessage());
+        }
+    }
+
+    public void borrarTodo() throws Exception {
+        try {
+            mDb.execSQL("delete from ruta");
+        } catch (Throwable t) {
+            throw new Exception("Error al borrar todos los registros. " + t.getMessage());
         }
     }
 
@@ -565,7 +627,9 @@ public class DescargarTareasMgr implements Runnable {
             orden.miLongitud = campos[i++];
             orden.NumAviso = campos[i++];
             orden.CuentaContrato = campos[i++];
-            orden.idMaterialSolicitado = campos[i];
+            orden.idMaterialSolicitado = campos[i++];
+            orden.CancelarEnApp = campos[i++];
+            orden.TextoLibreSAP = campos[i];
 // *** MUY IMPORTANTE: El ultimo campo no debe llevar el ++ ****
 //************************************************************************************************************************************
 

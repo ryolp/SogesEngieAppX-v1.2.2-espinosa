@@ -39,7 +39,6 @@
     <style name="Estilo_Boton_Anomalia" parent="android:Theme.Light">
         <item name="android:background">@color/Red</item>
         <item name="android:backgroundTint">@color/Red</item>
-        <item name="android:textColor">@color/White</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/Black</item>
@@ -57,13 +56,32 @@
         <item name="android:layout_margin">2dp</item>
     </style>
 
+    <style name="AppTheme.RoundedCornerMaterialButton.LightSteelBlue" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_normal</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton.Navy" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_navy</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
     <style name="AppTheme.RoundedCornerMaterialButton.Red" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/rounded_shape_red</item>
         <item name="android:layout_margin">2dp</item>
     </style>
+
     <style name="AppTheme.RoundedCornerMaterialButton.Green" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/rounded_shape_green</item>
         <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton.BigGreen" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape_big_green</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="AppTheme.RoundedCornerMaterialButton.Keyboard" parent="Widget.AppCompat.Button.Colored">

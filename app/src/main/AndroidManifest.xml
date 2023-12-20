@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="preferExternal"
-    android:versionCode="6"
-    android:versionName="SOGES (1.0.0)">
+    android:versionCode="7"
+    android:versionName="SOGES (1.1.7)">
 
     <uses-sdk android:targetSdkVersion="31" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -35,8 +35,15 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
+        <activity
+            android:name="enruta.soges_engie.ClienteYaPago"
+            android:exported="false" />
+        <activity
+            android:name="enruta.soges_engie.RemocionEfectiva"
+            android:exported="false" />
         <activity
             android:name="enruta.soges_engie.Camara2Activity"
             android:exported="false">
@@ -60,14 +67,14 @@
             android:label="@string/title_activity_toma_de_lecturas"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <!--<activity
+        <!--
+<activity
             android:name="enruta.soges_engie.TomaDeLecturas"
         android:configChanges="keyboardHidden|navigation|orientation|screenSize"
         android:label="@string/title_activity_toma_de_lecturas"
         android:screenOrientation="portrait"
-        android:windowSoftInputMode="stateAlwaysHidden" />-->
-
+        android:windowSoftInputMode="stateAlwaysHidden" />
+        -->
         <activity
             android:name="enruta.soges_engie.CamaraActivity"
             android:screenOrientation="portrait" />
@@ -87,9 +94,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
         <activity
+            android:name="enruta.soges_engie.PantallaAnomaliasActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name="enruta.soges_engie.PantallaAnomalias"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="enruta.soges_engie.BuscarMedidorActivity"
+            android:label="@string/title_activity_buscar_medidor"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="enruta.soges_engie.BuscarMedidor"
             android:label="@string/title_activity_buscar_medidor"
@@ -135,6 +151,10 @@
         <activity
             android:name="enruta.soges_engie.SignaturePadActivity"
             android:exported="false" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

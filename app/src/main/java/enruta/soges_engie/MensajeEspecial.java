@@ -36,9 +36,7 @@ public class MensajeEspecial {
 	 */
 	MensajeEspecial(int tipo, String descripcion, int respondeA){
 		this.tipo= tipo;
-		
 		this.descripcion= descripcion;
-		
 		this.respondeA=respondeA;
 	}
 	
@@ -49,7 +47,6 @@ public class MensajeEspecial {
 	 */
 	MensajeEspecial(String descripcion, int respondeA){
 		this.tipo= MENSAJE_SI_NO;
-		
 		this.descripcion= descripcion;
 		this.respondeA=respondeA;
 	}
@@ -70,7 +67,6 @@ public class MensajeEspecial {
 	public String regresaValor(int pos){
 		if (tipo==MENSAJE_SI_NO){
 				return String.valueOf(pos);
-			
 		}
 		else if (tipo==OPCION_MULTIPLE){
 			return respuestas.get(pos).codigo;
@@ -87,7 +83,6 @@ public class MensajeEspecial {
 		}
 		else if (tipo==OPCION_MULTIPLE){
 			//Buscamos en el arreglo
-			
 			for (Respuesta actual: respuestas){
 				if (actual.codigo.equals(codigo)){
 					//Regresamos la correcta
@@ -116,10 +111,6 @@ public class MensajeEspecial {
 			respuestas[i]=resp.descripcion;
 			i++;
 		}
-		
 		return respuestas;
 	}
-	
-	
-
 }

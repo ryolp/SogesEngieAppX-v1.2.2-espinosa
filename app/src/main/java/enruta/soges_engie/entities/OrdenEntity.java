@@ -64,7 +64,9 @@ public class OrdenEntity {
     public String NumAviso = "";
     public String CuentaContrato = "";
     public String idMaterialSolicitado = "";
-    
+    public String CancelarEnApp = "";
+    public String TextoLibreSAP = "";
+
     public int EncuestaDeSatisfaccion = 0;
     public String MedidorInstalado = "";
     public int idMarcaInstalada = 0;
@@ -74,8 +76,14 @@ public class OrdenEntity {
     public int idTipoDeReconexion = 0;
     public int idTipoDeRemocion = 0;
 	public String ClienteYaPagoMonto = "";    
-	public String ClienteYaPagoFecha = "";    
-	public String ClienteYaPagoAgente = "";    
+	public String ClienteYaPagoFecha = "";
+    public String ClienteYaPagoAgente = "";
+    public String QuienAtendio = "";
+    public String MarcaInstalada = "";
+    public String SeQuitoTuberia = "";
+    public String TuberiaRetirada = "";
+    public String MarcaRetirada = "";
+    public String MedidorRetirado = "";
 //************************************************************************************************************************************
 
     public long id;

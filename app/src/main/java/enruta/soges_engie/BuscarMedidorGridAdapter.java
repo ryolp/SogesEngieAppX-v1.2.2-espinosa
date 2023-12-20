@@ -104,7 +104,6 @@ public class BuscarMedidorGridAdapter extends BaseAdapter {
         		ll_indicadores.setVisibility(View.GONE);
         	}
         	
-        	
         	//Foto y noticia
         	TextView informacion = (TextView) layoutcuadro
 					.findViewById(R.id.tv_info);
@@ -123,50 +122,54 @@ public class BuscarMedidorGridAdapter extends BaseAdapter {
 //        	
 //        	descripcion.setWidth((int) Math.round(porcentaje));
         	
-        	
-        	
-        	
-        	
-        	
         	//leido.setText(lectura.formatedInfoReadMetter());
         	if (tipoDeBusqueda!=BuscarMedidorTabsPagerAdapter.CALLES){
         		Lectura lectura=cursor.elementAt(position);
-        		informacion.setText(lectura.getInfoPreview(tipoDeBusqueda, textoBuscado,totalMedidores ));
+        		informacion.setText(lectura.getInfoPreview(tipoDeBusqueda, textoBuscado, totalMedidores));
         		
         		leido_lectura.setTextColor(mContext.getResources().getColor(lectura.colorInfoReadMetter(Lectura.LEIDA_LECTURA)));
             	leido_anomalia.setTextColor(mContext.getResources().getColor(lectura.colorInfoReadMetter(Lectura.LEIDA_ANOMALIA)));
-        	}else
-        	{
+
+				if (globales.strUltimaBusquedaRealizada.equals("Campanita")) {
+					layoutcuadro.setBackgroundResource(R.color.white);
+					if (lectura.is_balance.equals("1"))
+						layoutcuadro.setBackgroundResource(R.color.Green);
+					if (lectura.is_balance.equals("2"))
+						layoutcuadro.setBackgroundResource(R.color.Red);
+					if (lectura.is_balance.equals("3"))
+						layoutcuadro.setBackgroundResource(R.color.Yellow);
+				} else {
+					if (lectura.getTipoDeOrden().equals("DESCONEXIÓN"))
+						layoutcuadro.setBackgroundResource(R.color.EngieDx);
+					if (lectura.getTipoDeOrden().equals("RECONEXIÓN"))
+						layoutcuadro.setBackgroundResource(R.color.EngieRx);
+					if (lectura.getTipoDeOrden().equals("REMOCIÓN"))
+						layoutcuadro.setBackgroundResource(R.color.EngieRm);
+					if (lectura.getTipoDeOrden().equals("REC/REMO"))
+						layoutcuadro.setBackgroundResource(R.color.EngieRr);
+				}
+        	} else {
         		String lectura= ivs_cursor.elementAt(position);
         		informacion.setTextSize(30f);
         		informacion.setText(Html.fromHtml(Lectura.marcarTexto(lectura.substring(lectura.indexOf("*")+1), textoBuscado, false)));
+	        	if (position%2==0)
+    	    		layoutcuadro.setBackgroundResource(R.color.LightGray);
         	}
-        	
-        	
-        	if (position%2==0)
-        		layoutcuadro.setBackgroundResource(R.color.LightGray);
-        	
+// CE, 19/10/23, Vamos a mostrar el color de fondo dependiendo del TipoDeOrden
+//        	if (position%2==0)
+//        		layoutcuadro.setBackgroundResource(R.color.LightGray);
         	return layoutcuadro;
 //      }
 //      else{
 //    	  return convertView;
 //      }
-        
     }
     
     public int getSecuencia(int pos){
-    	if (tipoDeBusqueda!=BuscarMedidorTabsPagerAdapter.CALLES){
-    		return globales.mostrarRowIdSecuencia?cursor.elementAt(pos).secuenciaReal:cursor.elementAt(pos).secuencia;}
-    	
-    		else{
-    			return Integer.parseInt(ivs_cursor.elementAt(pos).substring(0, ivs_cursor.elementAt(pos).indexOf("*")));
-    		}
-    	
+    	if (tipoDeBusqueda!=BuscarMedidorTabsPagerAdapter.CALLES) {
+    		return globales.mostrarRowIdSecuencia?cursor.elementAt(pos).secuenciaReal:cursor.elementAt(pos).secuencia;
+		} else {
+			return Integer.parseInt(ivs_cursor.elementAt(pos).substring(0, ivs_cursor.elementAt(pos).indexOf("*")));
+		}
     }
-    
-   
-	 
-    
-    
-   
 }

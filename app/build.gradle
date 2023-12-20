@@ -15,33 +15,43 @@ android {
         debug {
             applicationIdSuffix ".debug"
             debuggable true
-            buildConfigField "String", 'BASE_URL', '"http://192.168.2.123:8182"'
+            buildConfigField "String", 'BASE_URL', '"http://192.168.2.170:8184"'
+            resValue "string", "app_name", "SOGES-Dev"
         }
         debug2 {
             applicationIdSuffix ".debug"
             debuggable true
-            buildConfigField "String", 'BASE_URL', '"http://192.168.3.111:8182"'
+            buildConfigField "String", 'BASE_URL', '"http://192.168.2.170:8184"'
+            resValue "string", "app_name", "SOGES-Dev"
+            signingConfig signingConfigs.debug
         }
         staging {
             initWith debug
             applicationIdSuffix ".staging"
             debuggable true
-            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+            buildConfigField "String", 'BASE_URL', '"https://soges-qa.engiemx.com"'
+            resValue "string", "app_name", "SOGES-QA"
+        }
+        calidad {
+            initWith debug
+            applicationIdSuffix ".calidad"
+            buildConfigField "String", 'BASE_URL', '"https://soges-qa.engiemx.com"'
+            resValue "string", "app_name", "SOGES-QA"
         }
         pre_prod {
             initWith debug
             applicationIdSuffix ".pre_prod"
-            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+            buildConfigField "String", 'BASE_URL', '"https://soges.engiemx.com"'
+            resValue "string", "app_name", "SOGES"
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            buildConfigField "String", 'BASE_URL', '"https://demo.cortrexweb.com"'
+            resValue "string", "app_name", "SOGES"
+            buildConfigField "String", 'BASE_URL', '"https://soges.engiemx.com"'
         }
     }
     namespace 'enruta.soges_engie'
-
-
 }
 
 dependencies {
@@ -53,8 +63,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation 'com.google.android.material:material:1.0.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 

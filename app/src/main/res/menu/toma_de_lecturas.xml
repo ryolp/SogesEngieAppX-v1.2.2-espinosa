@@ -3,11 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/m_SolicitarAyuda"
+        android:icon="@drawable/emergencia"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:title="@string/str_lbl_emergencia"/>
+
+    <item
+        android:id="@+id/m_MostrarUbicacionGPS"
+        android:icon="@drawable/mundo"
+        android:orderInCategory="22"
+        app:showAsAction="always"
+        android:title="Ver Mapa de Todos"/>
+
+    <item
+        android:id="@+id/m_CampanaNegra"
+        android:icon="@drawable/campana"
+        android:orderInCategory="130"
+        app:showAsAction="always"
+        android:title="Campana Negra"/>
+
+    <item
+        android:id="@+id/m_CampanaAmarilla"
+        android:icon="@drawable/campana_amarilla"
+        android:orderInCategory="130"
+        app:showAsAction="always"
+        android:visible="false"
+        android:title="Campana Amarilla"/>
+
+    <item
         android:id="@+id/m_gps"
         android:enabled="false"
         android:icon="@drawable/gps_satelite"
         android:orderInCategory="1"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="@string/m_str_gpsOn"
         android:visible="false"></item>
 
@@ -15,36 +44,39 @@
         android:id="@+id/m_correccion"
         android:icon="@drawable/ic_action_correccion"
         android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="@string/m_str_correccion" />
+        app:showAsAction="never"
+        android:title="@string/m_str_correccion"
+        android:visible="false" />
 
     <item
         android:id="@+id/m_orden"
         android:icon="@drawable/ic_action_descendente"
         android:orderInCategory="3"
-        android:showAsAction="always"
-        android:title="@string/m_str_desendente"></item>
+        app:showAsAction="always"
+        android:title="@string/m_str_desendente"
+        android:visible="false"></item>
 
     <item
         android:id="@+id/m_noRegistrados"
         android:icon="@drawable/ic_action_nuevo"
         android:orderInCategory="2"
-        android:showAsAction="always"
-        android:title="@string/m_str_noregistrados"></item>
-
-    <item
-        android:id="@+id/m_SolicitarAyuda"
-        android:orderInCategory="3"
-        android:showAsAction="never"
-        android:title="@string/str_lbl_emergencia"/>
+        app:showAsAction="never"
+        android:title="@string/m_str_noregistrados"
+        android:visible="false"></item>
 
     <item
         android:id="@+id/m_font_informacion"
-        android:title="@string/str_ajustar_fuente_informacion"></item>
+        android:title="@string/str_ajustar_fuente_informacion"
+        android:orderInCategory="80"
+        app:showAsAction="never"
+        android:visible="true"></item>
 
     <item
         android:id="@+id/m_font_areaCaptura"
-        android:title="@string/str_ajustar_fuente_areaCaptura"></item>
+        android:title="@string/str_ajustar_fuente_areaCaptura"
+        android:orderInCategory="90"
+        app:showAsAction="never"
+        android:visible="true"></item>
 
     <item
         android:id="@+id/m_cambiarFuente"
@@ -54,18 +86,8 @@
     <item
         android:id="@+id/m_Impresion"
         android:icon="@drawable/ic_deshabilita_impr"
-        android:showAsAction="never"
-        android:title="@string/m_str_habilita_Impresion"></item>
-
-    <item
-        android:id="@+id/m_MostrarUbicacionGPS"
-        android:orderInCategory="22"
-        android:showAsAction="never"
-        android:title="@string/str_mostrar_ubicacion_gps"/>
-    <item
-        android:id="@+id/m_CapturarVideo"
-        android:orderInCategory="22"
-        android:showAsAction="never"
-        android:title="@string/str_captura_video"/>
+        app:showAsAction="never"
+        android:title="@string/m_str_habilita_Impresion"
+        android:visible="false"></item>
 
 </menu>

@@ -3,6 +3,7 @@ package enruta.soges_engie;
 import java.util.Timer;
 import java.util.Vector;
 
+import enruta.soges_engie.entities.ParametrosCelular;
 import enruta.soges_engie.entities.SesionEntity;
 
 import android.app.Application;
@@ -65,10 +66,15 @@ public class Globales extends Application {
 	final static int ENTRO_NO_EFECTIVA_CON_DATOS_REC_REMO = 19;
 	final static int ENTRO_NO_EFECTIVA_CON_DATOS_OTRO = 20;
 
-	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE = 21;
-	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE = 22;
-	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE = 23;
-	final static int ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE = 24;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE = 21;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE = 22;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE = 23;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE = 24;
+
+	final static int ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE_ANTES = 25;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE_ANTES = 26;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE_ANTES = 27;
+	final static int ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE_ANTES = 28;
 	/**
 	 * No se genera cambio en las lecturas que se no se han leido
 	 */
@@ -102,7 +108,7 @@ public class Globales extends Application {
 	
 	public String letraPais="A";
 	public int tipoDeValidacion = CON_SMS;
-	boolean mostrarNoRegistrados = true;
+	boolean mostrarNoRegistrados = false;
 	int calidadDeLaFoto = 50;
 	/**Calidad que se remplaza segun otros parametros**/
 	int calidadOverride=calidadDeLaFoto;
@@ -184,9 +190,10 @@ public class Globales extends Application {
 	boolean modoCaptura = false;
 	
 	int ultimaPestanaAnomaliasUsada=PantallaAnomaliasTabsPagerAdapter.TODAS;
-	
 
-	
+	public boolean bPrenderCampana = false;
+	public String strUltimaBusquedaRealizada = "";
+
 	boolean gpsEncendido=false;
 	boolean requiereGPS=false;
 	/**
@@ -257,7 +264,7 @@ public class Globales extends Application {
 	
 	
 	// String defaultServidorGPRS="http:\\www.espinosacarlos.com";
-	public String defaultServidorGPRS = "http://192.168.2.123:8182";
+	public String defaultServidorGPRS = BuildConfig.BASE_URL;
 	
 	/**
 	 * De estar encendida, ignora los cambios hechos en la pantalla de configuracion y 
@@ -350,9 +357,8 @@ public class Globales extends Application {
 	public void cerrarSesion() {
 		sesionEntity = null;
 	}
-	  
-	  
-	  public String traducirAnomalia(){
+
+	public String traducirAnomalia(){
 		  String anomaliaTraducida;
 		  if (convertirAnomalias)
 				anomaliaTraducida="conv";
@@ -365,31 +371,35 @@ public class Globales extends Application {
 	public String getMaterialUtilizado() {
 		String strMarbete = "";
 		if (tll.getLecturaActual().is_Repercusion.equals("A")) {
-			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
-				strMarbete = "MARBETE DX EFE";
-			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
-				strMarbete = "MARBETE REM N/E";
-			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) {
-				if (tll.getLecturaActual().is_habitado.equals("0"))
-					strMarbete = "2x ARANDELAS, MARBETE RX EFE CLIENTE PRESENTE";
+			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
+				strMarbete = "AVISO DX NUEVOS";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
+				strMarbete = "AVISO REMOCION";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+				if (tll.getLecturaActual().is_habitado.equals("1"))
+					strMarbete = "1x EMPAQUE DN20";
 				else
-					strMarbete = "2x ARANDELAS, MARBETE RX EFE LITRAJE";
+					strMarbete = "1x EMPAQUE DN20, MARBETE";
 			}else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO")) {
-				if (tll.getLecturaActual().is_habitado.equals("0"))
-					strMarbete = "2x ARANDELAS, MARBETE R/R EFE CLIENTE PRESENTE";
+				if (tll.getLecturaActual().is_habitado.equals("1"))
+					strMarbete = "2x EMPAQUE DN20";
 				else
-					strMarbete = "2x ARANDELAS, MARBETE R/R EFE LITRAJE";
+					strMarbete = "2x EMPAQUE DN20, MARBETE";
 			} else
 				strMarbete = "";
 		}else{
-			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+			if (tll.getLecturaActual().is_Repercusion.equals("E")) {
+				tll.getLecturaActual().setLectura(tll.getLecturaActual().getComentarios());
+//				tll.getLecturaActual().setComentarios("");
+			}
+			if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
+				strMarbete = "ADVERTENCIA DE SUSPENSION";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 				strMarbete = "";
-			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
-				strMarbete = "";
-			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
-				strMarbete = "MARBETE RX N/E";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
+				strMarbete = "AVISO NUEVO RX";
 			else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
-				strMarbete = "MARBETE R/R N/E";
+				strMarbete = "AVISO NUEVO RX";
 			else
 				strMarbete = "";
 		}
@@ -408,37 +418,138 @@ public class Globales extends Application {
 		tll.getLecturaActual().is_ClienteYaPagoMonto="";
 		tll.getLecturaActual().is_ClienteYaPagoFecha="";
 		tll.getLecturaActual().is_ClienteYaPagoAgente="";
+		tll.getLecturaActual().is_QuienAtendio="";
+		tll.getLecturaActual().is_MarcaInstalada="";
+		tll.getLecturaActual().is_SeQuitoTuberia="";
+		tll.getLecturaActual().is_TuberiaRetirada="";
+		tll.getLecturaActual().is_MarcaRetirada="";
+		tll.getLecturaActual().is_MedidorRetirado="";
+		tll.getLecturaActual().setComentarios("");
 	}
 
 	public String getMensajeParaMostrarAntesDeTomarLaFoto(){
-		String strMensajeParaMostrar = "Preparese para tomar la foto";
-
+		String strMensajeParaMostrar = "Favor de tomar la Foto de Llegada";
+		switch (nEstadoDeLaRepercusion) {
+		 	case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE:
+				strMensajeParaMostrar = "Video de Reconexión por Litraje";
+				break;
+			case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE:
+				strMensajeParaMostrar = "Video de Rec/Remo por Litraje";
+				break;
+			case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE:
+			case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE:
+//				strMensajeParaMostrar = "Pedir la Firma del Cliente";
+				strMensajeParaMostrar = "Tomar la Foto de Salida y la Firma del Cliente";
+				break;
+			case ENTRO_EFECTIVA_SIN_DATOS_DESCONEXION:
+			case ENTRO_EFECTIVA_SIN_DATOS_REMOCION:
+			case ENTRO_NO_EFECTIVA_SIN_DATOS_DESCONEXION:
+			case ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION:
+			case ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION:
+			case ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO:
+			case ENTRO_NO_EFECTIVA_SIN_DATOS_OTRO:
+				strMensajeParaMostrar = "Favor de tomar la Foto de Salida";
+				break;
+		}
 		return strMensajeParaMostrar;
+	}
+
+	public String getDescripcionCintillo(int nNumCintillo){
+		String strRespuesta = "";
+		if (nNumCintillo == 2){
+			switch (nEstadoDeLaRepercusion) {
+				case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE_ANTES:
+					strRespuesta = "Foto de Llegada";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE_ANTES:
+					strRespuesta = "Foto de Llegada";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE_ANTES:
+					strRespuesta = "Foto de Llegada";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE_ANTES:
+					strRespuesta = "Foto de Llegada";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_DESCONEXION:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_EFECTIVA_SIN_DATOS_REMOCION:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_NO_EFECTIVA_SIN_DATOS_DESCONEXION:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO:
+					strRespuesta = "Foto de Salida";
+					break;
+				case ENTRO_NO_EFECTIVA_SIN_DATOS_OTRO:
+					strRespuesta = "Foto de Salida";
+					break;
+				default:
+					strRespuesta = "Foto de Llegada";
+					break;
+			}
+		} else {
+			if (tll.getLecturaActual().is_serieMedidor.equals(""))
+				strRespuesta = "CC: " + tll.getLecturaActual().is_cuentaContrato;
+			else
+				strRespuesta = "M: " + tll.getLecturaActual().is_serieMedidor;
+		}
+		return strRespuesta;
 	}
 
 	public int getEstadoDeLaRepercusion(){
 		return nEstadoDeLaRepercusion;
 	}
 
+	public void setEstadoDeLaRepercusion(int nEstadoPorAsignar) {
+		nEstadoDeLaRepercusion = nEstadoPorAsignar;
+	}
 	public void setEstadoDeLaRepercusion(boolean bEsUnaEfectiva, boolean bEsParaBorrar){
 		if (!bEsParaBorrar) {
 			if (bEsUnaEfectiva) {
-				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				if (nEstadoDeLaRepercusion == ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE_ANTES)
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE;
+				if (nEstadoDeLaRepercusion == ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE_ANTES)
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE;
+				if (nEstadoDeLaRepercusion == ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE_ANTES)
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE;
+				if (nEstadoDeLaRepercusion == ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE_ANTES)
+					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE;
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_DESCONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REMOCION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_RECONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REC_REMO;
-				else
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_OTRO;
+//				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_RECONEXION;
+//				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_REC_REMO;
+//				else
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_SIN_DATOS_OTRO;
 			} else {
-				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_DESCONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO;
@@ -447,22 +558,22 @@ public class Globales extends Application {
 			}
 		} else {
 			if (bEsUnaEfectiva) {
-				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_DESCONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_REMOCION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_RECONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_REC_REMO;
-				else
-					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_OTRO;
+//				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_RECONEXION;
+//				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_REC_REMO;
+//				else
+//					nEstadoDeLaRepercusion = ENTRO_EFECTIVA_CON_DATOS_OTRO;
 			} else {
-				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION"))
+				if (tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_DESCONEXION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REMOCION;
-				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION"))
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_RECONEXION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REC_REMO;
@@ -470,5 +581,51 @@ public class Globales extends Application {
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_OTRO;
 			}
 		}
+	}
+	
+	public int getEnviarVideosPor() {
+		int n;
+
+		if (sesionEntity == null)
+			return ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		if (sesionEntity.Parametros == null)
+			return ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		n = sesionEntity.Parametros.EnviarVideosPor;
+
+		if (n <= 0)
+			n = ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		return n;
+	}
+
+	public int getExportarVideosPor() {
+		int n;
+
+		if (sesionEntity == null)
+			return ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		if (sesionEntity.Parametros == null)
+			return ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		n = sesionEntity.Parametros.ExportarVideosPor;
+
+		if (n <= 0)
+			n = ParametrosCelular.WIFI_Y_DATOS_MOVILES;
+
+		return n;
+	}
+
+	public int getDuracionVideoSeg() {
+		int n;
+
+		if (sesionEntity == null)
+			return 61;
+
+		if (sesionEntity.Parametros == null)
+			return 61;
+
+		return sesionEntity.Parametros.DuracionVideoSeg;
 	}
 }

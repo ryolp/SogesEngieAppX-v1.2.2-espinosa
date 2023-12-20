@@ -64,13 +64,9 @@ public class Configuracion extends AppCompatActivity {
 		}catch(Throwable e){
 			
 		}
-		
-		
-		
+
 		//Vamos a crear todos y cada uno de los objetos que tendrá esta ventana, serán de cierta manera dinamicos...
-		
 		objetosAMostar= new Vector<Entry>();
-		
 		if (globales.mostrarMetodoDeTransmision){
 			objetosAMostar.add( new XmlTextView(getString(R.string.lbl_configuracion_modo_trans), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
 		}
@@ -94,8 +90,7 @@ public class Configuracion extends AppCompatActivity {
 		//objetosAMostar.add( new XmlTextView("Num. Bluetooth:", "16", "TextView", "0", true, "", 0,Typeface.ITALIC) );
 		if (globales.mostrarMacBt){
 			objetosAMostar.add( new XmlTextView(getString(R.string.info_macBluetooth), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
-			objetosAMostar.add(new XmlEditText(".", "16", "EditText", null, true, "mac_bt","17", InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,"mac_bluetooth")); 
-				
+			objetosAMostar.add(new XmlEditText(".", "16", "EditText", null, true, "mac_bt","17", InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,"mac_bluetooth"));
 		}
 		
 		if (globales.mostrarMacImpresora){
@@ -106,7 +101,6 @@ public class Configuracion extends AppCompatActivity {
 		if (globales.mostrarServidorGPRS){
 			objetosAMostar.add( new XmlTextView(getString(R.string.info_servidorGPRS), "16", "TextView",null, true, "", 0,Typeface.ITALIC) );
 			objetosAMostar.add(new XmlEditText(globales.defaultServidorGPRS, "16", "EditText", null, true, "servidor_gprs","100",InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,"server_gprs"));
-			
 		}
 		objetosAMostar.add( new XmlTextView(getString(R.string.info_rutaDescarga), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
 		objetosAMostar.add(new XmlEditText(globales.defaultRutaDescarga, "16", "EditText",null, true, "ruta_descarga","100",InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,"ruta_descarga"));
@@ -114,8 +108,7 @@ public class Configuracion extends AppCompatActivity {
 		if (globales.mostrarTamañoFoto){
 			objetosAMostar.add( new XmlTextView(getString(R.string.info_tamanoFoto), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
 		}
-		
-		
+
 		items= new Vector<XmlSpinnerItem>();
 		Camera mCamera = CamaraActivity.getCameraInstance(globales.camaraFrontal);
 		Camera.Parameters cp=mCamera.getParameters();
@@ -133,7 +126,6 @@ public class Configuracion extends AppCompatActivity {
 		if (globales.mostrarCalidadFoto){
 			objetosAMostar.add( new XmlTextView(getString(R.string.info_calidad_foto), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
 			objetosAMostar.add(new XmlEditText(String.valueOf(globales.calidadDeLaFoto), "16", "EditText",null, true, "calidad_foto","3",InputType.TYPE_CLASS_NUMBER,"calidad_foto"));
-			
 		}
 		
 		objetosAMostar.add( new XmlTextView(getString(R.string.info_modo), "16", "TextView", null, true, "", 0,Typeface.ITALIC) );
@@ -149,37 +141,27 @@ public class Configuracion extends AppCompatActivity {
 		items.add( new XmlSpinnerItem(getString(R.string.info_encendido), "0"));
 		items.add( new XmlSpinnerItem(getString(R.string.info_apagado), "1"));
 		objetosAMostar.add( new XmlSpinner("","16", "Spinner", true, "sonidos","sonidos", "0", items));
-		
-		
-		
-		
-		
-		
-		
+
 		//Vamos a agregarlos uno por uno
 		
 		agregaCampos();
-		
 		if (guardar){
 			guardar();
 			finish();
 		}
-		
-		
-		
 	}
 	
 	 public void agregaCampos(){
 		 
-		 Cursor c;
-		    String tmp_text = null;
-		    
-		    int id;
-		    View view = null;
-		    
-			//c=db.rawQuery("Select * from config" , null);
-			//c.moveToFirst();
-			 LinearLayout layout=(LinearLayout) findViewById(R.id.ll_config);
+		Cursor c;
+		String tmp_text = null;
+
+		int id;
+		View view = null;
+
+		//c=db.rawQuery("Select * from config" , null);
+		//c.moveToFirst();
+		 LinearLayout layout=(LinearLayout) findViewById(R.id.ll_config);
 			 
 		 for (Entry tmp : objetosAMostar) {    
 		    	if (tmp.type.equals("TextView")){
@@ -194,17 +176,12 @@ public class Configuracion extends AppCompatActivity {
 			    		 tv_view=new TextView(this);
 			    		 tv_view.setTag(tmp.view_name);
 		    		}
-		    		
-		    		
-		    		 
 		    	 	if(entry.label!=null){
 		    	 		tv_view.setText(entry.label);
 		    	 	}
-		    	 	
 		    	 	if(entry.color!=null){
 		    	 		tv_view.setTextColor(Color.parseColor (entry.color));
 		    	 	}
-		    	 	
 		    	 	if(entry.size!=null){
 		    	 		tv_view.setTextSize(Integer.parseInt(entry.size));
 		    	 	}
@@ -213,11 +190,7 @@ public class Configuracion extends AppCompatActivity {
 		    	 	tv_view.setGravity(entry.gravity);
 		    	 	//Agregamos el Style (negritas, normal o Italicas)
 		    	 	tv_view.setTypeface(null, entry.style);
-		    	 	
 		    	 	layout.addView(tv_view);
-		    	 	
-		    	 	
-		    	 	
 		    	}
 		    	if (tmp.type.equals("EditText")){
 		    		XmlEditText entry= (XmlEditText) tmp;
@@ -234,27 +207,17 @@ public class Configuracion extends AppCompatActivity {
 		    		
 		    		 //Vamos a poner el valor que se encuentre en la base de datos, pero si no esta, deberemos
 		    		if (entry.dbField!=null && !entry.dbField.equals("") ){
-
 		    			//Aqui buscamos la key
 		    			openDatabase();
-		    			
 		    			c= db.rawQuery("Select * from config where key='"+entry.dbField+"'", null);
 		    			if(c.getCount()>0){
 		    				c.moveToFirst();
 		    				tmp_text=c.getString(c.getColumnIndex("value"));
-			    			
-			    			
 		    			}
-		    			
 		    			et_view.setText(tmp_text==null?entry.label:tmp_text);
-		    			
 		    			c.close();
 		    			closeDatabase();
-		    			
 		    			tmp_text=null;
-		    			
-		    			
-		    			
 		    		}
 		    		else if(entry.label!=null){
 		    	 		et_view.setText(entry.label);
@@ -282,9 +245,6 @@ public class Configuracion extends AppCompatActivity {
 		    			
 		    			break;
 		    		}
-		    		
-		    	 	
-		    	 	
 		    	 	//Agregamos al layout
 		    	 	layout.addView(et_view);
 		    	}
@@ -302,15 +262,11 @@ public class Configuracion extends AppCompatActivity {
 		    			spinner= new Spinner(this);
 		    			spinner.setTag(tmp.view_name);
 		    		}
-		    		
-		    		
-		    		
+
 		    		ArrayList<String> spinnerArray = new ArrayList<String>();
-		    		
 		    		for(XmlSpinnerItem sp:entry.items){
 		    			spinnerArray.add(sp.label);
 		    		}
-		    		
 		    		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 		    		//Estilo usado
 		    		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -325,18 +281,14 @@ public class Configuracion extends AppCompatActivity {
 		    	 		//Agregamos al layout
 		    			layout.addView(spinner);
 		    		}
-		    	 	
 	    			openDatabase();
-	    			
 	    			tmp_text=null;
-	    			
+
 	    			//Hay que seleccionar el actual
 	    			c= db.rawQuery("Select * from config where key='"+entry.dbField+"'", null);
 	    			if(c.getCount()>0){
 	    				c.moveToFirst();
 	    				tmp_text=c.getString(c.getColumnIndex("value"));
-		    			
-		    			
 	    			}
 	    			
 	    			if (!globales.mostrarTamañoFoto && tmp.view_name.equals("tam_fotos")){
@@ -353,12 +305,9 @@ public class Configuracion extends AppCompatActivity {
 		    				spinner.setEnabled(false);
 		    			break;
 		    		}
-	    			
 	    			c.close();
 	    			closeDatabase();
 		    	}
-		    		
-		        
 		    }
 		// c.close();
 		//closeDatabase();
@@ -541,7 +490,7 @@ public class Configuracion extends AppCompatActivity {
     	public int selected;
     	public Vector<XmlSpinnerItem> items;
     	
-    	private XmlSpinner(String label, String size, String type, boolean crear, String view_name,
+    	public XmlSpinner(String label, String size, String type, boolean crear, String view_name,
     			String dbField, String selected, Vector<XmlSpinnerItem> items){
     		super(label, size, type, view_name, crear);
     		this.dbField=dbField;
@@ -685,7 +634,7 @@ public class Configuracion extends AppCompatActivity {
 			}
 			else */
 			
-			if (size.width==320 && size.height==240){
+			if (size.width==640 && size.height==480){
 				return i;
 			}
 			
@@ -727,28 +676,17 @@ public class Configuracion extends AppCompatActivity {
 				bu_params= data.getExtras();
 				view= findViewById( R.id.ll_config);
 				et_view= (EditText) view.findViewWithTag("mac_bt");
-				
 				et_view.setText(bu_params.getString("input"));
-				
-				
 			}
 			break;
-			
 		case MAC_IMPR:
-			
 			if (resultCode == Activity.RESULT_OK){
 				bu_params= data.getExtras();
 				view= findViewById( R.id.ll_config);
 				et_view= (EditText) view.findViewWithTag("mac_impr");
-				
 				et_view.setText(bu_params.getString("input"));
-				
-				
 			}
 			break;	
 		}
 	}
-	
-	
-
 }

@@ -17,13 +17,22 @@ public class GeneradorDatosEnvio {
         mCursor = c;
 
         try {
+            String strAnomalia = getString("anomalia");
+            String strLectura = getString("lectura");
+            String strLecturaReal = getString("LecturaReal");
+            String strComentarios = getString("comentarios");
+            if (strAnomalia.equals("E")) {
+                strLectura = strComentarios;
+                strLecturaReal = strComentarios;
+                strComentarios = "";
+            }
             dato = Utils.concatenarColumnas("|",
                     tipoRegistro,
                     getString("numOrden"),
                     getString("estadoDeLaOrden"),
-                    getString("anomalia"),
+                    strAnomalia,
                     getString("serieMedidor"),
-                    getString("lectura"),
+                    strLectura,
                     getString("fecha") + getString("hora"),     // Fecha de Ejecución
                     getString("sospechosa"),
                     String.valueOf(idEmpleado),
@@ -31,7 +40,7 @@ public class GeneradorDatosEnvio {
                     //getString("fechaEnvio"),                            // En Soges Web, se llama FechaRecepcion
                     getString("fechaDeInicio"),
                     getString("fecha") + getString("hora"),     // Fecha de Ejecución
-                    getString("comentarios"),
+                    strComentarios,
                     getString("latitud"),
                     getString("longitud"),
                     getString("poliza"),
@@ -48,14 +57,20 @@ public class GeneradorDatosEnvio {
                 getString("EncuestaDeSatisfaccion"),
                 getString("MedidorInstalado"),
                 getString("idMarcaInstalada"),
-                getString("LecturaReal"),
+                strLecturaReal,
                 getString("Repercusion"),
                 getString("idMaterialUtilizado"),
                 getString("idTipoDeReconexion"),
                 getString("idTipoDeRemocion"),
                 getString("ClienteYaPagoMonto"),
                 getString("ClienteYaPagoFecha"),
-                getString("ClienteYaPagoAgente")
+                getString("ClienteYaPagoAgente"),
+                getString("QuienAtendio"),
+                getString("MarcaInstalada"),
+                getString("SeQuitoTuberia"),
+                getString("TuberiaRetirada"),
+                getString("MarcaRetirada"),
+                getString("MedidorRetirado")
 //************************************************************************************************************************************
             );
             return dato;

@@ -2,6 +2,7 @@ package enruta.soges_engie;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Vector;
 
 import android.database.Cursor;
@@ -14,6 +15,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import enruta.soges_engie.clases.Utils;
 
 public class Resumen extends Fragment {
 	
@@ -34,21 +37,25 @@ public class Resumen extends Fragment {
 	       return rootView;
 	   }
 	   
-	   public void actualizaResumen(){
-	    	long ll_total;
-	    	long ll_tomadas;
-	    	long ll_fotos;
-	    	long ll_restantes;
-	    	long ll_conAnom;
-		   long ll_noRegistrados;
-		   long ll_EngieDesconexiones;
-		   long ll_EngieReconexiones;
-		   long ll_EngieRemociones;
-		   long ll_EngieRecRemos;
-	    	String ls_archivo;
-	    	
-	    	
-	    	String ls_resumen;
+		public void actualizaResumen(){
+			long ll_total;
+			long ll_fotos;
+			long ll_videos;
+			long ll_restantes;
+			long ll_porEnviar;
+			long ll_EngieDesconexiones;
+			long ll_EngieReconexiones;
+			long ll_EngieRemociones;
+			long ll_EngieRecRemos;
+			long ll_EngieDesconexionesPendientes;
+			long ll_EngieReconexionesPendientes;
+			long ll_EngieRemocionesPendientes;
+			long ll_EngieRecRemosPendientes;
+			long ll_EngieDesconexionesEfectivas;
+			long ll_EngieReconexionesEfectivas;
+			long ll_EngieRemocionesEfectivas;
+			long ll_EngieRecRemosEfectivas;
+
 	    	if (ma_papa.globales.tdlg==null)
 				return;
 		 
@@ -62,42 +69,29 @@ public class Resumen extends Fragment {
 	    	c.moveToFirst();
 	    	ll_total=c.getLong(c.getColumnIndex("canti"));
 	    	if (ll_total>0){
-	    		try{
-	    			c=db.rawQuery("Select value from config where key='cpl'", null);
-	        		c.moveToFirst();
-	       		 	ls_archivo=c.getString(c.getColumnIndex("value"));
-	    		}
-	    		catch(Throwable e){
-	    			ls_archivo="";
-	    		}
-	    		
-	    		c=db.rawQuery("Select count(*) canti from ruta where tipoLectura='0'", null);
-	    		 c.moveToFirst();
-	    		 
-	    		ll_tomadas=c.getLong(c.getColumnIndex("canti"));
-	    		 c=db.rawQuery("Select count(*) canti from fotos", null);
-	    		 c.moveToFirst();
-	        	ll_fotos=c.getLong(c.getColumnIndex("canti"));
-	        	c.close();
-	        	
-	        	 c=db.rawQuery("Select count(*) canti from ruta where tipoLectura='4'", null);
-	        	 c.moveToFirst();
-	        	 ll_conAnom=c.getLong(c.getColumnIndex("canti"));
-	        	 c.close();
-	        	 
-	        	 c=db.rawQuery("Select count(*) canti from ruta where trim(tipoLectura)=''", null);
-	        	 c.moveToFirst();
-	        	 ll_restantes=c.getLong(c.getColumnIndex("canti"));
-	        	 c.close();
-	        	 
-	        	 c=db.rawQuery("Select count(*) canti from ruta where numOrden=0", null);
-	        	 c.moveToFirst();
-	        	 ll_noRegistrados=c.getLong(c.getColumnIndex("canti"));
-	        	 c.close();
+				c=db.rawQuery("Select count(*) canti from ruta where lectura='' AND anomalia=''", null);
+				c.moveToFirst();
+				ll_restantes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where envio=" + TomaDeLecturas.NO_ENVIADA, null);
+				c.moveToFirst();
+				ll_porEnviar=c.getLong(c.getColumnIndex("canti"));
+				c.close();
 
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO002'", null);
 				c.moveToFirst();
 				ll_EngieDesconexiones=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO002' and trim(tipoLectura)=''", null);
+				c.moveToFirst();
+				ll_EngieDesconexionesPendientes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO002' and trim(anomalia)='A'", null);
+				c.moveToFirst();
+				ll_EngieDesconexionesEfectivas=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO003'", null);
@@ -105,9 +99,29 @@ public class Resumen extends Fragment {
 				ll_EngieReconexiones=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO003' and trim(tipoLectura)=''", null);
+				c.moveToFirst();
+				ll_EngieReconexionesPendientes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO003' and trim(repercusion)='A'", null);
+				c.moveToFirst();
+				ll_EngieReconexionesEfectivas=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO004'", null);
 				c.moveToFirst();
 				ll_EngieRecRemos=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO004' and trim(tipoLectura)=''", null);
+				c.moveToFirst();
+				ll_EngieRecRemosPendientes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO004' and trim(anomalia)='A'", null);
+				c.moveToFirst();
+				ll_EngieRecRemosEfectivas=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO005'", null);
@@ -115,104 +129,94 @@ public class Resumen extends Fragment {
 				ll_EngieRemociones=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO005' and trim(tipoLectura)=''", null);
+				c.moveToFirst();
+				ll_EngieRemocionesPendientes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
 
-				//ll_restantes = ll_total-ll_tomadas ;
-	        	
-//	        	ls_resumen="Total de Lecturas " + ll_total +"\n" +
-//	        			"Medidores con Lectura " +  + ll_tomadas +"\n" +
-//	        			"Medidores con Anomalias "+  ll_conAnom +"\n" +
-//	        			"Lecturas Restantes "+  ll_restantes +"\n\n" +
-//	        			
-//	        			"Fotos Tomadas "+ ll_fotos +"\n\n" +
-//	        			
-//	        			"No Registrados "+ ll_noRegistrados;
-//	        	
-//	        	tv_resumen.setText(ls_resumen);
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO005' and trim(anomalia)='A'", null);
+				c.moveToFirst();
+				ll_EngieRemocionesEfectivas=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c = db.rawQuery("Select count(*) canti from fotos", null);
+				c.moveToFirst();
+				ll_fotos = c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c = db.rawQuery("Select count(*) canti from videos", null);
+				c.moveToFirst();
+				ll_videos = c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				float porcentaje=0;
+				DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+				otherSymbols.setDecimalSeparator('.');
+				otherSymbols.setGroupingSeparator(',');
+				DecimalFormat formatter = new DecimalFormat("##0.00", otherSymbols);
 	        	 
-	        	 float porcentaje=0;
-	        	 DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-	        	 otherSymbols.setDecimalSeparator('.');
-	        	 otherSymbols.setGroupingSeparator(','); 
-	        	 DecimalFormat formatter = new DecimalFormat("##0.00", otherSymbols);
-	        	 
-	        	 for(String s:ma_papa.log){
-	        		 String[]sa=s.split("\t");
-	        		 resumen.add(new EstructuraResumen(sa[0],sa[1]));
-	        	 }
-	        	 
-//	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_total_lecturas), String.valueOf(ll_total)));
-//	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_fotos_tomadas), String.valueOf(ll_fotos)));
-//	        	 resumen.add(new EstructuraResumen("", ""));
-	        	 porcentaje=  (((float)ll_restantes*100) /(float)ll_total);
-	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_lecturas_restantes),String.valueOf(ll_restantes),  formatter.format(porcentaje) +"%"));
-	        	 porcentaje=  (((float)ll_tomadas*100) /(float)ll_total);
-	        	 resumen.add(new EstructuraResumen(getString(R.string.msj_main_medidores_con_lectura), String.valueOf(ll_tomadas),  formatter.format(porcentaje) +"%"));
+				for(String s:ma_papa.log){
+					String[]sa=s.split("\t");
+					resumen.add(new EstructuraResumen(sa[0],sa[1]));
+				}
+
+				porcentaje = (((float)ll_total*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_total_lecturas),String.valueOf(ll_total),  formatter.format(porcentaje) +"%"));
+				porcentaje = (((float)(ll_total - ll_restantes)*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_lecturas_realizadas),String.valueOf(ll_total - ll_restantes),  formatter.format(porcentaje) +"%"));
+				porcentaje = (((float)(ll_restantes)*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_lecturas_restantes),String.valueOf(ll_restantes),  formatter.format(porcentaje) +"%"));
+				porcentaje = (((float)ll_porEnviar*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_medidores_con_lectura), String.valueOf(ll_porEnviar),  formatter.format(porcentaje) +"%"));
+				porcentaje = (((float)ll_fotos*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_fotos_tomadas), String.valueOf(ll_fotos),  formatter.format(porcentaje) +"%"));
+				porcentaje = (((float)ll_videos*100) /(float)ll_total);
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_videos_tomadas), String.valueOf(ll_videos),  formatter.format(porcentaje) +"%"));
 
 				resumen.add(new EstructuraResumen("", ""));
 
-				porcentaje=  (((float)ll_EngieDesconexiones*100) /(float)ll_total);
-				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_desconexiones),String.valueOf(ll_EngieDesconexiones), formatter.format(porcentaje) +"%"));
-				porcentaje=  (((float)ll_EngieReconexiones*100) /(float)ll_total);
-				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_reconexiones),String.valueOf(ll_EngieReconexiones), formatter.format(porcentaje) +"%"));
-				porcentaje=  (((float)ll_EngieRemociones*100) /(float)ll_total);
-				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_remociones),String.valueOf(ll_EngieRemociones), formatter.format(porcentaje) +"%"));
-				porcentaje=  (((float)ll_EngieRecRemos*100) /(float)ll_total);
-				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_recremos),String.valueOf(ll_EngieRecRemos), formatter.format(porcentaje) +"%"));
+				if (ll_EngieDesconexiones == ll_EngieDesconexionesPendientes)
+					porcentaje = (float)100.0;
+				else
+					porcentaje = (((float)ll_EngieDesconexionesEfectivas*100 / (float)(ll_EngieDesconexiones - ll_EngieDesconexionesPendientes)));
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_desconexiones), String.valueOf(ll_EngieDesconexionesPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
+				if (ll_EngieReconexiones == ll_EngieReconexionesPendientes)
+					porcentaje = (float)100.0;
+				else
+					porcentaje = (((float)ll_EngieReconexionesEfectivas*100 / (float)(ll_EngieReconexiones - ll_EngieReconexionesPendientes)));
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_reconexiones), String.valueOf(ll_EngieReconexionesPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
+				if (ll_EngieRemociones == ll_EngieRemocionesPendientes)
+					porcentaje = (float)100.0;
+				else
+					porcentaje = (((float)ll_EngieRemocionesEfectivas*100 / (float)(ll_EngieRemociones - ll_EngieRemocionesPendientes)));
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_remociones), String.valueOf(ll_EngieRemocionesPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
+				if (ll_EngieRecRemos == ll_EngieRecRemosPendientes)
+					porcentaje = (float)100.0;
+				else
+					porcentaje = (((float)ll_EngieRecRemosEfectivas*100) / (float)(ll_EngieRecRemos - ll_EngieRecRemosPendientes));
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_recremos), String.valueOf(ll_EngieRecRemosPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
+				resumen.add(new EstructuraResumen("", "")); //Agregamos una linea mas
 
-				resumen.add(new EstructuraResumen("", ""));
+				final ResumenGridAdapter adapter = new ResumenGridAdapter(getActivity(), resumen, ma_papa.infoFontSize * ma_papa.porcentaje2);
 
-//				if (ma_papa.globales.mostrarNoRegistrados)
-//	        		 resumen.add(new EstructuraResumen("Nuevos Puntos", String.valueOf(ll_noRegistrados)));
-	        	 
-	        	 resumen.add(new EstructuraResumen("", "")); //Agregamos una linea mas
-	        	 final ResumenGridAdapter adapter = new ResumenGridAdapter(getActivity(), resumen, ma_papa.infoFontSize * ma_papa.porcentaje2);
-	        	 
-//	        	 gv_resumen.invalidateViews();
-//	        	 adapter.notifyDataSetChanged();
-	        	 
-	        	 gv_resumen.setAdapter(adapter);
-	        	 
-			    	
-		        	tv_resumen.setVisibility(View.GONE);
-		        	gv_resumen.setVisibility(View.VISIBLE);
-		        	
-//		        	gv_resumen.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-//		    			@Override
-//		    			public void onGlobalLayout() {
-//				        	ViewGroup.LayoutParams layoutParams = gv_resumen.getLayoutParams();
-//				        	layoutParams.height =(int) adapter.height; //this is in pixels
-//				        	gv_resumen.setLayoutParams(layoutParams);
-//		    			   
-//		    			 }
-//		    			});
-		        	
-//		        	ViewGroup.LayoutParams layoutParams = gv_resumen.getLayoutParams();
-//		        	layoutParams.height =(int) adapter.height; //this is in pixels
-//		        	gv_resumen.setLayoutParams(layoutParams);
-		        	
-		        	
-	    	} else{
-//	    		tv_resumen.setText("No hay itinerarios cargados" );
+				gv_resumen.setAdapter(adapter);
+
+				tv_resumen.setVisibility(View.GONE);
+				gv_resumen.setVisibility(View.VISIBLE);
+			} else {
 	    		tv_resumen.setVisibility(View.VISIBLE);
 	        	gv_resumen.setVisibility(View.GONE);
 	    	}
-	    	
-	    	
 	    	closeDatabase();
-	    	
-	    	
 	    }
 	    
 	    private void openDatabase(){
 	    	dbHelper= new DBHelper(getActivity());
-			
 	        db = dbHelper.getReadableDatabase();
 	    }
 		
-		 private void closeDatabase(){
-		    	db.close();
-		        dbHelper.close();
-		        
-		    }
-	
+		private void closeDatabase(){
+			db.close();
+			dbHelper.close();
+		}
 }

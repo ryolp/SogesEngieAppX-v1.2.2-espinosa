@@ -8,6 +8,7 @@ import enruta.soges_engie.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -103,7 +104,20 @@ public class ResumenGridAdapter extends BaseAdapter {
             	descripcion.setText(resumen.descripcion);	
             	cantidad.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)(fontSize));
             	descripcion.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)(fontSize));
-            	
+
+				if (resumen.descripcion.equals("Desconexiones")) {
+					descripcion.setBackgroundColor(Color.parseColor("#FDC300"));
+				}
+				if (resumen.descripcion.equals("Remociones")) {
+					descripcion.setBackgroundColor(Color.parseColor("#F39313"));
+				}
+				if (resumen.descripcion.equals("Reconexiones")) {
+					descripcion.setBackgroundColor(Color.parseColor("#67AE6E"));
+				}
+				if (resumen.descripcion.equals("Rec/Remos")) {
+					descripcion.setBackgroundColor(Color.parseColor("#4BB0B9"));
+				}
+
             	if (resumen.porcentaje.equals("")){
             		tv_porcentaje.setVisibility(View.GONE);
             	}

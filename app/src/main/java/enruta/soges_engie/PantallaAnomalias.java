@@ -1,10 +1,10 @@
 package enruta.soges_engie;
 import android.annotation.SuppressLint;
+import android.app.ActionBar.TabListener;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -218,6 +218,20 @@ public class PantallaAnomalias extends FragmentActivity implements TabListener {
 						page.reinicializaTAB();
 					}
 			     }
+			}
+			break;
+		case TomaDeLecturas.INPUT_CLIENTE_YA_PAGO:
+			if (resultCode == Activity.RESULT_OK){
+				bu_params =data.getExtras();
+				if (is_subAnomSelect.equals("")){
+					globales.tdlg.regresaDeCamposGenericos(bu_params, is_anomaliaSelec);
+					globales.tdlg.RealizarModificacionesDeAnomalia(is_anomaliaSelec, bu_params.getString("input"));
+				}
+				else{
+					globales.tdlg.regresaDeCamposGenericos(bu_params, is_subAnomSelect);
+					globales.tdlg.RealizarModificacionesDeAnomalia(is_subAnomSelect, bu_params.getString("input"));
+				}
+				mandarAnomalia();
 			}
 			break;
 		case TomaDeLecturas.INPUT_CAMPOS_GENERICO:

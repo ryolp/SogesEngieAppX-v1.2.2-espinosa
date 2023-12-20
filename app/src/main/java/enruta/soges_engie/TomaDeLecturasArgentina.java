@@ -530,6 +530,57 @@ public class TomaDeLecturasArgentina extends TomaDeLecturasGenerica {
 		
 	}
 
+	public String getDatosSAP(Lectura lectura, int nCampo) throws Exception {
+		String strCardViewMedidor = "";
+		strCardViewMedidor = "Medidor: " + lectura.is_serieMedidor;
+		strCardViewMedidor += "\nCuenta Contrato: "+lectura.is_cuentaContrato;
+		strCardViewMedidor += "\nInterlocutor: "+lectura.poliza;
+		strCardViewMedidor += "\nAviso SAP: "+lectura.is_numAviso;
+		strCardViewMedidor += "\nAdeudo: " + lectura.is_vencido;
+		return strCardViewMedidor;
+	}
+
+	public String getDatosDelCliente(Lectura lectura) throws Exception {
+		String strClienteMasSaldo = "";
+		strClienteMasSaldo = lectura.getNombreCliente().trim();
+		if (!lectura.is_vencido.equals(""))
+			if ((lectura.getTipoDeOrden().equals("DESCONEXIÓN") || lectura.getTipoDeOrden().equals("REMOCIÓN")))
+				strClienteMasSaldo += "\nSALDO: " + lectura.is_vencido;
+		return strClienteMasSaldo;
+	}
+
+	public String getDatosDireccion(Lectura lectura) throws Exception {
+		String strNuevaDireccion = "";
+		String comodin = "";
+		if (!lectura.is_numOrden.equals("0")) {
+			strNuevaDireccion += lectura.is_comollegar1;
+			strNuevaDireccion += lectura.is_calle + " #" + lectura.numeroDeEdificio.trim() + (!lectura.numeroDePortal.trim().equals("") ? "-" + lectura.numeroDePortal.trim() : "");
+			if (!lectura.getColonia().equals("")) {
+				strNuevaDireccion += lectura.getColonia();
+			}
+			if (!lectura.is_entrecalles.equals("")) {
+				strNuevaDireccion += lectura.is_entrecalles;
+			}
+			if (!lectura.is_escalera.trim().equals("")) {
+				comodin = "Esc: " + lectura.is_escalera.trim();
+			}
+			if (!lectura.is_piso.trim().equals("")) {
+				if (!comodin.equals(""))
+					comodin += " ";
+				comodin += "Piso: " + lectura.is_piso.trim();
+			}
+			if (!lectura.is_puerta.trim().equals("")) {
+				if (!comodin.equals(""))
+					comodin += " ";
+				comodin += "Puerta: " + lectura.is_puerta.trim();
+			}
+			if (!comodin.equals("")) {
+				strNuevaDireccion += comodin;
+			}
+		}
+		return strNuevaDireccion;
+	}
+
 	public  Vector<String> getInformacionDelMedidor(Lectura lectura) {
 		
 		

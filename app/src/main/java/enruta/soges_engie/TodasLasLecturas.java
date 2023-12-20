@@ -11,6 +11,7 @@ public class TodasLasLecturas {
 	
 	Vector <Lectura> tll;
 	int li_lecturaActual=0;
+	int li_distanciaActual=0;
 	int siguienteMedidorACapturar=0;
 	
 	DBHelper dbHelper;
@@ -34,15 +35,10 @@ public class TodasLasLecturas {
 	final static int SIN_LEER=0;
 	final static int LEIDA=1;
 	final static int TODAS_LAS_LECTURAS=2;
-	
-	
-	
+
 	//int ordenDeLectura=0;
 	
-	
-	
 	private String ls_filtro="";
-	
 	
 	final static int ORDEN_ASCENDENTE=0;
 	final static int ORDEN_DESENDENTE=1;
@@ -66,14 +62,12 @@ public class TodasLasLecturas {
 	boolean filtrando=false;
 	
 	Globales globales;
-	
 
-	
 	TodasLasLecturas(Context context, int li_lecturaActual) {
 		this.context=context;
 		this.li_lecturaActual=li_lecturaActual;
+		this.li_distanciaActual=0;
 		globales= (Globales) context.getApplicationContext();
-		
 	}
 	
 	TodasLasLecturas(Context context) {
@@ -91,8 +85,6 @@ public class TodasLasLecturas {
 		actualizaLecturas();*/
 
 		//siguienteMedidorACapturar();
-		
-		
 	}
 	
 	TodasLasLecturas(Context context, boolean obtenerPrimerMedidor) {
@@ -100,25 +92,17 @@ public class TodasLasLecturas {
 		globales= (Globales) context.getApplicationContext();
 		if (obtenerPrimerMedidor){
 			try{
-				
 				medidorGuardadoACapturar(false, false);
-				
 				primerMedidorACapturar(false, false);
-				
 				//ordenDeLectura= this.getSiguienteOrdenDeLectura();
 			}
 			catch(Throwable e){
 				
 			}
 		}
-		
-		
 		/*tll= new Vector<Lectura>();
 		actualizaLecturas();*/
-
 		//siguienteMedidorACapturar();
-		
-		
 	}
 	
 	public void guardarDondeEstaba(){
@@ -149,66 +133,50 @@ public class TodasLasLecturas {
 		closeDatabase();
 		for(int i=0; i<1;i++){
 			try {
-				
 					tll.addElement(new Lectura(context, i+1));
-				
 			} catch (Throwable e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	
+
 	private void openDatabase(){
     	dbHelper=  new DBHelper(context);
-		
         db = dbHelper.getReadableDatabase();
     }
 	
 	 private void closeDatabase(){
 	    	db.close();
 	        dbHelper.close();
-	        
-	        
-	    }
+	 }
 	 
 	 public void siguienteMedidorACapturar(boolean modificar, boolean salir) throws Throwable {
-		
 		 Cursor c;
 		 openDatabase();
 		 //Buscamos el primer medidor sin lectura
 		 String ls_selectArgs="secuenciaReal, secuencia";
 		 String ls_tables="Ruta";
 		 encontrado=true;
-		 
-		 
 		 if (modificar){
 			 c=db.rawQuery("Select "+ls_selectArgs + " from "+  ls_tables +" where  " + globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.LEIDAS) +
-				 		"and  cast (secuenciaReal as Integer)> " +li_lecturaActual + " " 
-				 		
+				 		"and  cast (secuenciaReal as Integer)> " +li_lecturaActual + " "
 						 +getFiltro()+"" +(ls_groupBy.length()>0?" group by " + ls_groupBy: "")+"order by cast(secuenciaReal as Integer) asc  limit 1", null);
-		 }
-		 else{
+		 } else {
 			 c=db.rawQuery("Select "+ls_selectArgs + " from "+  ls_tables +" where " + globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.AUSENTES) 		+
 				 		"and  cast (secuenciaReal as Integer)> " +li_lecturaActual + " "
-				 
 						 +getFiltro()+" " +(ls_groupBy.length()>0?" group by " + ls_groupBy: "")+" order by cast(secuenciaReal as Integer)  asc   limit 1", null);
-			 
 		 }
-		 
-		 if(c.getCount()>0){
+		 if (c.getCount() > 0) {
 			 c.moveToFirst();
 			 li_lecturaActual=Integer.parseInt(c.getString(c.getColumnIndex(("secuenciaReal"))));
 			 lectura=new Lectura(context, li_lecturaActual);
-		 }
-		 else{
-			 if (salir){
+		 } else {
+			 if (salir) {
 				 li_lecturaActual=0;
 				 lectura=null;
 			 }
 			 encontrado=false;
-				 
 		 }
 		 c.close();
 		 closeDatabase();
@@ -217,23 +185,16 @@ public class TodasLasLecturas {
 		 ii_numVueltas=1;
 		 
 		//Vamos a dar una vuelta a ver si no se encuentra despues
-		 if (ii_numVueltas==0 && !encontrado){
+		 if (ii_numVueltas==0 && !encontrado) {
 			 ii_numVueltas++;
 			 li_lecturaActual=0;
 			 siguienteMedidorACapturar(modificar, salir);
-			
-		 }
-		 else{
+		 } else {
 			 ii_numVueltas=0;
 		 }
-		 
-
-		 
- 
 	 }
 	 
 	 public void medidorGuardadoACapturar(boolean modificar, boolean salir) throws Throwable {
-			
 		 Cursor c = null;
 		 openDatabase();
 		 //Buscamos el primer medidor sin lectura
@@ -243,29 +204,20 @@ public class TodasLasLecturas {
 		 int lli_lecturaActual=0;
 		 
 		 c=db.rawQuery("Select ultimoSeleccionado from encabezado", null);
-		 
 		 if (c.getCount()>0){
 			 c.moveToFirst();
 			 lli_lecturaActual=c.getInt(c.getColumnIndex("ultimoSeleccionado"));
 		 }
 		 c.close();
-		 
 		 c=null;
-		 
-		 
 		 if (modificar){
-
-		 }
-		 else{
+		 } else {
 			 c=db.rawQuery("Select "+ls_selectArgs + " from "+  ls_tables +" where " + globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.AUSENTES) 		+
 				 		"and  cast (secuenciaReal as Integer)= " +lli_lecturaActual + " "
-				 
 						 +getFiltro()+" " +(ls_groupBy.length()>0?" group by " + ls_groupBy: "")+" order by cast(secuenciaReal as Integer)  asc   limit 1", null);
-			 
 		 }
-		 
-		 if (c!=null){
-			 if(c.getCount()>0){
+		 if (c!=null) {
+			 if(c.getCount() > 0) {
 				 c.moveToFirst();
 				 li_lecturaActual=Integer.parseInt(c.getString(c.getColumnIndex(("secuenciaReal"))));
 				 lectura=new Lectura(context, li_lecturaActual);
@@ -275,32 +227,22 @@ public class TodasLasLecturas {
 				 lectura=null;
 				 encontrado=false;
 			 }
-		 }
-		 
-		 else{
+		 } else {
 			 if (salir){
 				 li_lecturaActual=0;
 				 lectura=null;
 			 }
 			 encontrado=false;
-				 
 		 }
 		 c.close();
 		 closeDatabase();
-		 
-		 
 		//Vamos a dar una vuelta a ver si no se encuentra despues
 		 if (!encontrado){
 			primerMedidorACapturar(modificar, salir);
 		 }
-		 
-
-		 
- 
 	 }
 	 
 	 public int getOrdenInconclusa() throws Throwable{
-		 
 		 Cursor c = null;
 		 openDatabase();
 		 //Buscamos el primer medidor sin lectura
@@ -311,8 +253,7 @@ public class TodasLasLecturas {
 		 
 		 c=db.rawQuery("Select "+ls_selectArgs + " from "+  ls_tables +" where " + globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.AUSENTES) 		+
 			 		"and  verDatos=1", null);
-		 
-		 
+
 		 if (c!=null){
 			 if(c.getCount()>0){
 				 c.moveToFirst();
@@ -321,45 +262,30 @@ public class TodasLasLecturas {
 				 lli_lecturaActual= Integer.parseInt(c.getString(c.getColumnIndex(("secuenciaReal"))));
 				 c.close();
 				 closeDatabase();
-				 
 			 }
 		 }
 		 c.close();
 		 closeDatabase();
-		
-		 
 		 return lli_lecturaActual;
-		 
-		 
 	 }
 	 
 	 public void siguienteMedidorIndistinto() throws Throwable {
-			
 		 Cursor c;
 		 openDatabase();
 		 //Buscamos el primer medidor sin lectura
 		 String ls_selectArgs="secuenciaReal, secuencia";
 		 String ls_tables="Ruta";
 		 encontrado=true;
-		 
-		 
-		 
 			 c=db.rawQuery("Select "+ls_selectArgs + " from "+  ls_tables +" where  " +
 				 		" cast (secuenciaReal as Integer)> " +li_lecturaActual + " "
-				 
 						 +getFiltro()+"order by cast(secuenciaReal as Integer) asc " +(ls_groupBy.length()>0?" group by " + ls_groupBy: "")+" limit 1", null);
-			 
-		 
-		 
+
 		 if(c.getCount()>0){
 			 c.moveToFirst();
 			 li_lecturaActual=Integer.parseInt(c.getString(c.getColumnIndex(("secuenciaReal"))));
 			 lectura=new Lectura(context, li_lecturaActual);
-		 }
-		 else{
-			
+		 } else {
 			 encontrado=false;
-				 
 		 }
 		 c.close();
 		 closeDatabase();
@@ -372,17 +298,52 @@ public class TodasLasLecturas {
 			 ii_numVueltas++;
 			 li_lecturaActual=0;
 			 siguienteMedidorIndistinto();
-			
-		 }
-		 else{
+		 } else {
 			 ii_numVueltas=0;
 		 }
-		 
-
-		 
- 
 	 }
-	 
+
+	public void siguienteMedidorIndistintoPorDistancia() throws Throwable {
+		Cursor c;
+		openDatabase();
+		//Buscamos el primer medidor sin lectura
+		String ls_selectArgs="secuenciaReal, secuencia";
+		String ls_tables="Ruta";
+		encontrado=true;
+
+		c=db.rawQuery("Select "+ls_selectArgs + ",diametro_toma from "+  ls_tables +" where  " +
+				" cast (diametro_toma as Integer) >= " +li_distanciaActual + " "
+				+getFiltro()+"order by cast(diametro_toma as Integer) asc " +(ls_groupBy.length()>0?" group by " + ls_groupBy: "")+" limit 1", null);
+
+		if(c.getCount()>0){
+			c.moveToFirst();
+			li_distanciaActual = Integer.parseInt(c.getString(c.getColumnIndex(("diametro_toma"))));
+			li_lecturaActual = Integer.parseInt(c.getString(c.getColumnIndex(("secuenciaReal"))));
+			lectura=new Lectura(context, li_lecturaActual);
+			SQLiteDatabase db1 = dbHelper.getReadableDatabase();
+			db1.execSQL("update ruta set diametro_toma = '-1' where secuenciaReal = " + li_lecturaActual);
+			db1.close();
+		}
+		else{
+			encontrado=false;
+		}
+		c.close();
+		closeDatabase();
+
+		//Con esto quitamos las vueltas
+		ii_numVueltas=1;
+
+		//Vamos a dar una vuelta a ver si no se encuentra despues
+		if (ii_numVueltas==0 && !encontrado){
+			ii_numVueltas++;
+			li_lecturaActual=0;
+			siguienteMedidorIndistintoPorDistancia();
+		}
+		else{
+			ii_numVueltas=0;
+		}
+	}
+
 	 public Lectura siguienteObjetoMedidor(int li_lecturaActual,  int direccion,  boolean vuelta) throws Throwable {
 			
 		 Cursor c;
@@ -804,7 +765,6 @@ public class TodasLasLecturas {
 	 
 	public Lectura getLecturaActual() {
 		return  lectura;
-		
 	}
 	
 	public int getNumRecords(){
@@ -1075,42 +1035,20 @@ public class TodasLasLecturas {
 		int canti= c.getCount();
 		
 		ContentValues cv_params = new ContentValues();
-//		cv_params.put("tipolectura", "4");
 		cv_params.put("estadoDeLaOrden", "EO012");
 		cv_params.put("fecha", Main.obtieneFecha(globales.tlc.getRellenoCampo("fecha")));
 		cv_params.put("hora", Main.obtieneFecha(globales.tlc.getRellenoCampo("hora")));
-		
-//		cv_params.put("comentarios", "NO HABILITADO");
-	
 		cv_params.put("tipoLectura", "4");
+		cv_params.put("lectura", "0");
+		cv_params.put("repercusion", "N");
+		cv_params.put("anomalia", "18");
+		cv_params.put("comentarios", "Cierre Forzado");
 		cv_params.put("envio", 1);
 		cv_params.put("registro", 0);
-		
-
-
 		db.update("ruta", cv_params,
 				globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.AUSENTES), null);
 		closeDatabase();
-		
-		
-//		Lectura lec;
-//		
-//		
-//		for (int i=0; i<canti;i++){
-//			try {
-//				//Forzamos una a una...
-//				lec= new Lectura(context, Integer.parseInt(c.getString(c.getColumnIndex("secuenciaReal"))));
-//				lec.forzarLecturas();
-//			} catch (Throwable e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			c.moveToNext();
-//		}
-//		
-		
 		c.close();
-		
 	}
 	
 	
@@ -1147,9 +1085,7 @@ public class TodasLasLecturas {
 		openDatabase();
 		Vector <String> lvs_vector = new Vector <String>();
 		Cursor c;
-		
 		String select="min(cast(secuenciaReal as Integer))"+"||'*'||direccion  || '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' || CASE  WHEN cast(numEdificio as Integer)%2=0 THEN ' PARES' ELSE ' NONES' END || ' ('|| count(*) ||')' nombre";
-		
 		if (!filtro.trim().equals("")){
 			filtro=" " + (tipo==TODAS_LAS_LECTURAS?" where ": " and ")+" upper(direccion) like '%"+filtro.toUpperCase()+"%' ";
 		}
@@ -1160,23 +1096,18 @@ public class TodasLasLecturas {
 		 else if (tipo== SIN_LEER) {
 			 c=db.rawQuery("Select  "+select+"  from ruta where  " + globales.tdlg.getFiltroDeLecturas(TomaDeLecturasGenerica.AUSENTES) 			 		
 						 +getFiltro()+ filtro + " group by direccion, cast(numEdificio as Integer)%2 order by cast(secuenciaReal as Integer)  asc", null);
-			 
 		 }
 		 else{
 			 c=db.rawQuery("Select "+select+"  from ruta " +filtro
 		 +" group by direccion, cast(numEdificio as Integer)%2 order by cast(secuenciaReal as Integer)  asc", null);
 		 }
-		
 		c.moveToFirst();
-		
 		for (int i=0; i<c.getCount();i++){
 			lvs_vector.add(c.getString(c.getColumnIndex("nombre")));
 			c.moveToNext();
 		}
-		
 		c.close();
 		closeDatabase();
-		
 		return lvs_vector;
 	}
 
@@ -1185,42 +1116,45 @@ public class TodasLasLecturas {
 		String lvs_vector = "";
 		String strOrigen = "";
 		String strDestino = "";
+		String strDondeEstoy = "";
 		String strDestinoAnterior = "";
 		String strWaypoints = "";
 		Cursor c;
-
-		c=db.rawQuery("Select * from ruta order by cast(secuenciaReal as Integer) asc", null);
+		c=db.rawQuery("Select * from ruta where anomalia='' and lectura='' order by cast(secuenciaReal as Integer) asc", null);
 		c.moveToFirst();
-		for (int i=0; i<c.getCount(); i++){
-			if (lvs_vector.equals("")) {
-// Metodo 1
-//				lvs_vector = "https://maps.google.com/maps?daddr="+c.getString(c.getColumnIndex("miLatitud"))+","+c.getString(c.getColumnIndex("miLongitud"));
-// Metodo 2
-//				strOrigen = "https://maps.google.com/maps/dir/?api=1&origin=" + c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
-//				lvs_vector = "&waypoints=";
-// Metodo 3
-				strOrigen = "https://maps.google.com/maps?saddr=" + c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
-				lvs_vector = "+to:";
+// CE, 09/10/23, Solamente vamos a mostrar 20 puntos
+//		for (int i=0; i<c.getCount(); i++){
+		int nNumPuntosMax = 20;
+		if (nNumPuntosMax > c.getCount())
+			nNumPuntosMax = c.getCount();
+		for (int i=0; i<nNumPuntosMax; i++){
+			String strMedidor = "";
+			strMedidor = c.getString(c.getColumnIndex("serieMedidor"));
+			if ((c.getString(c.getColumnIndex("miLatitud")).equals("")) || c.getString(c.getColumnIndex("miLongitud")).equals("")) {
+
 			} else {
-				strDestino = c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
-				if (!strDestinoAnterior.equals(""))
-//Metodo 2
-//					strWaypoints += strDestinoAnterior + "|";
-// Metodo 3
-				strWaypoints += "+to:" + strDestinoAnterior;
-				strDestinoAnterior = strDestino;
+				if (lvs_vector.equals("")) {
+					lvs_vector = "https://maps.google.com/maps?saddr=";
+					strOrigen = c.getString(c.getColumnIndex("miLatitud"))+","+c.getString(c.getColumnIndex("miLongitud"));
+				} else {
+//					if (strSegunda.equals("")) {
+//						strSegunda = c.getString(c.getColumnIndex("miLatitud"))+","+c.getString(c.getColumnIndex("miLongitud"));
+//					} else {
+						strDestino = c.getString(c.getColumnIndex("miLatitud")) + "," + c.getString(c.getColumnIndex("miLongitud"));
+						if (!strDestinoAnterior.equals(""))
+							strWaypoints += "+to:" + strDestinoAnterior;
+						strDestinoAnterior = strDestino;
+//					}
+				}
 			}
 			c.moveToNext();
 		}
-//Metodo 2
-//		strWaypoints = strWaypoints.substring(0,strWaypoints.length()-1);
-//		lvs_vector = strOrigen + strDestino + lvs_vector + strWaypoints + "&travelmode=driving";
-// Metodo 3
-//		No se necesita nada en Metodo 3
-		lvs_vector = strOrigen + "&daddr=" + strDestino + strWaypoints;
+		if (!lvs_vector.equals("")) {
+			strDondeEstoy = globales.location.getLatitude() + "," + globales.location.getLongitude();
+			lvs_vector = lvs_vector + strDondeEstoy + "&daddr=" + strOrigen + strWaypoints + "+to:" + strDestino;
+		}
 		c.close();
 		closeDatabase();
 		return lvs_vector;
 	}
-
 }

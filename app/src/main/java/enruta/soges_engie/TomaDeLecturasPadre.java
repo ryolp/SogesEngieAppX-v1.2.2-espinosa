@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import enruta.soges_engie.R;
+import enruta.soges_engie.entities.DatosEnvioEntity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -40,7 +41,10 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	final static int TOMADELECTURAS = 1;
 	final static int COMENTARIOS = 2;
 	final static int INPUT_CAMPOS_GENERICO=3;
-	
+	final static int INPUT_CLIENTE_YA_PAGO=4;
+	final static int INPUT_REMOCION_EFECTIVA=6;
+
+	private final static int TOMAR_VIDEO = 52;
 
 	final static int ENVIADA = 0;
 	final static int NO_ENVIADA = 1;
@@ -55,6 +59,8 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	final static int TRANSMISION=7;
 	final static int RECEPCION=8;
 //	final static int CLIENTE_YA_PAGO = 9;
+
+	private final static int PEDIR_FIRMA = 51;
 
 	final static int LECTURA = 0;
 	final static int PRESION = 1;
@@ -74,7 +80,7 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	/**
 	 * Tiempo en segundo que se tardará el GPS
 	 */
-	final static int TIME_OUT_GPS = 10; 
+    final static int TIME_OUT_GPS = 3;
 	
 	/**
 	 * Tiempo limite ente puntos GPS
@@ -228,22 +234,20 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			        	   //recepcion();
 			        	   preguntaSiBorraDatos=false;
 			        	   getUltLect() ;
-			                dialog.dismiss();
+						   dialog.dismiss();
 			           }
 			       })
 			       .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id){
 			        	   dialog.cancel();
-			                
 			           }
 			       });
-				
 				alert = builder.create();
 				alert.show();
 				return;
 			}
 		}
-
+		globales.nEstadoDeLaRepercusion = 0;
 		try {
 			globales.tll.ultimoMedidorACapturar(globales.bModificar,
 					globales.bcerrar);
@@ -251,9 +255,7 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		setDatos();
-
 	}
 
 	protected void getPrimLect() {
@@ -299,16 +301,14 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			       .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id){
 			        	   dialog.cancel();
-			                
 			           }
 			       });
-				
 				alert = builder.create();
 				alert.show();
 				return;
 			}
 		}
-
+		globales.nEstadoDeLaRepercusion = 0;
 		try {
 			globales.tll.primerMedidorACapturar(globales.bModificar,
 					globales.bcerrar);
@@ -316,9 +316,7 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		setDatos();
-
 	}
 
 	protected void getSigLect() {
@@ -335,22 +333,22 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			        	   //recepcion();
 			        	   preguntaSiBorraDatos=false;
 			        	   getSigLect();
-			                dialog.dismiss();
+						   dialog.dismiss();
 			           }
 			       })
 			       .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id){
 			        	   dialog.cancel();
-			                
 			           }
 			       });
-				
 				alert = builder.create();
 				alert.show();
 				return;
 			}
 		}
-
+/*
+//*************************************************************
+// CE, 11/10/23, Esta funcionalidad no la necesitamos en Engie
 		// Por peticion de Irene, Si es CF y doy siguiente debo guardar la
 		// lectura como 0
 		if (globales.is_caseta.contains("CF") && globales.is_lectura.equals("")
@@ -358,7 +356,9 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			globales.tll.guardarLectura("0");
 			// permiteCerrar();
 		}
-
+//*************************************************************
+*/
+		globales.nEstadoDeLaRepercusion = 0;
 		try {
 			// Voy a guardar la variable de modificar ambas variables son
 			// identicas quiere decir que se encuentra en el mismo modo en el
@@ -451,7 +451,7 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 				return;
 			}
 		}
-		
+		globales.nEstadoDeLaRepercusion = 0;
 		try {
 			// Voy a guardar la variable de modificar ambas variables son
 			// identicas quiere decir que se encuentra en el mismo modo en el
@@ -878,53 +878,127 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	 */
 	public void tomarFoto(final int temporal, final Lectura lectura, final int cantidad, final String ls_anomalia) {
 
-		voyATomarFoto=false;
-		if (modo==Input.SIN_FOTOS) {
-			 legacyCapturaEnModosSinFoto();
-			 return;
-		}
-		 
-		if (!(globales.tll.getLecturaActual().is_supervisionLectura.equals("1") || globales.tll.getLecturaActual().is_reclamacionLectura.equals("1"))
-				 && modo==Input.FOTOS_CC ){
-			 legacyCapturaEnModosSinFoto();
-			// voyATomarFoto=true;
-			 return;
-		}
-		 
-		//Continuar con la toma
-		if (!globales.tdlg.continuarConLaFoto() && modo!=Input.FOTOS ){
+		voyATomarFoto = false;
+		if (modo == Input.SIN_FOTOS) {
+			legacyCapturaEnModosSinFoto();
 			return;
 		}
-		
-		final Intent camara = new Intent(this, CamaraActivity.class);
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		builder.setMessage(regreseDe!=ANOMALIA?(globales.is_terminacion.endsWith("1") ? "Obtención de Foto antes de ejecutar la acción": "Obtención de Foto una vez ejecutada la acción"):"Preparese para tomar la foto")
-// CE, 08/10/23, Vamos a mostrar un mensaje diferente dependiendo de la situacion
-//		builder.setMessage("Preparese para tomar la foto")
-		builder.setMessage(globales.getMensajeParaMostrarAntesDeTomarLaFoto())
-		.setTitle("Cámara")
-		       .setCancelable(false)
-		       .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id){
 
-        	   
-		       		camara.putExtra("secuencial", lectura.secuenciaReal);
-		       		camara.putExtra("caseta", lectura.is_serieMedidor);
-		       		camara.putExtra("terminacion", globales.is_terminacion);
-		       		camara.putExtra("temporal", temporal);
-		       		camara.putExtra("cantidad", cantidad);
-		       		camara.putExtra("anomalia", ls_anomalia);
-		       		// vengoDeFotos = true;
-		       		startActivityForResult(camara, FOTOS);
-		                dialog.cancel();
-		           }
-		       });
-		
-		AlertDialog alert = builder.create();
-		alert.show();
-		voyATomarFoto=true;
+		if (!(globales.tll.getLecturaActual().is_supervisionLectura.equals("1") || globales.tll.getLecturaActual().is_reclamacionLectura.equals("1"))
+				&& modo == Input.FOTOS_CC) {
+			legacyCapturaEnModosSinFoto();
+			// voyATomarFoto=true;
+			return;
+		}
 
+		//Continuar con la toma
+		if (!globales.tdlg.continuarConLaFoto() && modo != Input.FOTOS) {
+			return;
+		}
+
+		String strEncabezadoDelDialogo = "Tomar Fotografía";
+		String strCuerpoDelDialogo = globales.getMensajeParaMostrarAntesDeTomarLaFoto();
+		if (strCuerpoDelDialogo.equals("Favor de tomar la Foto de Llegada")) {
+			rutinaDespuesDeTomarFotoDeLlegada(FOTOS, Activity.RESULT_OK);
+		} else {
+			final Intent camara = new Intent(this, CamaraActivity.class);
+
+			// CE, 23/10/23, No funciono lo que estaba intentado, lo voy a quitar
+			//		final Intent firmar = new Intent(this, SignaturePadActivity.class);
+
+			// CE, 14/10/23, Ya no estamos grabando el video desde aqui
+			//		final Intent video = new Intent(this, Camara2Activity.class);
+			if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
+					(globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
+				strEncabezadoDelDialogo = "Grabar Video";
+			} else if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE) ||
+					(globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE)) {
+//				strEncabezadoDelDialogo = "Recabar Firma";
+				strEncabezadoDelDialogo = "Recabar Foto y Firma";
+			}
+			//		final String strEncabezadoDelDialogoFinal = strEncabezadoDelDialogo;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			//		builder.setMessage(regreseDe!=ANOMALIA?(globales.is_terminacion.endsWith("1") ? "Obtención de Foto antes de ejecutar la acción": "Obtención de Foto una vez ejecutada la acción"):"Preparese para tomar la foto")
+			// CE, 08/10/23, Vamos a mostrar un mensaje diferente dependiendo de la situacion
+			//		builder.setMessage("Preparese para tomar la foto")
+			builder.setMessage(strCuerpoDelDialogo)
+					.setTitle(strEncabezadoDelDialogo)
+					.setCancelable(false)
+					.setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+
+							String cintillo1 = globales.getDescripcionCintillo(1);
+							String cintillo2 = globales.getDescripcionCintillo(2);
+							//					   if (!strEncabezadoDelDialogoFinal.equals("Recabar Firma")) {
+		/*
+		//**************************************************************************************************************************************
+		// CE, 14/10/23, Vamos a hacer una prueba pidiendo el video en el modulo de la camara */
+							camara.putExtra("secuencial", lectura.secuenciaReal);
+							camara.putExtra("caseta", lectura.is_serieMedidor);
+							if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
+									(globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
+								camara.putExtra("terminacion", "Video");
+							} else {
+								if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE) ||
+										(globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE))
+									camara.putExtra("terminacion", "Firma");
+								else
+									camara.putExtra("terminacion", globales.is_terminacion);
+							}
+		/*        	   		if ((globales.getEstadoDeLaRepercusion()==Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
+									(globales.getEstadoDeLaRepercusion()==Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
+								video.putExtra("idOrden", globales.tll.getLecturaActual().is_idOrden);
+								startActivityForResult(video, TOMAR_VIDEO);
+							} else {
+								camara.putExtra("secuencial", lectura.secuenciaReal);
+								camara.putExtra("caseta", lectura.is_serieMedidor);
+								if ((globales.getEstadoDeLaRepercusion()==Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE) ||
+										(globales.getEstadoDeLaRepercusion()==Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE))
+									camara.putExtra("terminacion", "Firma");
+								else
+									camara.putExtra("terminacion", globales.is_terminacion);
+		//**************************************************************************************************************************************
+		*/
+							camara.putExtra("cintillo1", cintillo1);
+							camara.putExtra("cintillo2", cintillo2);
+							camara.putExtra("temporal", temporal);
+							camara.putExtra("cantidad", cantidad);
+							camara.putExtra("anomalia", ls_anomalia);
+							// vengoDeFotos = true;
+							startActivityForResult(camara, FOTOS);
+							dialog.cancel();
+	/*
+						   } else {
+							   DatosEnvioEntity infoFoto;
+							   DBHelper dbHelper = new DBHelper(getBaseContext());
+							   SQLiteDatabase db = dbHelper.getReadableDatabase();
+							   try {
+								   infoFoto = globales.tdlg.getInfoFoto(globales, db, lectura.secuenciaReal, "Firma");
+								   db.close();
+								   dbHelper.close();
+								   firmar.putExtra("secuencial", lectura.secuenciaReal);
+								   firmar.putExtra("caseta", lectura.is_serieMedidor);
+								   firmar.putExtra("terminacion", "Firma");
+								   firmar.putExtra("cintillo1", cintillo1);
+								   firmar.putExtra("cintillo2", cintillo2);
+								   firmar.putExtra("temporal", temporal);
+								   firmar.putExtra("cantidad", cantidad);
+								   firmar.putExtra("anomalia", ls_anomalia);
+								   firmar.putExtra("ls_nombre", infoFoto.nombreArchivo);
+								   firmar.putExtra("idOrden", infoFoto.idOrden);
+								   firmar.putExtra("EncuestaDeSatisfaccion", "0");
+								   startActivityForResult(firmar, PEDIR_FIRMA);
+								   dialog.cancel();
+							   } catch (Throwable t) {
+							   }
+						  }
+	 */
+						}
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
+			voyATomarFoto = true;
+		}
 	}
 	
 	@SuppressLint("NewApi")
@@ -1153,6 +1227,11 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 			public void run(){
 				while (globales.location==null && !timeOutAlcanzado){
 					//Esperamos...
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 				}
 				
 				timeOutAlcanzado=false;
@@ -1185,7 +1264,9 @@ public abstract class TomaDeLecturasPadre extends AppCompatActivity {
 	 * Se conecta con la funcion que realiza el proceso de lecturas con sus hijos
 	 */
 	protected abstract void capturaDespuesDelPuntoGPS();
-	
+
+	protected abstract void rutinaDespuesDeTomarFotoDeLlegada(final int requestCode, final int resultCode);
+
 	void GPSNotFoundMsg(final TomaDeLecturasPadre tdlp){
 		
 		mHandler.post(new Runnable() {

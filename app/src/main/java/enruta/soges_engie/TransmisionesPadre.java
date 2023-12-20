@@ -40,14 +40,14 @@ public abstract class TransmisionesPadre extends Activity {
 	
 	boolean yaAcabo=false;
 	boolean mostrarAlerta=true;
-	boolean transmitirTodo=false;
+	protected boolean transmitirTodo=false;
 	
 	String ls_categoria, ls_servidor, ls_subCarpeta;
 	String ls_carpeta="uploads/activos";
 	String ls_extension="tpl";
-	
-	Vector<String> vLecturas;
-	boolean transmiteFotos=true;
+
+	protected Vector<String> vLecturas;
+	protected boolean transmiteFotos=true;
 	Resources resources;
 	TodasLasLecturas tll;
 	
@@ -232,7 +232,6 @@ public abstract class TransmisionesPadre extends Activity {
 
 	protected void openDatabase(){
     	dbHelper= new DBHelper(this);
-		
         db = dbHelper.getReadableDatabase();
     }
 

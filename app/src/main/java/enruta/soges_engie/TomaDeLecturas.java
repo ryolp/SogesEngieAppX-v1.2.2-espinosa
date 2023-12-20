@@ -17,11 +17,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.TypedValue;
+//import android.graphics.drawable.AnimationDrawable;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -35,22 +38,23 @@ import android.view.ViewTreeObserver;
 import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
+import androidx.cardview.widget.CardView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
 
 public class TomaDeLecturas extends TomaDeLecturasPadre implements
         OnGestureListener {
 
     int ii_dondeEstaba = 0;
-
-
     Timer timer = new Timer();
-
 
     double porcentaje = 1.0;
     double porcentajeInfoCliente = 1.0;
@@ -60,24 +64,31 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     boolean permiteCambiarFuente = false;
     Timer cambiarFuenteTimer = new Timer();
 
-
     private GestureDetector gestureScanner;
 
     // EditText et_lectura/*, et_presion*/;
     // TextView tv_informacion, tv_lectura, tv_presion;
-    TextView tv_caseta, tv_min, tv_max, tv_mensaje, tv_respuesta/*
+    TextView tv_caseta, tv_min, tv_max, tv_mensaje, tv_mensaje2, tv_respuesta/*
      * ,
      * tv_lectura
      */, tv_contador, tv_presion, tv_comentarios, tv_lectura,
             tv_anomalia, tv_contadorOpcional, tv_lecturaAnterior, tv_campo0, tv_campo1, tv_campo2, tv_campo3, tv_campo4,
             label_campo0, label_campo1, label_campo2, label_campo3, label_campo4, tv_advertencia;
     Button button1, button2, button3, button4, button5, button6, b_repetir_anom;
+    ImageView iv_gps, iv_button3, iv_button4, iv_button5, iv_button6;
+    MenuItem iv_campanaNegra,iv_campanaAmarilla;
+//    AnimationDrawable iv_campanitaAnimation;
     View layout;
 
+    TextView tv_nueva_datos_cliente,tv_nueva_direccion,tv_nueva_datos_sap1,tv_nueva_datos_sap2;
+    TextView tv_sap_medidor,tv_sap_cuenta_contrato,tv_sap_interlocutor,tv_sap_notificacion;
     // String globales.is_lectura, globales.is_presion, globales.is_caseta,
     // globales.is_terminacion;
 
     LinearLayout ll_limites, ll_linearLayout1, ll_generica, ll_linearLayout2, cuadricula;
+    RelativeLayout ll_layoutTipoDeOrden;
+
+    CardView cv_button1, cv_button2, cv_button3, cv_button4, cv_button5, cv_button6;
 
     boolean filtrarComentarios = false;
     //boolean captureAnomalias=false;
@@ -90,7 +101,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     boolean preguntaSiBorraDatosComodin = false;
 
-    float anomSize, lecturaSize, casetaSize, cialSize, minSize, maxSize,
+    float anomSize, lecturaSize, mensajeSize, casetaSize, cialSize, minSize, maxSize,
             nombreSize, comentariosSize, nisradSize, direccionSize,
             contadorOpcionalSize, tipoMedidorSize, sizeGenerico = 14, labelCuadriculaSize, respuestasSize;
 
@@ -106,7 +117,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     private ActionBar actionBar;
 
-    private final static int TOMAR_VIDEO = 1;
+    private final static int TOMAR_VIDEO = 52;
 
     @SuppressLint("NewApi")
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -122,48 +133,36 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
         switch (requestCode) {
             case FOTOS:
-
+// CE, 09/11/23, Vamos a
+                rutinaDespuesDeTomarFotoDeLlegada(requestCode, resultCode);
+/*
                 if (puedeVerDatosAlRegresar && resultCode == Activity.RESULT_OK) {
                     globales.tll.getLecturaActual().verDatos = true;
                     setDatos(false);
-
                     openDatabase();
                     db.execSQL("update ruta set verDatos=1, fechaDeInicio='" + Main.obtieneFecha("ymdhis") + "' where secuenciaReal=" + globales.il_lect_act);
                     closeDatabase();
-
                     setStyleDatosVistos();
-
                     //por ahorita no...
 //				if (preguntarHabitado){
-
-
 //					preguntarHabitado=false;
 //				}
-
                 }
                 globales.puedoCancelarFotos = false;
                 puedeVerDatosAlRegresar = false;
-
 
                 if (globales.estoyTomandoFotosConsecutivas) {
                     tomaFotosConsecutivas(globales.idMedidorUltimaLectura);
                 } else {
                     tieneFotos();
-
                     //avanzarDespuesDeAnomalia();
-
-
                 }
-
                 if (regreseDe == ANOMALIA && globales.legacyCaptura) {
                     if (globales.tll.getLecturaActual().requiereLectura() == Anomalia.LECTURA_AUSENTE && !globales.tdlg.avanzarDespuesDeAnomalia(ultimaAnomaliaSeleccionada, ultimaSubAnomaliaSeleccionada, false)) {
-
-
                         capturar();
                     } else if (globales.tdlg.avanzarDespuesDeAnomalia(ultimaAnomaliaSeleccionada, ultimaSubAnomaliaSeleccionada, false)) {
                         avanzarDespuesDeAnomalia();
                     }
-
                 } else if (regreseDe == LECTURA && globales.legacyCaptura) {
 
 //				if (globales.is_terminacion.endsWith("2")){
@@ -190,10 +189,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                 }
                 //regreseDe=FOTOS;
-
-
                 voyATomarFoto = false;
-
+*/
                 break;
             case LECTURA:
                 regreseDe = LECTURA;
@@ -201,14 +198,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 if (resultCode == Activity.RESULT_OK) {
                     bu_params = data.getExtras();
                     globales.is_lectura = bu_params.getString("input");
-
-                    globales.tdlg.setConsumo();
-
+// CE, 10/10/23, No necesitamos calcular ningun consumo
+//                    globales.tdlg.setConsumo();
                     if (globales.is_lectura.equals("")) {
                         globales.BorrarTodasLosCamposEngie();
                         globales.tdlg.regresaDeBorrarLectura();
                     }
-
                     regresaDeBorrar();
                     if (globales.is_lectura.trim().length() > 0
                             || globales.tll.getLecturaActual().anomalias.size() > 0) {
@@ -221,7 +216,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                             setModoCaptura();
                         else
                             salirModoCaptura();
-
                     } else {
                         globales.modoCaptura = false;
                         salirModoCaptura();
@@ -230,21 +224,25 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                     // borramos fotos temporales anteriores
                     openDatabase();
-
                     db.execSQL("delete from fotos where temporal="
                             + CamaraActivity.TEMPORAL);
-
                     db.execSQL("delete from fotos where temporal="
                             + CamaraActivity.ANOMALIA);
-
                     closeDatabase();
 
                     globales.is_terminacion = bu_params.getString("terminacion");
                     globales.tll.getLecturaActual().setTerminacion(
                             globales.is_terminacion);
 
-                    tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
-                    tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + (globales.is_presion.length() > 3 ? "***" : globales.is_presion));
+                    if (globales.is_lectura.equals(""))
+                        tv_lectura.setText("");
+                    else
+                        tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+
+                    if (globales.is_lectura.equals(""))
+                        tv_anomalia.setText("");
+                    else
+                        tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + (globales.is_presion.length() > 3 ? "***" : globales.is_presion));
 
                     if ((bu_params.getBoolean("sospechosa") || globales.fotoForzada || globales.bModificar)
                             && permiteTomarFoto && globales.is_lectura.length() > 0) {
@@ -260,8 +258,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 //						globales.ignorarGeneracionCalidadOverride=false;
 //					}
 
+//*******************************************************************************************************
+// CE, 14/10/23, En el caso del SOGES, no existe el concepto de Control de Calidad como en el SISTOLE
+                        tomarFoto(CamaraActivity.TEMPORAL, 1);
+/*
                         if (globales.ignorarContadorControlCalidad) {
-
                             tomarFoto(CamaraActivity.TEMPORAL, 1);
                             globales.ignorarContadorControlCalidad = false;
                         } else {
@@ -275,30 +276,23 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                 }
                             }
                         }
-
-
+*/
+//*******************************************************************************************************
                     }
-
-
                     if (bu_params.getBoolean("sospechosa")) {
                         globales.tll.getLecturaActual().sospechosa = String.valueOf(bu_params.getInt("confirmada"));
                         globales.tll.getLecturaActual().guardarSospechosa();
                     }
-
                     if (!voyATomarFoto && globales.legacyCaptura) {
                         capturar();
                     }
-
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     setDatos(false);
                     if (globales.inputMandaCierre) {
                         globales.inputMandaCierre = false;
                         muere();
-
-
                         return;
                     }
-
                     bu_params = data.getExtras();
                     if (bu_params.getBoolean("sospechosa")) {
                         globales.tll.getLecturaActual().sospechosa = String.valueOf(bu_params
@@ -311,16 +305,23 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     } else {
                         layout.setBackgroundResource(0);
                     }
-
                     if (secuencialAntesDeInput != globales.tll.getLecturaActual().secuencia)
                         setDatos();
                 }
                 voyATomarFoto = false;
-
                 if (!globales.bModificar && globales.tll.getLecturaActual().verDatos && !globales.modoCaptura) {
                     setStyleDatosVistos();
                 }
-
+// CE, 14/10/23, Vamos a mostrar o esconder los botones de acuerdo a las reglas de Engie
+                if (globales.is_lectura.equals("")) {
+                    tv_mensaje2.setText("¿Es Efectiva o No Efectiva?");
+                    tv_mensaje2.setVisibility(View.VISIBLE);
+                    estableceVisibilidadDeBotones(View.VISIBLE, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, true);
+                } else {
+                    tv_mensaje2.setText("Presione FINALIZAR");
+                    tv_mensaje2.setVisibility(View.VISIBLE);
+                    estableceVisibilidadDeBotones(View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE, View.INVISIBLE, View.VISIBLE, false);
+                }
                 break;
             /*
              * case COMENTARIOS: if (resultCode == Activity.RESULT_OK){ bu_params
@@ -341,7 +342,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             case ANOMALIA:
                 regreseDe = ANOMALIA;
                 voyATomarFoto = false;
-
 
                 //Si se hicieron cambois en el nombre del usuario se verán
                 setDatos(false);
@@ -365,7 +365,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                             + CamaraActivity.ANOMALIA);
                     closeDatabase();
 
-
                     if (!ls_subAnomalia.equals("")) {
                         anom = new Anomalia(this, ls_subAnomalia, true);
                     } else {
@@ -383,10 +382,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                             //recepcion();
                                             preguntaSiBorrarEnAnomaliaAusentes = false;
                                             onActivityResult(requestCode, resultCode, data);
-
-
                                             dialog.dismiss();
-
                                         }
                                     })
                                     .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
@@ -432,7 +428,16 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     preguntaSiBorraDatos = true;
                     muestraRespuestaSeleccionadaAutomatica(globales.tdlg.regresaDeAnomalias(bu_params.getString("anomalia")));
 
-
+// CE, 14/10/23, Vamos a mostrar o esconder los botones de acuerdo a las reglas de Engie
+                    if (ls_anomalia.equals("")) {
+                        tv_mensaje2.setText("¿Es Efectiva o No Efectiva?");
+                        tv_mensaje2.setVisibility(View.VISIBLE);
+                        estableceVisibilidadDeBotones(View.VISIBLE, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, true);
+                    } else {
+                        tv_mensaje2.setText("Presione FINALIZAR");
+                        tv_mensaje2.setVisibility(View.VISIBLE);
+                        estableceVisibilidadDeBotones(View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE, View.INVISIBLE, View.VISIBLE, false);
+                    }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     anomaliaCapturada = false;
                 }
@@ -501,7 +506,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         }
                     }
                     button1.setEnabled(true);
-
+                    cv_button1.setEnabled(true);
+//                    cv_button1.setBackgroundColor(R.color.LimeGreen);
                 }
 
                 if (anom != null) {
@@ -520,11 +526,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 if (resultCode == Activity.RESULT_OK) {
                     bu_params = data.getExtras();
                     try {
-                        globales.tll.setSecuencialLectura(bu_params
-                                .getInt("secuencia"));
+                        globales.strUltimaBusquedaRealizada = bu_params.getString("ultimabusqueda");
+                        globales.tll.setSecuencialLectura(bu_params.getInt("secuencia"));
+
                         // Si estamos modificando y no tiene lectura o anomalia
                         // debemos romper el modo de modificacion
-
                         if (globales.bModificar) {
                             if ((globales.tll.getLecturaActual().getLectura()
                                     .equals("") && globales.tll.getLecturaActual()
@@ -552,8 +558,16 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         e.printStackTrace();
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
+                    bu_params = data.getExtras();
+                    globales.strUltimaBusquedaRealizada = bu_params.getString("ultimabusqueda");
                     globales.moverPosicion = false;
                     preguntaSiBorraDatos = preguntaSiBorraDatosComodin;
+                    if (globales.strUltimaBusquedaRealizada.equals("Campanita")) {
+                        globales.strUltimaBusquedaRealizada = "";
+                        openDatabase();
+                        db.execSQL("update ruta set balance=''");
+                        closeDatabase();
+                    }
                 }
                 break;
 
@@ -615,18 +629,29 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     public void setModoCaptura() {
         setModoCaptura(true);
-
     }
 
     public void setModoCaptura(boolean esconderBuscar) {
         globales.modoCaptura = true;
+
+// CE, 14/10/23, Vamos a reemplazar este ModoCaptura por el nuevo metodo
+        tv_mensaje2.setText("Presione FINALIZAR");
+        tv_mensaje2.setVisibility(View.VISIBLE);
+// CE, 14/12/23, Vamos a esconder Efectiva y NoEfectiva
+//        estableceVisibilidadDeBotones(button1.getVisibility(),button2.getVisibility(),View.INVISIBLE,View.VISIBLE,View.INVISIBLE,View.VISIBLE,false);
+        estableceVisibilidadDeBotones(View.INVISIBLE,View.INVISIBLE,View.INVISIBLE,View.VISIBLE,View.INVISIBLE,View.VISIBLE,false);
+/*
         button4.setVisibility(View.INVISIBLE);
+        iv_button4.setVisibility(View.INVISIBLE);
+        iv_button6.setVisibility(View.INVISIBLE);
         button6.setText(R.string.guardar);
         button6.setEnabled(true);
         // button3.setEnabled(false);
         button3.setEnabled(!esconderBuscar);
+*/
+        button4.setText(R.string.reiniciar);
+        button6.setText(R.string.guardar);
         tv_contador.bringToFront();
-
     }
 
     @Override
@@ -636,6 +661,19 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
         is_mensaje_direccion = getString(R.string.msj_lecturas_no_hay_mas);
         setTitle("");
+
+        Toolbar mTopToolbar;
+        mTopToolbar = (Toolbar) findViewById(R.id.toma_de_lecturas);
+        setSupportActionBar(mTopToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setLogo(getDrawable(R.drawable.soges_blanco));
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mostrarToolbar();
 
@@ -651,16 +689,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         globales.is_nombre_Lect = bu_params.getString("nombre");
         bHabilitarImpresion = bu_params.getBoolean("bHabilitarImpresion");
 
-
         porcentaje = globales.porcentaje_lectura;
         porcentajeInfoCliente = globales.porcentaje_info;
-
 
         // Obtenemos la impresora...
         getImpresora();
 
         // Filtrado y para empezar editando
-
         openDatabase();
         Cursor c = db.query("config", null, "key='modo'", null, null, null,
                 null);
@@ -802,12 +837,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     }
 
     protected void mostrarToolbar() {
+/*
         actionBar = getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(false);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         }
+*/
     }
 
     /*
@@ -827,6 +864,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         tv_min = (TextView) findViewById(R.id.tv_min);
         tv_max = (TextView) findViewById(R.id.tv_max);
         tv_mensaje = (TextView) findViewById(R.id.tv_mensaje);
+        tv_mensaje2 = (TextView) findViewById(R.id.tv_mensaje2);
         tv_respuesta = (TextView) findViewById(R.id.tv_respuesta);
         tv_contador = (TextView) findViewById(R.id.tv_contador);
 //		tv_presion = (TextView) findViewById(R.id.tv_presion);
@@ -836,6 +874,16 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         tv_contadorOpcional = (TextView) findViewById(R.id.tv_contadorOpcional);
         tv_advertencia = (TextView) findViewById(R.id.tv_advertencia);
         tv_lecturaAnterior = (TextView) findViewById(R.id.tv_lecturaAnterior);
+
+        tv_nueva_datos_cliente = (TextView) findViewById(R.id.tv_nueva_datos_cliente);
+        tv_nueva_direccion = (TextView) findViewById(R.id.tv_nueva_direccion);
+        tv_nueva_datos_sap1 = (TextView) findViewById(R.id.tv_nueva_datos_sap1);
+        tv_nueva_datos_sap2 = (TextView) findViewById(R.id.tv_nueva_datos_sap2);
+
+        tv_sap_medidor = (TextView) findViewById(R.id.tv_sap_medidor);
+        tv_sap_cuenta_contrato = (TextView) findViewById(R.id.tv_sap_cuenta_contrato);
+        tv_sap_interlocutor = (TextView) findViewById(R.id.tv_sap_interlocutor);
+        tv_sap_notificacion = (TextView) findViewById(R.id.tv_sap_notificacion);
 
         cuadricula = (LinearLayout) findViewById(R.id.cuadricula);
 
@@ -851,6 +899,11 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         label_campo3 = (TextView) findViewById(R.id.label_campo3);
         label_campo4 = (TextView) findViewById(R.id.label_campo4);
 
+        iv_gps = (ImageView) findViewById(R.id.iv_gps);// GPS
+        iv_button3 = (ImageView) findViewById(R.id.iv_button3);// Flechita
+        iv_button4 = (ImageView) findViewById(R.id.iv_button4);// Flechita
+        iv_button5 = (ImageView) findViewById(R.id.iv_button5);// Flechita
+        iv_button6 = (ImageView) findViewById(R.id.iv_button6);// Flechita
 
         button1 = (Button) findViewById(R.id.button1);// Lectura
         button2 = (Button) findViewById(R.id.button3); // Presion
@@ -859,12 +912,28 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         button5 = (Button) findViewById(R.id.button5);// Fotos
         button6 = (Button) findViewById(R.id.button6);// Siguiente
 
+        cv_button1 = (CardView) findViewById(R.id.cv_button1);// Lectura
+        cv_button2 = (CardView) findViewById(R.id.cv_button2); // Presion
+
+        cv_button1.setBackgroundTintList(getResources().getColorStateList(R.color.button_backgroud));;
+        cv_button2.setBackgroundTintList(getResources().getColorStateList(R.color.button_red));;
+
         b_repetir_anom = (Button) findViewById(R.id.b_repetir_anom);// Siguiente
 
         ll_limites = (LinearLayout) findViewById(R.id.ll_limites);
         ll_linearLayout1 = (LinearLayout) findViewById(R.id.linearLayout1);
         ll_linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
         ll_generica = (LinearLayout) findViewById(R.id.ll_generica);
+
+        ll_layoutTipoDeOrden = (RelativeLayout) findViewById(R.id.ll_layoutTipoDeOrden);
+
+// CE, 11/10/23, Vamos a ocultar los botones del viejo diseño
+        ll_linearLayout1.setBackgroundResource(R.color.white);
+        tv_contador.setVisibility(View.GONE);
+        ll_generica.setVisibility(View.VISIBLE);
+        tv_caseta.setVisibility(View.GONE);
+        tv_lectura.setVisibility(View.GONE);
+        tv_anomalia.setVisibility(View.GONE);
 
         OnGestureListener ogl = new OnGestureListener() {
 
@@ -911,6 +980,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         // tv_presion=(TextView) findViewById(R.id.tv_presion);
         final TomaDeLecturas parent = this;
 
+        View.OnClickListener clicGPS = new View.OnClickListener() {
+            public void onClick(View v) {
+                mostrarUbicacionGPS();
+            }
+        };
+
         // Vamos a declarar los listeners ya que nos pueden servir mas adelante
         // en otros objetos
         View.OnClickListener clicLectura = new View.OnClickListener() {
@@ -932,9 +1007,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                     secuencialAntesDeInput = globales.tll.getLecturaActual().secuencia;
                     startActivityForResult(intent, LECTURA);
-
                 }
-
             }
         };
 
@@ -965,8 +1038,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         //tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
                     }
                     globales.is_presion = globales.tll.getLecturaActual().getAnomaliaAMostrar();
-                    tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
-                    tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + globales.is_presion);
+
+                    if (globales.is_lectura.equals(""))
+                        tv_lectura.setText("");
+                    else
+                        tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+                    if (globales.is_presion.equals(""))
+                        tv_anomalia.setText("");
+                    else
+                        tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + globales.is_presion);
 
                     setDatos(false);
                     int requiereLectura = globales.tll.getLecturaActual().requiereLectura();
@@ -979,11 +1059,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                             setStyleDatosVistos();
                         }
                     }
-
-
                     verficarSiPuedoDejarAusente();
                 }
-
                 return true;
             }
         };
@@ -994,16 +1071,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 // mensajeInput(PRESION);
                 globales.setEstadoDeLaRepercusion(false,false);
                 cancelaTimer();
-                Intent anom = new Intent(parent, PantallaAnomalias.class);
+                Intent anom = new Intent(parent, PantallaAnomaliasActivity.class);
                 anom.putExtra("secuencial", globales.il_lect_act);
                 anom.putExtra("lectura", globales.is_lectura);
                 anom.putExtra("anomalia", globales.tll.getLecturaActual().getAnomaliasCapturadas());
-
                 anom.putExtra("tipoAnomalia", globales.tll.getLecturaActual().is_tipoDeOrden);
-
                 startActivityForResult(anom, ANOMALIA);
                 // vengoDeAnomalias = true;
-
             }
             // tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) +globales.is_lectura);
         };
@@ -1056,15 +1130,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                  */
                 if (!button3.isEnabled())
                     return;
-
                 cancelaTimer();
                 //Intent intent = new Intent(parent, BuscarMedidor.class);
                 buscarMedidor(BuscarMedidor.BUSCAR);
                 globales.moverPosicion = true;
                 globales.bEstabaModificando = globales.bModificar;
-
                 globales.tll.guardarDondeEstaba();
-
             }
         };
 
@@ -1077,16 +1148,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                  * intent.putExtra("comentarios", is_comentarios);
                  * startActivityForResult(intent, COMENTARIOS);
                  */
-
                 if (!button3.isEnabled())
                     return true;
-
                 cancelaTimer();
                 //Intent intent = new Intent(parent, BuscarMedidor.class);
                 buscarMedidor(BuscarMedidor.MOVER);
-
                 return true;
-
             }
         };
 
@@ -1097,15 +1164,19 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         tv_anomalia.setOnClickListener(clicAnomalia);
         tv_lectura.setOnClickListener(clicLectura);
         tv_caseta.setOnClickListener(clicMedidor);
-        tv_caseta.setOnLongClickListener(longClicMedidor);
 
-        tv_anomalia.setOnLongClickListener(longClicAnomalia);
-        tv_lectura.setOnLongClickListener(longClicLectura);
+// CE, 12/11/23, Vamos a quitar el funcionamiento del LongClick
+//        tv_caseta.setOnLongClickListener(longClicMedidor);
+//        tv_anomalia.setOnLongClickListener(longClicAnomalia);
+//        tv_lectura.setOnLongClickListener(longClicLectura);
+
+        iv_gps.setOnClickListener(clicGPS);
 
         button1.setOnClickListener(clicLectura);
         button2.setOnClickListener(clicAnomalia);
         button3.setOnClickListener(clicMedidor);
-        button3.setOnLongClickListener(longClicMedidor);
+// CE, 12/11/23, Vamos a quitar el funcionamiento del LongClick
+//        button3.setOnLongClickListener(longClicMedidor);
 
         button3.setOnTouchListener(new OnTouchListener() {
 
@@ -1163,7 +1234,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                         // button6.setText(R.string.m_str_siguiente);
                         button4.setText(R.string.m_str_anterior);
-
+                        iv_button4.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -1174,16 +1245,19 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
         button4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                permiteCerrar();
-                globales.moverPosicion = false;
-                cancelaTimer();
-                if (globales.bModificar)
-                    is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_antes);
-                else
-                    is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_antes);
-                getAntLect();
-                // enviarAvance();
-
+                if (!globales.modoCaptura) {
+                    permiteCerrar();
+                    globales.moverPosicion = false;
+                    cancelaTimer();
+                    if (globales.bModificar)
+                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_antes);
+                    else
+                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_antes);
+                    getAntLect();
+                    // enviarAvance();
+                } else {
+                    procesoDeReiniciar();
+                }
             }
         });
 
@@ -1208,7 +1282,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                     } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                         button6.setText(R.string.m_str_siguiente);
-
+                        iv_button6.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -1228,44 +1302,45 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     else
                         is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_despues);
                     getSigLect();
-
-
                     // enviarAvance();
                 } else {
                     capturar();
                 }
-
             }
         });
 
         button4.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View arg0) {
-                cancelaTimer();
-                if (!globales.modoCaptura) {
-                    permiteCerrar();
-                    getPrimLect();
-                    // enviarAvance();
-
-
+                if (button6.getText().equals("Finalizar")) {
+                    return true;
                 } else {
-                    capturar();
+                    cancelaTimer();
+                    if (!globales.modoCaptura) {
+                        permiteCerrar();
+                        getPrimLect();
+                        // enviarAvance();
+                    } else {
+                        capturar();
+                    }
                 }
-
                 return true;
             }
         });
         button6.setOnLongClickListener(new View.OnLongClickListener() {
 
             public boolean onLongClick(View arg0) {
-                cancelaTimer();
-                if (!globales.modoCaptura) {
-                    permiteCerrar();
-                    getUltLect();
+                if (button6.getText().equals("Finalizar")) {
+                    return true;
+                } else {
+                    cancelaTimer();
+                    if (!globales.modoCaptura) {
+                        permiteCerrar();
+                        getUltLect();
+                    }
+                    // enviarAvance();
+                    return true;
                 }
-                // enviarAvance();
-                return true;
-
             }
         });
 
@@ -1305,10 +1380,21 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 return;
             }
         }
-
-        Intent intent = new Intent(this, BuscarMedidor.class);
+        if (TextUtils.isEmpty(globales.strUltimaBusquedaRealizada))
+            globales.strUltimaBusquedaRealizada = "";
+        Intent intent = new Intent(this, BuscarMedidorActivity.class);
         intent.putExtra("modificar", globales.bModificar);
         intent.putExtra("tipoDeBusqueda", tipo);
+        intent.putExtra("ultimabusqueda", globales.strUltimaBusquedaRealizada);
+        startActivityForResult(intent, BUSCAR_MEDIDOR);
+    }
+
+    public void buscarMedidorCampanita(final int tipo) {
+        globales.strUltimaBusquedaRealizada = "Campanita";
+        Intent intent = new Intent(this, BuscarMedidorActivity.class);
+        intent.putExtra("modificar", globales.bModificar);
+        intent.putExtra("tipoDeBusqueda", tipo);
+        intent.putExtra("ultimabusqueda", globales.strUltimaBusquedaRealizada);
         startActivityForResult(intent, BUSCAR_MEDIDOR);
     }
 
@@ -1316,6 +1402,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         Intent lrs = new Intent(this, trasmisionDatos.class);
         lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
         lrs.putExtra("transmiteFotos", true);
+        lrs.putExtra("transmiteVideos", true);
         startActivityForResult(lrs, TRANSMISION);
     }
 
@@ -1341,9 +1428,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                             Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-
                             }
-
                         } else {
                             if (globales.sonLecturasConsecutivas
                                     && globales.estoyCapturando) {
@@ -1357,8 +1442,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                 getSigLect();
                                 return;
                             } else {
-
-
                                 if (globales.permiteDarVuelta) {
                                     irALaPrimeraSinEjecutarAlTerminar();
                                     globales.permiteDarVuelta = false;
@@ -1367,7 +1450,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                     Toast.makeText(this, is_mensaje_direccion,
                                             Toast.LENGTH_SHORT).show();
                                 }
-
                             }
 
                             // globales.bModificar=false;
@@ -1423,9 +1505,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             button1.setEnabled(true);
             button2.setEnabled(true);
+            cv_button1.setEnabled(true);
+            cv_button2.setEnabled(true);
             ll_linearLayout2.setVisibility(View.VISIBLE);
             tv_mensaje.setVisibility(View.GONE);
+            tv_mensaje2.setVisibility(View.VISIBLE);
             tv_respuesta.setVisibility(View.GONE);
+
+//            iv_campanaNegra.setVisible(!globales.bPrenderCampana);
+//            iv_campanaAmarilla.setVisible(globales.bPrenderCampana);
 
             is_mensaje_direccion = getString(R.string.msj_lecturas_no_hay_mas);
 
@@ -1478,6 +1566,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
                 button1.setEnabled(false);
                 button2.setEnabled(false);
+                cv_button1.setEnabled(false);
+                cv_button2.setEnabled(false);
 
                 preguntarHabitado = false;//globales.tll.getLecturaActual().verDatos;
             }
@@ -1511,7 +1601,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 // CE, 01/10/2023, Vamos a cambiar los colores dependiendo del TipoDeOrden
 //            tv_caseta.setText(getString(R.string.lbl_tdl_indica_medidor) + globales.is_caseta);
             String strTipoDeMaterial = "";
-            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION")) {
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN")) {
                 if (globales.tll.getLecturaActual().is_idMaterialSolicitado.equals("2"))
                     strTipoDeMaterial = " (EX)";
                 else
@@ -1523,7 +1613,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             //tv_nombre.setText(globales.tll.getLecturaActual().getNombreCliente());
             //globales.tdlg.getInformacionDelMedidor(ll_generica, globales.tll.getLecturaActual(), sizeGenerico);
             preparaDatosGenericos();
-            tv_contador.setText((globales.mostrarRowIdSecuencia ? globales.tll.getLecturaActual().secuenciaReal : globales.il_lect_act) + " de " + globales.il_total);
+            setDatoEnCardViews();
+            tv_nueva_datos_sap2.setText(globales.tll.getLecturaActual().getTipoDeOrden() + strTipoDeMaterial);
+
+            String strContadorOrdenes = "";
+            if (globales.bPrenderCampana)
+                strContadorOrdenes = "TIENES UNA ACTUALIZACION\n\n";
+            strContadorOrdenes += (globales.mostrarRowIdSecuencia ? globales.tll.getLecturaActual().secuenciaReal : globales.il_lect_act) + " de " + globales.il_total;
+            tv_contador.setText(strContadorOrdenes);
+
             tv_contadorOpcional.setText(tv_contador.getText().toString());
             tv_min.setText(String.valueOf(globales.il_lect_min));
             tv_max.setText(String.valueOf(globales.il_lect_max));
@@ -1548,8 +1646,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             tv_comentarios.setVisibility(View.GONE);
 
-            tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
-            tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + (globales.is_presion.length() > 3 ? "***" : globales.is_presion));
+            if (globales.is_lectura.equals(""))
+                tv_lectura.setText("");
+            else
+                tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+            if (globales.is_presion.equals(""))
+                tv_anomalia.setText("");
+            else
+                tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + (globales.is_presion.length() > 3 ? "***" : globales.is_presion));
 
             if (globales.mostrarCuadriculatdl) {
                 cuadricula.setVisibility(View.VISIBLE);
@@ -1581,6 +1685,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 // ll_linearLayout1.setBackgroundResource(R.color.SteelBlue);
                 ll_linearLayout1.setBackgroundResource(R.color.green);
             }*/
+// CE, 11/10/2023, Vamos a esconder los elementos del diseño viejo
+/*
             if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXION")) {
                 ll_linearLayout1.setBackgroundResource(R.color.DarkOrange);
             } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) {
@@ -1590,6 +1696,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             } else {
                 ll_linearLayout1.setBackgroundResource(R.color.Blue);
             }
+*/
 //*******************************************************************************************
             /*
              * int secuencial=(int) globales.il_lect_act; button5.setEnabled(false);
@@ -1669,38 +1776,32 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                }, 500);
 
         FormatoDeEtiquetas fde = globales.tdlg.getMensajedeRespuesta();
-
         if (fde != null) {
             tv_respuesta.setText(fde.texto);
             tv_respuesta.setBackgroundResource(fde.color);
             tv_respuesta.setVisibility(View.VISIBLE);
         }
-
-
         String advertencia = globales.tdlg.getMensajedeAdvertencia();
         if (advertencia.equals("")) {
             tv_advertencia.setVisibility(View.GONE);
-
         } else {
             tv_advertencia.setText(advertencia);
             tv_advertencia.setVisibility(View.VISIBLE);
         }
-
         this.me = globales.tdlg.getMensaje();
         if (globales.mensaje.equals("") && me != null)
-
             activaAvisoEspecial(me);
         else if (!globales.mensaje.equals("")) {
             muestraRespuestaSeleccionada(me);
         }
-
-
+/*
+// CE, 09/10/23, En Engie no vamos a usar esta funcionalidad
         //Bloquear botones si es la orden esta pagada o forzada
         if (globales.tll.getLecturaActual().is_estadoDeLaOrden.equals("EO012") || globales.tll.getLecturaActual().is_estadoDeLaOrden.equals("EO005")) {
             button1.setEnabled(false);
             button2.setEnabled(false);
         }
-
+*/
     }
 
     protected void verficarSiPuedoDejarAusente() {
@@ -1734,12 +1835,21 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     public void salirModoCaptura() {
         globales.modoCaptura = false;
+
+// CE, 14/10/23, Vamos a reemplazar este ModoCaptura por el nuevo metodo
+        estableceVisibilidadDeBotones(View.INVISIBLE,View.INVISIBLE,View.VISIBLE,View.VISIBLE,View.INVISIBLE,View.VISIBLE,true);
+/*
         button4.setVisibility(View.VISIBLE);
+        iv_button4.setVisibility(View.VISIBLE);
+        iv_button6.setVisibility(View.VISIBLE);
         button4.setEnabled(true);
         button6.setText(R.string.m_str_siguiente);
         button3.setEnabled(true);
         button6.setEnabled(true);
         button1.setEnabled(true);
+*/
+        button4.setText(R.string.m_str_anterior);
+        button6.setText(R.string.m_str_siguiente);
         tv_contador.bringToFront();
     }
 
@@ -2156,9 +2266,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toma_de_lecturas, menu);
-
         manejaEstadosDelMenu(menu);
-
         return true;
     }
 
@@ -2240,7 +2348,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                      */
                     setDatos();
                     // closeDatabase();
-
                 }
                 break;
             case R.id.m_orden:
@@ -2275,17 +2382,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 //			intent.putExtra("il_ultimoSegReg", globales.il_ultimoSegReg);
 //			// vengoDeFotos = true;
 //			startActivityForResult(intent, NO_REGISTADOS);
-
                 mostrarVentanaDeNoRegistrados();
-
                 break;
             case R.id.m_cambiarFuente:
                 final TomaDeLecturas main = this;
                 AlertDialog.Builder builder;
-
                 // String ls_opciones[]={"Ninguno", "Info. del Cliente", "Detalle"};
                 String ls_opciones[] = {getString(R.string.lbl_informacion), getString(R.string.lbl_area_de_captura)};
-
                 builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.msj_tdl_que_ajustar)
                         .setItems(ls_opciones,
@@ -2302,14 +2405,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                                 break;
                                             case DETALLE: // detalle
                                                 modoCambiofuente = DETALLE;
-
                                                 break;
                                         }
-
                                         empezarACambiarFuente();
-
                                     }
-
                                 })
                         .setNegativeButton(R.string.cancelar,
                                 new DialogInterface.OnClickListener() {
@@ -2333,17 +2432,52 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             case R.id.m_SolicitarAyuda:
                 solicitarEmergencia();
                 break;
+            case R.id.m_CampanaNegra:
+                if (globales.bPrenderCampana)
+                    item.setIcon(R.drawable.campana_negra);
+//                else
+//                    item.setIcon(R.drawable.campana_amarilla);
+                globales.bPrenderCampana = false;
+                buscarMedidorCampanita(BuscarMedidor.BUSCAR);
+                break;
             case R.id.m_MostrarUbicacionGPS:
-                mostrarUbicacionGPS();
+// CE, 05/11/23, Ahora vamos a mostrar el Mapa de todas las ordenes
+//                mostrarUbicacionGPS();
+                verMapaDeTodos();
                 break;
-            case R.id.m_CapturarVideo:
-                capturarVideo();
-                break;
+//            case R.id.m_CapturarVideo:
+//                capturarVideo();
+//                break;
         }
 
         if (Build.VERSION.SDK_INT >= 11)
             invalidateOptionsMenu();
         return true;
+    }
+
+    private void verMapaDeTodos() {
+        String miLatitud = "";
+        String miLongitud = "";
+        String uri = "";
+        try {
+            miLatitud = "25.696515021213962";
+            miLongitud = "-100.34119561673539";
+            if (miLatitud.trim().equals("") || miLongitud.trim().equals(""))
+                return;
+            TodasLasLecturas tll;
+            tll = new TodasLasLecturas(this.getApplicationContext(), 0);// Se buscaran las lecturas desde el principio
+            uri = tll.getTodosLosPuntosGPS();
+            if (uri.equals("")) {
+                Toast.makeText(this, "No hay datos que mostrar en el Mapa", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.google.android.apps.maps");
+                this.startActivity(intent);
+            }
+        } catch (Throwable t) {
+            Utils.showMessageLong(this, t.getMessage());
+        }
     }
 
     private void mostrarUbicacionGPS() {
@@ -2464,14 +2598,18 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     // globales.modoCaptura=false;
-                    globales.moverPosicion = false;
-                    getSigLect();
+                    if (button6.getVisibility() == View.VISIBLE) {
+                        globales.moverPosicion = false;
+                        getSigLect();
+                    }
                     // Left to right swipe
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     // globales.modoCaptura=false;
-                    globales.moverPosicion = false;
-                    getAntLect();
+                    if (button4.getVisibility() == View.VISIBLE) {
+                        globales.moverPosicion = false;
+                        getAntLect();
+                    }
                 }
             } catch (Exception e) {
                 // nothing
@@ -2592,13 +2730,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 ls_cadena += " and (comentarios='' or comentarios is null) ";
             filtrarComentarios = true;
         }
-
         c.close();
-
         closeDatabase();
-
         return ls_cadena;
-
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -2627,9 +2761,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
          * mi_orden.setTitle(ii_orden==ASC?R.string.m_str_desendente:R.string.
          * m_str_ascendente);
          */
-
         manejaEstadosDelMenu(menu);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -2640,6 +2772,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         MenuItem mi_orden = menu.findItem(R.id.m_orden);
         MenuItem mi_impresion = menu.findItem(R.id.m_Impresion);
         MenuItem mi_gps = menu.findItem(R.id.m_gps);
+
+        iv_campanaNegra = menu.findItem(R.id.m_CampanaNegra);
+
         mi_correcion
                 .setTitle(globales.bModificar ? R.string.m_str_salirCorreccion
                         : R.string.m_str_correccion);
@@ -2657,7 +2792,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 mi_correcion.setIcon(R.drawable.ic_action_salir_correccion);
                 mi_noRegistrados.setVisible(false);
                 mi_orden.setVisible(false);
-
             } else {
                 mi_correcion.setIcon(R.drawable.ic_action_correccion);
                 if (globales.mostrarNoRegistrados) {
@@ -2665,12 +2799,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 } else {
                     mi_noRegistrados.setVisible(false);
                 }
-
-                mi_orden.setVisible(true);
+                mi_orden.setVisible(false);
             }
         } else {
             mi_correcion.setVisible(false);
-
             mi_correcion.setIcon(R.drawable.ic_action_correccion);
             if (globales.mostrarNoRegistrados) {
                 mi_noRegistrados.setVisible(true);
@@ -2678,19 +2810,19 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 mi_noRegistrados.setVisible(false);
             }
         }
-
-
         if (globales.mostrarImpresion) {
             if (bHabilitarImpresion) {
                 mi_impresion.setIcon(R.drawable.ic_deshabilita_impr);
-
             } else {
                 mi_impresion.setIcon(R.drawable.ic_habilita_impresion);
             }
         } else {
             mi_impresion.setVisible(false);
         }
-
+        if (globales.bPrenderCampana)
+            iv_campanaNegra.setIcon(R.drawable.campana_amarilla);
+        else
+            iv_campanaNegra.setIcon(R.drawable.campana_negra);
 
         if (globales.ii_orden == DESC)
             mi_orden.setIcon(R.drawable.ic_action_ascendente);
@@ -2701,12 +2833,10 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 : R.string.m_str_ascendente);
 
         if (globales.gpsEncendido) {
-            mi_gps.setVisible(true);
+            mi_gps.setVisible(false);
         } else {
             mi_gps.setVisible(false);
         }
-
-
     }
 
     public void presentacionAnomalias(boolean anomaliaCapturada, String anomalia, String subAnomalia) {
@@ -2729,11 +2859,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         if (requiereLectura == Anomalia.LECTURA_AUSENTE) {
             globales.requiereLectura = false;
             button1.setEnabled(false);
+            cv_button1.setEnabled(false);
             // if (globales.tll.getLecturaActual().anomalia.ii_lectura==0 ||
             // globales.tll.getLecturaActual().anomalia.ii_ausente==4 ){
             // Si es ausente, tiene que borrar la lectura...
             globales.is_lectura = "";
-            tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+            if (globales.is_lectura.equals(""))
+                tv_lectura.setText("");
+            else
+                tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
             // }
 
             setModoCaptura();
@@ -2741,6 +2875,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         } else if (requiereLectura != Anomalia.SIN_ANOMALIA) {
             //globales.requiereLectura = true;
             button1.setEnabled(true);
+            cv_button1.setEnabled(true);
             //Requiere lectura... verificamos que la lectura no este vacia
             if (globales.is_lectura.equals("")) {
                 salirModoCaptura();
@@ -2806,8 +2941,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
     @Override
     public void onBackPressed() {
-
-
         if (preguntaSiBorraDatos /*&& !globales.bModificar*/) {
             if (!globales.tll.getLecturaActual().getAnomaliasCapturadas().equals("") &&
                     !globales.modoCaptura && !globales.tdlg.esSegundaVisita(globales.tll.getLecturaActual().getAnomaliasCapturadas(), globales.tll.getLecturaActual().is_subAnomalia)) {
@@ -2828,23 +2961,17 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                         .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-
                             }
                         });
-
                 alert = builder.create();
                 alert.show();
                 return;
             }
-
         }
-
         if (!globales.modoCaptura) {
             muere();
             // finish();
         }
-
-
     }
 
     public void muere() {
@@ -2873,7 +3000,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 }
                 reiniciaTimer();
                 if (action == KeyEvent.ACTION_UP) {
-
                     switch (modoCambiofuente) {
                         case DETALLE:
                             porcentaje += factorPorcentaje;
@@ -2882,27 +3008,21 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                             porcentajeInfoCliente += factorPorcentaje;
                             break;
                     }
-
                     // porcentaje= getFloatValue("porcentaje", porcentaje);
-
                     setSizes();
                     openDatabase();
                     guardaValor("porcentaje_lectura", porcentaje);
                     guardaValor("porcentaje_info", porcentajeInfoCliente);
-
                     closeDatabase();
                 }
-
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 if (!permiteCambiarFuente) {
                     return super.dispatchKeyEvent(event);
                 }
-
                 reiniciaTimer();
                 if (action == KeyEvent.ACTION_DOWN) {
                     // TODO
-
                     switch (modoCambiofuente) {
                         case DETALLE:
                             if ((porcentaje - factorPorcentaje) >= .05f) {
@@ -2915,12 +3035,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                 porcentajeInfoCliente -= factorPorcentaje;
                                 // porcentaje= getFloatValue("porcentaje", porcentaje);
                             }
-
                             break;
                     }
-
                     setSizes();
-
                     openDatabase();
                     guardaValor("porcentaje_lectura", porcentaje);
                     guardaValor("porcentaje_info", porcentajeInfoCliente);
@@ -2933,31 +3050,34 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     }
 
     public void setSizes() {
-
         tv_caseta.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentaje * casetaSize));
         tv_lectura.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentaje * lecturaSize));
         tv_mensaje.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                (float) (porcentaje * lecturaSize));
+                (float) (porcentaje * mensajeSize));
+        tv_mensaje2.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (float) (porcentaje * mensajeSize));
         tv_anomalia.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentaje * anomSize));
+        tv_respuesta.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (float) (porcentaje * respuestasSize));
+
+        tv_nueva_datos_sap1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (float) (porcentajeInfoCliente * minSize));
+        tv_nueva_datos_sap2.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (float) (porcentajeInfoCliente * minSize));
+
         tv_min.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * minSize));
         tv_max.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * maxSize));
-        tv_respuesta.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                (float) (porcentaje * respuestasSize));
-
         this.tv_lecturaAnterior.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * maxSize));
-
         tv_comentarios.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * comentariosSize));
-
-        tv_advertencia.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                (float) (porcentajeInfoCliente * comentariosSize));
-
+//        tv_advertencia.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+//                (float) (porcentajeInfoCliente * comentariosSize));
         tv_campo0.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * comentariosSize));
         tv_campo1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -2968,33 +3088,25 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 (float) (porcentajeInfoCliente * comentariosSize));
         tv_campo4.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * comentariosSize));
-
         label_campo0.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * labelCuadriculaSize));
-
         label_campo1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * labelCuadriculaSize));
-
         label_campo2.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * labelCuadriculaSize));
-
         label_campo3.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * labelCuadriculaSize));
-
         label_campo4.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 (float) (porcentajeInfoCliente * labelCuadriculaSize));
-
-
+//        tv_contadorOpcional.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+//                (float) (porcentajeInfoCliente * contadorOpcionalSize));
         sizeGenerico = (float) (porcentajeInfoCliente * comentariosSize);
-
-        tv_contadorOpcional.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                (float) (porcentajeInfoCliente * contadorOpcionalSize));
-
 
         //Esto se genera genericamente, asi que hay que rehacerlo
         //globales.tdlg.getInformacionDelMedidor(ll_generica, globales.tll.getLecturaActual(), sizeGenerico);
         try {
             preparaDatosGenericos();
+            setDatoEnCardViews();
         } catch (Throwable t) {
             t.printStackTrace();
             Utils.showMessageLong(this, "Error inesperado en setSizes. " + t.getMessage());
@@ -3007,12 +3119,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         // closeDatabase();
 
         porcentaje = getDoubleValue("porcentaje_lectura", porcentaje);
-        porcentajeInfoCliente = getDoubleValue("porcentaje_info",
-                porcentajeInfoCliente);
+        porcentajeInfoCliente = getDoubleValue("porcentaje_info", porcentajeInfoCliente);
 
         // porcentaje=1.0f;
         anomSize = tv_anomalia.getTextSize();
         lecturaSize = tv_lectura.getTextSize();
+        mensajeSize = tv_mensaje2.getTextSize();
         casetaSize = tv_caseta.getTextSize();
 
         minSize = tv_min.getTextSize();
@@ -3022,16 +3134,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         labelCuadriculaSize = label_campo0.getTextSize();
         contadorOpcionalSize = tv_contadorOpcional.getTextSize();
         //tipoMedidorSize = tv_tipoMedidor.getTextSize();
-
         setSizes();
     }
 
     public int getIntValue(String key, int value) {
         openDatabase();
-
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
                 null);
-
         if (c.getCount() > 0) {
             c.moveToFirst();
             value = c.getInt(c.getColumnIndex("value"));
@@ -3040,18 +3149,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     + "', " + value + ")");
         }
         c.close();
-
         closeDatabase();
-
         return value;
     }
 
     public double getDoubleValue(String key, double value) {
         openDatabase();
-
         Cursor c = db.rawQuery("Select * from config where key='" + key + "'",
                 null);
-
         if (c.getCount() > 0) {
             c.moveToFirst();
             value = c.getDouble(c.getColumnIndex("value"));
@@ -3060,28 +3165,22 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     + "', " + value + ")");
         }
         c.close();
-
         closeDatabase();
-
         return value;
     }
 
     public void guardaValor(String key, double value) {
         // openDatabase();
-        db.execSQL("Update config  set value=" + value + " where  key='" + key
-                + "'");
-
+        db.execSQL("Update config set value=" + value + " where key='" + key + "'");
         // closeDatabase();
     }
 
     void empezarACambiarFuente() {
-
         Toast.makeText(
                 this,
                 R.string.msj_tdl_config_fuente,
                 Toast.LENGTH_SHORT).show();
         reiniciaTimer();
-
     }
 
     public void reiniciaTimer() {
@@ -3090,9 +3189,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         try {
             cambiarFuenteTimer.cancel();
         } catch (Throwable e) {
-
         }
-
         cambiarFuenteTimer.purge();
         cambiarFuenteTimer = new Timer();
         cambiarFuenteTimer.schedule(new TimerTask() {
@@ -3109,7 +3206,6 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
         }, segundoCambiarFuente * 1000);
@@ -3120,9 +3216,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         try {
             cambiarFuenteTimer.cancel();
         } catch (Throwable e) {
-
         }
-
         cambiarFuenteTimer.purge();
     }
 
@@ -3144,9 +3238,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         globales.estoyCapturando = false;
         //inputMandaCierre=false;
         globales.requiereLectura = false;
-
         globales.modoCaptura = false;
-
         globales.fotoForzada = false; // Siempre tomará foto despues de una lectura
         globales.validar = true; // No se validará la lectura
         globales.location = null;//Variable donde se indica todo del gps
@@ -3157,17 +3249,99 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         // TODO Auto-generated method stub
         //Una vez que se salga verificamos que paso...
         //if (globales.location!=null){
-
         capturar();
         //	}
+    }
 
+    @Override
+    protected void rutinaDespuesDeTomarFotoDeLlegada(final int requestCode, final int resultCode) {
+        if (puedeVerDatosAlRegresar && resultCode == Activity.RESULT_OK) {
+            globales.tll.getLecturaActual().verDatos = true;
+            setDatos(false);
+            openDatabase();
+            db.execSQL("update ruta set verDatos=1, fechaDeInicio='" + Main.obtieneFecha("ymdhis") + "' where secuenciaReal=" + globales.il_lect_act);
+            closeDatabase();
+            setStyleDatosVistos();
+            //por ahorita no...
+//				if (preguntarHabitado){
+//					preguntarHabitado=false;
+//				}
+        }
+        globales.puedoCancelarFotos = false;
+        puedeVerDatosAlRegresar = false;
+        if (globales.estoyTomandoFotosConsecutivas) {
+            tomaFotosConsecutivas(globales.idMedidorUltimaLectura);
+        } else {
+            tieneFotos();
+            //avanzarDespuesDeAnomalia();
+        }
+        if (regreseDe == ANOMALIA && globales.legacyCaptura) {
+            if (globales.tll.getLecturaActual().requiereLectura() == Anomalia.LECTURA_AUSENTE && !globales.tdlg.avanzarDespuesDeAnomalia(ultimaAnomaliaSeleccionada, ultimaSubAnomaliaSeleccionada, false)) {
+                capturar();
+            } else if (globales.tdlg.avanzarDespuesDeAnomalia(ultimaAnomaliaSeleccionada, ultimaSubAnomaliaSeleccionada, false)) {
+                avanzarDespuesDeAnomalia();
+            }
+        } else if (regreseDe == LECTURA && globales.legacyCaptura) {
+
+//				if (globales.is_terminacion.endsWith("2")){
+            capturar();
+//				}
+//				else{
+//					globales.is_terminacion="_2";
+////					tomarFoto(CamaraActivity.TEMPORAL, 1);
+//				}
+
+            if (Build.VERSION.SDK_INT >= 11)
+                invalidateOptionsMenu();
+
+        } else if (regreseDe == LECTURA && !globales.legacyCaptura) {
+
+//				if (!globales.is_terminacion.endsWith("2")){
+//					globales.is_terminacion="_2";
+////					tomarFoto(CamaraActivity.TEMPORAL, 1);
+//				}
+//				else{
+//					globales.is_terminacion="_1";
+//				}
+        }
+        //regreseDe=FOTOS;
+        voyATomarFoto = false;
+    }
+
+    public void setDatoEnCardViews() throws Exception {
+        Lectura lectura;
+        lectura = globales.tll.getLecturaActual();
+        if (lectura != null) {
+
+            tv_sap_medidor.setText(globales.tdlg.getDatosSAP(lectura,1));
+            tv_sap_cuenta_contrato.setText(globales.tdlg.getDatosSAP(lectura,2));;
+            tv_sap_interlocutor.setText(globales.tdlg.getDatosSAP(lectura,3));;
+            tv_sap_notificacion.setText(globales.tdlg.getDatosSAP(lectura,4));;
+
+            tv_nueva_datos_cliente.setText(globales.tdlg.getDatosDelCliente(lectura));
+            tv_nueva_direccion.setText(globales.tdlg.getDatosDireccion(lectura));
+
+            tv_nueva_datos_sap2.setText(globales.tll.getLecturaActual().getTipoDeOrden());
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("DESCONEXIÓN")) {
+                ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieDx);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+                ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieRx);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN")) {
+                ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieRm);
+            } else {
+                ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieRr);
+            }
+        }
     }
 
     private void preparaDatosGenericos() throws Exception {
         Lectura lectura;
-
         ll_generica.removeAllViews();
-
+//***************************************************************************************
+// CE, 22/10/23, Ahora solamente vamos a mostrar TextoLibreSAP en la lista de los campos
+        if (!globales.tll.getLecturaActual().is_TextoLibreSAP.equals(""))
+            agregarCampo(globales.tll.getLecturaActual().is_TextoLibreSAP);
+/*
         lectura = globales.tll.getLecturaActual();
 
         if (lectura != null) {
@@ -3179,12 +3353,15 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 }
             }
         }
+*/
+//***************************************************************************************
     }
 
     private void agregarCampo(String texto) {
         LayoutParams layout_params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         TextView tv_view = new TextView(this);
         tv_view.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeGenerico);
+        tv_view.setTextIsSelectable(true);
         tv_view.setText(texto);
         ll_generica.addView(tv_view, layout_params);
     }
@@ -3192,6 +3369,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
     public void activaAvisoEspecial(final MensajeEspecial me) {
         if (me != null) {
             tv_mensaje.setText(me.descripcion);
+            tv_mensaje2.setVisibility(View.GONE);
             tv_mensaje.setVisibility(View.VISIBLE);
             tv_mensaje.setBackgroundResource(me.color);
 
@@ -3199,49 +3377,39 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 
             button1.setEnabled(false);
             button2.setEnabled(false);
+            cv_button1.setEnabled(false);
+            cv_button2.setEnabled(false);
 
 //			tv_caseta.setVisibility(View.GONE);
 
             b_repetir_anom.setVisibility(View.GONE);
-
             switch (me.tipo) {
                 case MensajeEspecial.MENSAJE_SI_NO:
                     tv_mensaje.setOnClickListener(new OnClickListener() {
-
                         @Override
                         public void onClick(View arg0) {
                             // TODO Auto-generated method stub
                             preguntaSiNo(me);
                         }
-
                     });
                     break;
-
                 case MensajeEspecial.OPCION_MULTIPLE:
                     tv_mensaje.setOnClickListener(new OnClickListener() {
-
                         @Override
                         public void onClick(View arg0) {
                             // TODO Auto-generated method stub
                             preguntaOpcionMultiple(me);
                         }
-
                     });
-
                     break;
-
                 case MensajeEspecial.SIN_MENSAJE_ESPECIAL:
                     tv_mensaje.setOnClickListener(new OnClickListener() {
-
                         @Override
                         public void onClick(View arg0) {
                             regresaDeMensaje(me, 0);
                         }
-
                     });
-
             }
-
         }
     }
 
@@ -3251,9 +3419,12 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         globales.mensaje = me.regresaValor(respuesta);
         //Escondemos mensaje
         tv_mensaje.setVisibility(View.GONE);
+        tv_mensaje2.setVisibility(View.VISIBLE);
         //Restablecemos botones
         button1.setEnabled(true);
         button2.setEnabled(true);
+        cv_button1.setEnabled(true);
+        cv_button2.setEnabled(true);
         ll_linearLayout2.setVisibility(View.VISIBLE);
         muestraRespuestaSeleccionada(me);
     }
@@ -3484,14 +3655,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             // TODO Auto-generated method stub
 //**********************************************************************************************
 // CE, 04/10/2023, Vamos a preguntar si esta el Cliente Presente solamente en las Rx y RecRemo
-            if ((globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXION")) ||
+            if ((globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) ||
                     (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))) {
                 preguntaSiNo(globales.tdlg.mj_habitado);
             } else {
                 puedeVerDatosAlRegresar = true;
                 globales.puedoCancelarFotos = true;
                 openDatabase();
-                db.execSQL("update ruta set habitado=1 where secuenciaReal=" + globales.il_lect_act);
+                db.execSQL("update ruta set habitado=0 where secuenciaReal=" + globales.il_lect_act);
                 closeDatabase();
                 this.tomarFoto(99, 1);
             }
@@ -3530,9 +3701,20 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         } else if (me.respondeA == TomaDeLecturasGenerica.PREGUNTAS_ESTA_HABITADO) {
             puedeVerDatosAlRegresar = true;
             globales.puedoCancelarFotos = true;
-            globales.tll.getLecturaActual().is_habitado = "" + respuesta;
+            globales.tll.getLecturaActual().is_habitado = "" + (respuesta+1);
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+                if (respuesta==0)
+                    globales.setEstadoDeLaRepercusion(Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE_ANTES);
+                else
+                    globales.setEstadoDeLaRepercusion(Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE_ANTES);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO")) {
+                if (respuesta==0)
+                    globales.setEstadoDeLaRepercusion(Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_CLIENTE_PRESENTE_ANTES);
+                else
+                    globales.setEstadoDeLaRepercusion(Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE_ANTES);
+            }
             openDatabase();
-            db.execSQL("update ruta set habitado=" + respuesta + " where secuenciaReal=" + globales.il_lect_act);
+            db.execSQL("update ruta set habitado=" + (respuesta+1) + " where secuenciaReal=" + globales.il_lect_act);
             closeDatabase();
             this.tomarFoto(99, 1);
 // *************************************************************
@@ -3550,11 +3732,17 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 //		button4.setEnabled(false);
 //		button6.setEnabled(false);
 //		button3.setEnabled(false);
-            button1.setEnabled(true);
-            button2.setEnabled(true);
-        }
 
-        tv_caseta.setVisibility(View.VISIBLE);
+// CE, 14/10/23, Vamos a usar un nuevo metodo de Engie
+            tv_mensaje2.setText("¿Es Efectiva o No Efectiva?");
+            tv_mensaje2.setVisibility(View.VISIBLE);
+            estableceVisibilidadDeBotones(View.VISIBLE,View.VISIBLE,View.INVISIBLE,View.INVISIBLE,View.INVISIBLE,View.INVISIBLE,true);
+//            button1.setEnabled(true);
+//            button2.setEnabled(true);
+        }
+// CE, 11/10/23, Vamos a esconder los botones del viejo diseño
+//        tv_caseta.setVisibility(View.VISIBLE);
+        tv_caseta.setVisibility(View.GONE);
     }
 
 
@@ -3710,4 +3898,102 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         startActivityForResult(video, TOMAR_VIDEO);
     }
 
+    private void estableceVisibilidadDeBotones(int b1, int b2, int b3, int b4, int b5, int b6, boolean bMostrarFlecha){
+        button1.setEnabled(b1==View.VISIBLE);
+        button2.setEnabled(b2==View.VISIBLE);
+        button3.setEnabled(b3==View.VISIBLE);
+        button4.setEnabled(b4==View.VISIBLE);
+        button5.setEnabled(b5==View.VISIBLE);
+        button6.setEnabled(b6==View.VISIBLE);
+        button1.setVisibility(b1);
+        button2.setVisibility(b2);
+        button3.setVisibility(b3);
+        button4.setVisibility(b4);
+        button5.setVisibility(b5);
+        button6.setVisibility(b6);
+
+        cv_button1.setEnabled(b1==View.VISIBLE);
+        cv_button2.setEnabled(b2==View.VISIBLE);
+
+        iv_button3.setVisibility(b3);
+        iv_button4.setVisibility(b4);
+        iv_button5.setVisibility(b5);
+        if (bMostrarFlecha) {
+            iv_button4.setVisibility(b6);
+            iv_button6.setVisibility(b6);
+        } else {
+            iv_button4.setVisibility(View.INVISIBLE);
+            iv_button6.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void procesoDeReiniciar() {
+        globales.setEstadoDeLaRepercusion(true,true);
+        cancelaTimer();
+        // TODO Auto-generated method stub
+// CE, 13/12/23, Aqui debemos revisar si es Efectiva o No Efectiva
+        boolean bEsEfectiva = (globales.tll.getLecturaActual().anomalias.size() == 0);
+        if (bEsEfectiva) {
+            cancelaTimer();
+            globales.is_lectura = "";
+            globales.BorrarTodasLosCamposEngie();
+            globales.tdlg.regresaDeBorrarLectura();
+
+            if (globales.tll.getLecturaActual().anomalias.size() == 0) {
+                globales.modoCaptura = false;
+                salirModoCaptura();
+                // borramos fotos temporales anteriores
+                openDatabase();
+
+                db.execSQL("delete from fotos where temporal="
+                        + CamaraActivity.TEMPORAL);
+
+                closeDatabase();
+
+                //tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+            }
+            globales.is_presion = globales.tll.getLecturaActual().getAnomaliaAMostrar();
+
+            if (globales.is_lectura.equals(""))
+                tv_lectura.setText("");
+            else
+                tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+            if (globales.is_presion.equals(""))
+                tv_anomalia.setText("");
+            else
+                tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + globales.is_presion);
+
+            setDatos(false);
+            int requiereLectura = globales.tll.getLecturaActual().requiereLectura();
+            if (!globales.is_lectura.equals("") &&
+                    (requiereLectura == Anomalia.LECTURA_AUSENTE))
+                setModoCaptura();
+            else {
+                salirModoCaptura();
+                if (!globales.bModificar && globales.tll.getLecturaActual().verDatos && !globales.modoCaptura) {
+                    setStyleDatosVistos();
+                }
+            }
+            verficarSiPuedoDejarAusente();
+        } else {
+            globales.setEstadoDeLaRepercusion(false,true);
+            cancelaTimer();
+            if (/*globales.tll.getLecturaActual().anomalias.size()>1 && */globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() > 1) {
+                //Muestra mensaje
+                anomaliasABorrar(globales.tll.getLecturaActual().getAnomaliasABorrar());
+            } else if (globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() == 1) {
+                if (globales.tll.getLecturaActual().deleteAnomalia(globales.tll.getLecturaActual().getAnomaliasAIngresadas()))
+                    Toast.makeText(this, R.string.msj_anomalias_borrada, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.msj_anomalias_error_borrado, Toast.LENGTH_LONG).show();
+            }
+            openDatabase();
+            db.execSQL("delete from fotos where temporal="
+                    + CamaraActivity.ANOMALIA);
+            closeDatabase();
+            globales.BorrarTodasLosCamposEngie();
+            regresaDeBorrar();
+            verficarSiPuedoDejarAusente();
+        }
+    }
 }

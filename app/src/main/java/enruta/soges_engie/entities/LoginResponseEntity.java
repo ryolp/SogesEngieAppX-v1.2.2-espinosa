@@ -18,6 +18,7 @@ public class LoginResponseEntity {
     public String NumCPL = "";
     public String VersionWeb = "";
     public EmpleadoCplEntity Empleado;
+    public ParametrosCelular Parametros;
 
 //    public LoginResponseEntity(String Usuario, String Email, String Token, String Mensaje, boolean Exito, boolean Error,
 //                               boolean EsLecturista, boolean EsAdministrador, boolean EsSuperUsuario, boolean AutenticarConSMS,

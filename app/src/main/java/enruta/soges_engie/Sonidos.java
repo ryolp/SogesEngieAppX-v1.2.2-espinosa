@@ -55,7 +55,6 @@ public class Sonidos {
 			break;
 		default:
 			return;
-		
 		}
 		MediaPlayer mp = MediaPlayer.create(context, sonido); 
 		mp.start();
