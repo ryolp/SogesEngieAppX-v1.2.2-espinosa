@@ -4,6 +4,7 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,8 @@ import java.util.Vector;
 import java.util.Date;
 
 import enruta.soges_engie.clases.AppException;
+import enruta.soges_engie.clases.AppSinGps;
+import enruta.soges_engie.clases.FotosMgr;
 import enruta.soges_engie.clases.OperacionesMgr;
 import enruta.soges_engie.clases.OperacionRequest;
 import enruta.soges_engie.clases.OperacionResponse;
@@ -57,6 +60,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -693,7 +697,7 @@ public class Main extends AppCompatActivity implements TabListener {
                     mensajeOK(cadena);
                     break;
                 case R.id.m_grabarEnSD:
-                    GrabarSDCard();
+                    //GrabarSDCard();
                     break;
                 case R.id.m_cierreForzado://Mensaje de si o no
                     builder = new AlertDialog.Builder(this);
@@ -735,6 +739,11 @@ public class Main extends AppCompatActivity implements TabListener {
                     break;
                 case R.id.m_exportarVideos:
                     exportarVideos();
+                    break;
+                case R.id.m_guardarFotos:
+                    // RL, 2023-12-21, nueva forma de grabar fotografías en la memoria del teléfono.
+                    hacerGuardarFotos();
+                    break;
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -776,6 +785,8 @@ public class Main extends AppCompatActivity implements TabListener {
                 this.startActivity(intent);
 //            }
             }
+        } catch (AppSinGps t) {
+            mostrarMensaje("Info", "No se tiene una ubicación actual para poder hacer la búsqueda");
         } catch (Throwable t) {
             Utils.showMessageLong(this, t.getMessage());
         }
@@ -2657,6 +2668,85 @@ public class Main extends AppCompatActivity implements TabListener {
         lrs.putExtra("transmitirTodo", true);
         lrs.putExtra("exportar", true);
         startActivityForResult(lrs, EXPORTAR);
+    }
+
+    private void hacerGuardarFotos() {
+        try {
+            String query = "";
+            String nombreArchivo = "";
+            Cursor c = null;
+            final int cantFotos;
+            int idFoto;
+            long imageSize;
+            byte[] image;
+            FotosMgr fotoMgr = new FotosMgr();
+
+            openDatabase();
+            query = "SELECT F.idFoto, F.secuencial, F.nombre, length(F.foto) imageSize, L.serieMedidor, F.idOrden ";
+            query += " FROM fotos F ";
+            query += " LEFT JOIN (SELECT * FROM ruta R WHERE R.idOrden <> 0) L ON F.idOrden = L.idOrden ";
+
+            c = db.rawQuery(query, null);
+
+            c.moveToFirst();
+
+            cantFotos = c.getCount();
+
+            for (int i = 0; i < cantFotos; i++) {
+                try {
+                    nombreArchivo = Utils.getString(c, "nombre", "");
+                    idFoto = Utils.getInt(c, "idFoto", 0);
+                    imageSize = Utils.getLong(c, "imageSize", 0);
+
+                    image = fotoMgr.obtenerFoto(db, idFoto, imageSize);
+
+                    guardarFoto(nombreArchivo, image);
+                    c.moveToNext();
+                } catch (Throwable t) {
+                    Log.e("SOGES_MAIN", "Error al guardar fotos", t);
+                }
+            }
+            if (cantFotos > 0)
+                mostrarMensaje("Aviso", String.valueOf(cantFotos) + " fotos guardadas.");
+            else
+                mostrarMensaje("Aviso", "No hay fotos que guardar.");
+        } catch (Throwable t) {
+            mostrarMensaje("Error", "Error al guardar fotos", t);
+            Log.e("SOGES_MAIN", "Error al guardar fotos", t);
+        }
+    }
+
+    private void guardarFoto(String nombre, byte[] datos) throws Throwable {
+// To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "SOGES");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("SOGES_MAIN", "failed to create directory");
+                return;
+            }
+        }
+
+        // Create a media file name
+        try {
+            File mediaFile;
+
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + nombre);
+
+            FileOutputStream fos = new FileOutputStream(mediaFile);
+            fos.write(datos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d("SOGES_MAIN", "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("SOGES_MAIN", "Error accessing file: " + e.getMessage());
+        }
     }
 }
 

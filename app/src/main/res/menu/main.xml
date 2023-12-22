@@ -76,6 +76,13 @@
     <item
         android:id="@+id/m_grabarEnSD"
         android:title="Grabar en SDCard"/>
+
+    <item
+        android:id="@+id/m_guardarFotos"
+        android:orderInCategory="2"
+        android:title="@string/m_str_guardar_fotos"
+        android:visible="true"></item>
+
     <item
         android:id="@+id/m_cierreForzado"
         android:title="Cierre Forzado"

@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import enruta.soges_engie.clases.AppSinGps;
 import enruta.soges_engie.clases.EmergenciaMgr;
 import enruta.soges_engie.clases.OperacionResponse;
 import enruta.soges_engie.clases.Utils;
@@ -2475,7 +2476,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 intent.setPackage("com.google.android.apps.maps");
                 this.startActivity(intent);
             }
-        } catch (Throwable t) {
+        } catch (AppSinGps t) {
+            mostrarMensaje("Info", "No se tiene una ubicación actual para poder hacer la búsqueda");
+        }catch (Throwable t) {
             Utils.showMessageLong(this, t.getMessage());
         }
     }
@@ -3995,5 +3998,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             regresaDeBorrar();
             verficarSiPuedoDejarAusente();
         }
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje) {
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
+        mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
     }
 }

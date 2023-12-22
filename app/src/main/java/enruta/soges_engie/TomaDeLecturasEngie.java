@@ -56,7 +56,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
     //int versionAnom=0;
 
-     public TomaDeLecturasEngie(Context context) {
+    public TomaDeLecturasEngie(Context context) {
         super(context);
         long_registro = 649;
 
@@ -68,10 +68,10 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         mj_ver_datos = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Iniciar Servicio", VER_DATOS);
         mj_ver_datos.color = R.color.EngieBoton;
 
-         mj_ver_datosFotoDeLlegada = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Foto de Llegada", VER_DATOS);
-         mj_ver_datosFotoDeLlegada.color = R.color.EngieBoton;
+        mj_ver_datosFotoDeLlegada = new MensajeEspecial(MensajeEspecial.SIN_MENSAJE_ESPECIAL, "Foto de Llegada", VER_DATOS);
+        mj_ver_datosFotoDeLlegada.color = R.color.EngieBoton;
 
-         mj_estaCortado = new MensajeEspecial("¿Sigue Cortado?", PREGUNTAS_SIGUE_CORTADO);
+        mj_estaCortado = new MensajeEspecial("¿Sigue Cortado?", PREGUNTAS_SIGUE_CORTADO);
         mj_estaCortado.cancelable = false;
         Vector<Respuesta> respuesta = new Vector<Respuesta>();
         respuesta.add(new Respuesta("0", "Con Sellos"));
@@ -93,12 +93,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         mj_consumocero.cancelable = false;*/
 
         respuesta = new Vector<Respuesta>();
-         respuesta.add(new Respuesta("EX", "X-Expander"));
+        respuesta.add(new Respuesta("EX", "X-Expander"));
         respuesta.add(new Respuesta("JC", "J-Junta Ciega"));
         respuesta.add(new Respuesta("DJ", "D-Doble Junta Ciega"));
         respuesta.add(new Respuesta("CV", "V-Cierre de Válvula"));
         respuesta.add(new Respuesta("SR", "S-Sello Rojo / Marbete"));
-         respuesta.add(new Respuesta("TP", "T-Tapón de Bloqueo"));
+        respuesta.add(new Respuesta("TP", "T-Tapón de Bloqueo"));
 // CE, 09/11/23, Por lo pronto no vamos a agregar estas opciones que nos había solicitado
 //         respuesta.add(new Respuesta("RZ", "R-Raizer"));
 //         respuesta.add(new Respuesta("LL", "L-Cierre de Llaves"));
@@ -306,7 +306,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         agregarAnomalia(db, "7", "D - Cliente no permitió. Cliente agresivo ", 1, 1);
         agregarAnomalia(db, "8", "E - Se encontró servicio abierto ", 1, 1, "I");
         agregarAnomalia(db, "9", "F - Retiro de válvula o regulador ", 1, 1);
-        agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1,"M",1);
+        agregarAnomalia(db, "10", "G - Cliente ya pagó en Banco o Agencia ", 1, 1, "M", 1);
         agregarAnomalia(db, "11", "H - Dirección incorrecta del servicio ", 1, 1);
         agregarAnomalia(db, "12", "I - Condición insegura ", 1, 1);
         agregarAnomalia(db, "14", "J - No usuario ", 1, 1, "I");
@@ -354,7 +354,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", desc.substring(0,1));
+        cv_params.put("conv", desc.substring(0, 1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -376,7 +376,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", desc.substring(0,1));
+        cv_params.put("conv", desc.substring(0, 1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -398,7 +398,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", desc.substring(0,1));
+        cv_params.put("conv", desc.substring(0, 1));
         cv_params.put("capt", capt);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -424,7 +424,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         //openDatabase();
         ContentValues cv_params = new ContentValues();
         cv_params.put("desc", desc);
-        cv_params.put("conv", desc.substring(0,1));
+        cv_params.put("conv", desc.substring(0, 1));
         cv_params.put("capt", 0);
         cv_params.put("subanomalia", ".");
         cv_params.put("ausente", "4");
@@ -460,7 +460,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             return NO_SOSPECHOSA + "|" + "Las lecturas deben tener un máximo de cinco enteros";
         if (nPosicionDelPunto == -1)
             return NO_SOSPECHOSA + "|" + "Las lecturas deben tener exactamente tres decimales";
-        if (nPosicionDelPunto != ls_lectAct.length()-4)
+        if (nPosicionDelPunto != ls_lectAct.length() - 4)
             return NO_SOSPECHOSA + "|" + "Las lecturas deben tener exactamente tres decimales";
 
 //*****************************************************************************************
@@ -720,7 +720,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //            infoFoto.Unidad = lect.unidad;
 //            infoFoto.Regional = lect.mRegional;
 //            infoFoto.Porcion = lect.mPorcion;
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("Error al obtener información de la lectura");
         }
 
@@ -729,7 +729,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 
     public String getDatosSAP(Lectura lectura, int nCampo) throws Exception {
         String strCardViewMedidor = "";
-        switch (nCampo){
+        switch (nCampo) {
             case 1:
                 strCardViewMedidor = lectura.is_serieMedidor;
                 break;
@@ -801,7 +801,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                     destino.setLongitude(Float.parseFloat(lectura.miLongitud));
                     distanciaEnMetros = origen.distanceTo(destino);
                     strNuevaDireccion = strNuevaDireccion + "\nDISTANCIA: " + String.format(Locale.US, "%,.0f", distanciaEnMetros) + " MTS.";
-                } catch (Exception e){
+                } catch (Exception e) {
                     throw new Exception("Error al obtener punto GPS del técnico");
                 }
             }
@@ -842,9 +842,9 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
         datos.add("Aviso SAP: "+lectura.is_numAviso);
         datos.add("Adeudo: " + lectura.is_vencido);
 */
-        strCardViewMedidor += "\nCuenta Contrato: "+lectura.is_cuentaContrato;
-        strCardViewMedidor += "\nInterlocutor: "+lectura.poliza;
-        strCardViewMedidor += "\nAviso SAP: "+lectura.is_numAviso;
+        strCardViewMedidor += "\nCuenta Contrato: " + lectura.is_cuentaContrato;
+        strCardViewMedidor += "\nInterlocutor: " + lectura.poliza;
+        strCardViewMedidor += "\nAviso SAP: " + lectura.is_numAviso;
         strCardViewMedidor += "\nAdeudo: " + lectura.is_vencido;
         datos.add(strCardViewMedidor);
 /*
@@ -940,14 +940,20 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             datos.add("Agente: " + lectura.is_ClienteYaPagoAgente);
         }
 
- //       if (!lectura.is_CancelarEnApp.equals("")) datos.add("CancelarEnApp: " + lectura.is_CancelarEnApp);
+        //       if (!lectura.is_CancelarEnApp.equals("")) datos.add("CancelarEnApp: " + lectura.is_CancelarEnApp);
 
-        if (!lectura.is_QuienAtendio.equals("")) datos.add("QuienAtendio: " + lectura.is_QuienAtendio);
-        if (!lectura.is_MarcaInstalada.equals("")) datos.add("MarcaInstalada: " + lectura.is_MarcaInstalada);
-        if (!lectura.is_SeQuitoTuberia.equals("")) datos.add("SeQuitoTuberia: " + lectura.is_SeQuitoTuberia);
-        if (!lectura.is_TuberiaRetirada.equals("")) datos.add("TuberiaRetirada: " + lectura.is_TuberiaRetirada);
-        if (!lectura.is_MarcaRetirada.equals("")) datos.add("MarcaRetirada: " + lectura.is_MarcaRetirada);
-        if (!lectura.is_MedidorRetirado.equals("")) datos.add("MedidorRetirado: " + lectura.is_MedidorRetirado);
+        if (!lectura.is_QuienAtendio.equals(""))
+            datos.add("QuienAtendio: " + lectura.is_QuienAtendio);
+        if (!lectura.is_MarcaInstalada.equals(""))
+            datos.add("MarcaInstalada: " + lectura.is_MarcaInstalada);
+        if (!lectura.is_SeQuitoTuberia.equals(""))
+            datos.add("SeQuitoTuberia: " + lectura.is_SeQuitoTuberia);
+        if (!lectura.is_TuberiaRetirada.equals(""))
+            datos.add("TuberiaRetirada: " + lectura.is_TuberiaRetirada);
+        if (!lectura.is_MarcaRetirada.equals(""))
+            datos.add("MarcaRetirada: " + lectura.is_MarcaRetirada);
+        if (!lectura.is_MedidorRetirado.equals(""))
+            datos.add("MedidorRetirado: " + lectura.is_MedidorRetirado);
 
         if (!lectura.is_TextoLibreSAP.equals("")) datos.add("\n" + lectura.is_TextoLibreSAP);
         //}
@@ -1499,7 +1505,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
             openDatabase();
             globales.tlc.byteToBD(db, globales, bu_params.getString(String.valueOf(IC)), bu_params.getString(String.valueOf(NUM_MEDIDOR)));
             closeDatabase();
-        }else if (anomalia.equals("cliente_ya_pago") || anomalia.equals("G")) {
+        } else if (anomalia.equals("cliente_ya_pago") || anomalia.equals("G")) {
             openDatabase();
             if (globales.tll.getLecturaActual().setClienteYaPago(bu_params)) {
 //                    Toast.makeText(this.context, "El Monto es inferior al Adeudo. Proceda con la Desconexión/Remoción", Toast.LENGTH_LONG).show();
@@ -1508,7 +1514,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                         .setTitle("Realizar la Desconexión/Remoción")
                         .setCancelable(false)
                         .setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id){
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         });
@@ -1785,6 +1791,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     @Override
     public String getDescripcionDeBuscarMedidor(Lectura lectura, int tipoDeBusqueda, String textoBuscado) {
         String ls_preview = "";
+
         switch (tipoDeBusqueda) {
 // CE, 14/10/23, Ya solamente existe un tipo de Buscar Medidor
             case BuscarMedidorTabsPagerAdapter.MEDIDOR:
@@ -1814,7 +1821,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //                ls_preview += "Medidor:  " + lectura.is_serieMedidor + "(" + lectura.miLatitud + "," + lectura.miLongitud + ")<br>";
                 String strGPS = "";
                 float distanciaEnMetros = 0;
-                if (lectura.miLatitud.equals("") || lectura.miLongitud.equals(""))
+                if (lectura.miLatitud.equals("") || lectura.miLongitud.equals("") || globales.location == null)
                     strGPS = " (Sin GPS)";
                 else {
                     Location origen = new Location("Origen");
@@ -1826,7 +1833,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                     destino.setLatitude(Float.parseFloat(lectura.miLatitud));
                     destino.setLongitude(Float.parseFloat(lectura.miLongitud));
                     distanciaEnMetros = origen.distanceTo(destino);
-                    strGPS = " (" + String.format(Locale.US,"%,.0f",distanciaEnMetros) + " MTS.)";
+                    strGPS = " (" + String.format(Locale.US, "%,.0f", distanciaEnMetros) + " MTS.)";
                 }
                 ls_preview += "M: " + lectura.is_serieMedidor + strGPS + "<br>";
 

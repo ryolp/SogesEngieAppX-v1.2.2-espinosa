@@ -367,4 +367,5 @@
     <string name="m_str_no_hay_internet">No hay conexión a internet</string>
     <string name="m_str_no_hay_wifi_para_transmitir_videos">No hay conexión WiFi para transmitir videos</string>
     <string name="m_str_no_se_transmitio_informacion">No se transmitió información</string>
+    <string name="m_str_no_hay_gps">Sin señal GPS</string>
 </resources>

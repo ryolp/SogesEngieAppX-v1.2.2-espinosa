@@ -54,6 +54,8 @@ public class BuscarMedidorActivity extends Activity {
 
     Globales globales;
 
+    private DialogoMensaje mDialogoMsg = null; // RL, 2023-12-20, Clase para mostrar mensajes
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buscar_medidor_fragment);
@@ -152,10 +154,14 @@ public class BuscarMedidorActivity extends Activity {
     public void buscar() {
         Thread busqueda = new Thread() {
             public void run() {
-                MedirDistancias();
-                tll = new TodasLasLecturas(getApplicationContext(), 0);// Se buscaran las lecturas desde el principio
-                vLecturas = new Vector<Lectura>();
-                tll.ls_groupBy = "";
+                try {
+                    boolean buscarPorDistancia = false;
+
+                    buscarPorDistancia = MedirDistancias();
+
+                    tll = new TodasLasLecturas(getApplicationContext(), 0);// Se buscaran las lecturas desde el principio
+                    vLecturas = new Vector<Lectura>();
+                    tll.ls_groupBy = "";
 // CE, 14/10/23, Vamos a buscar entre los numeros de medidor tambien
 //                tll.setFiltro("and upper(colonia || ' ' || calle || ' ' || entrecalles) like '%"+ et_medidor.getText().toString().trim().toUpperCase()+"%'");
 
@@ -163,47 +169,49 @@ public class BuscarMedidorActivity extends Activity {
 //                tll.setFiltro("and ((upper(colonia || ' ' || calle || ' ' || entrecalles) like '%"+ et_medidor.getText().toString().trim().toUpperCase()+"%') or (serieMedidor like '%"+ et_medidor.getText().toString().trim()+"%'))");
 
 // CE, 26/11/23, Vamos a permitir buscar por DX, RX, RM, RR y EX
-                String strTextoBuscado = "";
-                strTextoBuscado = et_medidor.getText().toString().trim().toUpperCase();
-                if (strTextoBuscado.equals("DX")) {
-                    strTextoBuscado = " and tipoDeOrden = 'TO002'";
-                } else if (strTextoBuscado.equals("RX")) {
-                    strTextoBuscado = " and tipoDeOrden = 'TO003'";
-                } else if (strTextoBuscado.equals("RM")) {
-                    strTextoBuscado = " and tipoDeOrden = 'TO005'";
-                } else if (strTextoBuscado.equals("RR")) {
-                    strTextoBuscado = " and tipoDeOrden = 'TO004'";
-                } else if (strTextoBuscado.equals("EX")) {
-                    strTextoBuscado = " and tipoDeOrden = 'TO103'";
-                } else {
-                    strTextoBuscado = "and ((upper(colonia || ' ' || calle || ' ' || entrecalles) like '%" + et_medidor.getText().toString().trim().toUpperCase() + "%') or (serieMedidor like '%" + et_medidor.getText().toString().trim() + "%')) ";
-                }
-                if (strUltimaBusquedaRealizada.equals("Campanita"))
-                    strTextoBuscado = " and ((balance = '1') or (balance = '2') or (balance = '3'))";
+                    String strTextoBuscado = "";
+                    strTextoBuscado = et_medidor.getText().toString().trim().toUpperCase();
+                    if (strTextoBuscado.equals("DX")) {
+                        strTextoBuscado = " and tipoDeOrden = 'TO002'";
+                    } else if (strTextoBuscado.equals("RX")) {
+                        strTextoBuscado = " and tipoDeOrden = 'TO003'";
+                    } else if (strTextoBuscado.equals("RM")) {
+                        strTextoBuscado = " and tipoDeOrden = 'TO005'";
+                    } else if (strTextoBuscado.equals("RR")) {
+                        strTextoBuscado = " and tipoDeOrden = 'TO004'";
+                    } else if (strTextoBuscado.equals("EX")) {
+                        strTextoBuscado = " and tipoDeOrden = 'TO103'";
+                    } else {
+                        strTextoBuscado = "and ((upper(colonia || ' ' || calle || ' ' || entrecalles) like '%" + et_medidor.getText().toString().trim().toUpperCase() + "%') or (serieMedidor like '%" + et_medidor.getText().toString().trim() + "%')) ";
+                    }
+                    if (strUltimaBusquedaRealizada.equals("Campanita"))
+                        strTextoBuscado = " and ((balance = '1') or (balance = '2') or (balance = '3'))";
 //                tll.setFiltro("and ((upper(colonia || ' ' || calle || ' ' || entrecalles) like '%" + et_medidor.getText().toString().trim().toUpperCase() + "%') or (serieMedidor like '%" + et_medidor.getText().toString().trim() + "%')) and anomalia='' and lectura=''");
-                tll.setFiltro(strTextoBuscado + " and anomalia='' and lectura=''");
-                try {
-                    obtenerMedidor(true);
-                    while (tll.encontrado) {
-                        vLecturas.add(tll.getLecturaActual());
-                        obtenerMedidor(true);
-                    }
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-                adapter = new BuscarMedidorGridAdapter(getApplicationContext(), vLecturas, tipo, et_medidor.getText().toString().trim().toUpperCase(), tll.getNumRecords());
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        try {
-                            lv_medidores.setAdapter(adapter);
-                            setDatos();
-                        } catch (Throwable e) {
-                            //Puede causarse un error si mientras se realiza la busqueda... se salen.
+                    tll.setFiltro(strTextoBuscado + " and anomalia='' and lectura=''");
+                    try {
+                        obtenerMedidor(buscarPorDistancia);
+                        while (tll.encontrado) {
+                            vLecturas.add(tll.getLecturaActual());
+                            obtenerMedidor(buscarPorDistancia);
                         }
+                    } catch (Throwable e) {
+                        e.printStackTrace();
                     }
-                });
+                    adapter = new BuscarMedidorGridAdapter(getApplicationContext(), vLecturas, tipo, et_medidor.getText().toString().trim().toUpperCase(), tll.getNumRecords());
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            try {
+                                lv_medidores.setAdapter(adapter);
+                                setDatos();
+                            } catch (Throwable e) {
+                                //Puede causarse un error si mientras se realiza la busqueda... se salen.
+                            }
+                        }
+                    });
+                } catch (Throwable t) {
+                    mostrarMensajeToast(t.getMessage());
+                }
             }
-
         };
         lv_medidores.setVisibility(View.GONE);
         pb_ruleta.setVisibility(View.VISIBLE);
@@ -237,50 +245,103 @@ public class BuscarMedidorActivity extends Activity {
     }
 */
 
-    private void MedirDistancias() {
+    private boolean MedirDistancias() throws Exception {
         //Aqui buscamos la key
-        Cursor c;
-        float distanciaEnMetros = 0;
-        String strActualizarDistancia = "";
-        openDatabase();
-        c = db.rawQuery("Select * from ruta where lectura='' and anomalia='' order by cast(secuenciaReal as Integer) asc",null);
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                if ((!c.getString(c.getColumnIndex("miLatitud")).equals("0.0")) && (!c.getString(c.getColumnIndex("miLongitud")).equals("0.0")) &&
-                    (!c.getString(c.getColumnIndex("miLatitud")).equals("")) && (!c.getString(c.getColumnIndex("miLongitud")).equals(""))) {
-                    try {
-                        Location origen = new Location("Origen");
-                        origen.setLatitude(globales.location.getLatitude());
-                        origen.setLongitude(globales.location.getLongitude());
-                        Location destino = new Location("Destino");
-                        destino.setLatitude(Float.parseFloat(c.getString(c.getColumnIndex("miLatitud"))));
-                        destino.setLongitude(Float.parseFloat(c.getString(c.getColumnIndex("miLongitud"))));
-                        distanciaEnMetros = origen.distanceTo(destino);
-                        strActualizarDistancia = "update ruta set diametro_toma = '" + String.format(Locale.US, "%.0f", distanciaEnMetros) + "' where secuenciaReal = " + Utils.getInt(c, "secuenciaReal", 0);
-                    } catch (Exception e) {
+
+        try {
+            Cursor c;
+            float distanciaEnMetros = 0;
+            String strActualizarDistancia = "";
+            double latitud = 0;
+            double longitud = 0;
+            String latitudStr = "";
+            String longitudStr = "";
+            int cant = 0;
+
+            if (globales.location == null)
+                return false;
+
+            latitud = globales.location.getLatitude();
+            longitud = globales.location.getLongitude();
+
+            openDatabase();
+            c = db.rawQuery("Select * from ruta where lectura='' and anomalia='' order by cast(secuenciaReal as Integer) asc", null);
+
+            cant = c.getCount();
+            if (cant > 0) {
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    // RL, 2023-12-19, Se guarda el valor de la latitud y longitud en una variable string.
+                    latitudStr = Utils.getString(c, "miLatitud", "");
+                    longitudStr = Utils.getString(c, "miLongitud", "");
+
+                    if ((!latitudStr.equals("0.0")) && (!longitudStr.equals("0.0")) &&
+                            (!latitudStr.equals("")) && (!longitudStr.equals(""))) {
+                        try {
+                            Location origen = new Location("Origen");
+                            origen.setLatitude(latitud);
+                            origen.setLongitude(longitud);
+                            Location destino = new Location("Destino");
+                            destino.setLatitude(Float.parseFloat(latitudStr));
+                            destino.setLongitude(Float.parseFloat(longitudStr));
+                            distanciaEnMetros = origen.distanceTo(destino);
+                            strActualizarDistancia = "update ruta set diametro_toma = '" + String.format(Locale.US, "%.0f", distanciaEnMetros) + "' where secuenciaReal = " + Utils.getInt(c, "secuenciaReal", 0);
+                        } catch (Exception e) {
 //                        throw new Exception("Error al obtener punto GPS de un medidor");
+                        }
+                    } else {
+                        strActualizarDistancia = "update ruta set diametro_toma = '0' where secuenciaReal = " + c.getInt(c.getColumnIndex("secuenciaReal"));
                     }
-                } else {
-                    strActualizarDistancia = "update ruta set diametro_toma = '0' where secuenciaReal = " + c.getInt(c.getColumnIndex("secuenciaReal"));
+                    if (!strActualizarDistancia.equals(""))
+                        db.execSQL(strActualizarDistancia);
+                    c.moveToNext();
                 }
-                if (!strActualizarDistancia.equals(""))
-                    db.execSQL(strActualizarDistancia);
-                c.moveToNext();
             }
+            c.close();
+            closeDatabase();
+
+            if (cant > 0)
+                return true;
+            else
+                return false;
+        } catch (Throwable t) {
+            throw new Exception("Error al realizar la búsqueda: " + t.getMessage());
         }
-        c.close();
-        closeDatabase();
     }
 
     private void openDatabase() {
-        dbHelper= new DBHelper(this);
+        dbHelper = new DBHelper(this);
         db = dbHelper.getReadableDatabase();
     }
 
     private void closeDatabase() {
         db.close();
         dbHelper.close();
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
+            }
+        });
+    }
+
+    private void mostrarMensajeToast(String mensaje) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                Toast.makeText(BuscarMedidorActivity.this, mensaje, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje, String detalleError, DialogoMensaje.Resultado resultado) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mDialogoMsg.setOnResultado(resultado);
+                mDialogoMsg.mostrarMensaje(titulo, mensaje, detalleError);
+            }
+        });
     }
 }
 

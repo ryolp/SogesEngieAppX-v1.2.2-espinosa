@@ -1,10 +1,13 @@
 package enruta.soges_engie;
+
 import java.util.Vector;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import enruta.soges_engie.clases.AppSinGps;
 
 
 public class TodasLasLecturas {
@@ -1120,13 +1123,30 @@ public class TodasLasLecturas {
 		String strDestinoAnterior = "";
 		String strWaypoints = "";
 		Cursor c;
+		int cant;
+		double latitud = 0.0;
+		double longitud = 0.0;
+
 		c=db.rawQuery("Select * from ruta where anomalia='' and lectura='' order by cast(secuenciaReal as Integer) asc", null);
 		c.moveToFirst();
 // CE, 09/10/23, Solamente vamos a mostrar 20 puntos
 //		for (int i=0; i<c.getCount(); i++){
+
+		cant = c.getCount();			// RL, 2023-12-20
+
 		int nNumPuntosMax = 20;
-		if (nNumPuntosMax > c.getCount())
-			nNumPuntosMax = c.getCount();
+		if (nNumPuntosMax > cant)
+			nNumPuntosMax = cant;
+
+		if (cant > 0)
+		{
+			if (globales.location == null)
+				throw new AppSinGps("Sin señal GPS");
+
+			latitud = globales.location.getLatitude();
+			longitud = globales.location.getLongitude();
+		}
+
 		for (int i=0; i<nNumPuntosMax; i++){
 			String strMedidor = "";
 			strMedidor = c.getString(c.getColumnIndex("serieMedidor"));
@@ -1150,7 +1170,7 @@ public class TodasLasLecturas {
 			c.moveToNext();
 		}
 		if (!lvs_vector.equals("")) {
-			strDondeEstoy = globales.location.getLatitude() + "," + globales.location.getLongitude();
+			strDondeEstoy = String.valueOf(latitud) + "," + String.valueOf(longitud);
 			lvs_vector = lvs_vector + strDondeEstoy + "&daddr=" + strOrigen + strWaypoints + "+to:" + strDestino;
 		}
 		c.close();
