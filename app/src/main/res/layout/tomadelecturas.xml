@@ -855,6 +855,7 @@
 							android:text="Victoria Reyna#2231-D\nCintrika, Entre Victoria Imperial\nVictoria Emperatriz\nMaltos, 871972"
 							android:textColor="@color/black"
 							android:textSize="18sp"
+							android:scrollbars = "vertical"
 							app:fontFamily="@font/lato" />
 					</androidx.cardview.widget.CardView>
 

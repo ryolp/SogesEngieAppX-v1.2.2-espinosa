@@ -35,7 +35,7 @@
             android:textColor="@color/black"
             android:text="Evalúe Nuestro Servicio" />
 
-        <com.github.gcacace.signaturepad.views.SignaturePad
+        <se.warting.signatureview.views.SignaturePad
             android:id="@+id/signature_pad"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />

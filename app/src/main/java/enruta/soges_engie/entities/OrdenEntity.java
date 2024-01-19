@@ -86,5 +86,9 @@ public class OrdenEntity {
     public String MedidorRetirado = "";
 //************************************************************************************************************************************
 
+    // RL, 2024-01-15, Nuevos campos para el Sprint-5
+
+    public String MaterialRecuperado = "";
+
     public long id;
 }

@@ -27,7 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	private static DBHelper mInstance = null;
 	
-	private static int version=13;
+	private static int version=14;
 
 	/**
 	 * Constructor Toma referencia hacia el contexto de la aplicación que lo
@@ -210,7 +210,9 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ " ClienteYaPagoMonto default '', ClienteYaPagoFecha default '', ClienteYaPagoAgente default '', "
 				+ " CancelarEnApp default 0, TextoLibreSAP default '', "
 				+ " QuienAtendio default '', MarcaInstalada default '', SeQuitoTuberia default '', TuberiaRetirada default '', MarcaRetirada default '', MedidorRetirado default '', "
-				+ " idTipoDeReconexion default 0, idTipoDeRemocion default 0, Repercusion default '')");
+				+ " idTipoDeReconexion default 0, idTipoDeRemocion default 0, Repercusion default '', "
+// RL, 15/01/24, nuevos campos: para el MaterialRecuperado
+				+ "	MaterialRecuperado default '')");
 		//Usuarios
 		db.execSQL("CREATE TABLE usuarios (usuario , contrasena , nombre, rol default 1, fotosControlCalidad default 1, baremo default 75)");
 		//fotos
@@ -315,6 +317,9 @@ public class DBHelper extends SQLiteOpenHelper {
 			verifyColumnInTable(db, "ruta", "TuberiaRetirada", "''");
 			verifyColumnInTable(db, "ruta", "MarcaRetirada", "''");
 			verifyColumnInTable(db, "ruta", "MedidorRetirado", "''");
+
+			// RL, 2024-01-15, Nuevos campos para el Sprint-5
+			verifyColumnInTable(db, "ruta", "MaterialRecuperado", "''");
 
 			verifyColumnInTable(db, "fotos", "idArchivo", "0");
 			verifyColumnInTable(db, "fotos", "idTarea", "0");

@@ -21,7 +21,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.github.gcacace.signaturepad.views.SignaturePad;
+//import com.github.gcacace.signaturepad.views.SignaturePad;
+
+import se.warting.signatureview.views.SignaturePad;
+import se.warting.signatureview.views.SignedListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -80,10 +83,15 @@ public class SignaturePadActivity extends Activity {
     private void inicializar() {
         try {
             mSignaturePad = (SignaturePad) findViewById(R.id.signature_pad);
-            mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
+            mSignaturePad.setOnSignedListener(new SignedListener() {
                 @Override
                 public void onStartSigning() {
 //                    Toast.makeText(SignaturePadActivity.this, "OnStartSigning", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSigning() {
+
                 }
 
                 @Override
@@ -300,7 +308,7 @@ public class SignaturePadActivity extends Activity {
             mSignaturePad.clear();
             mSignaturePad.setOnSignedListener(null);
             mSignaturePad = null;
-            thisIsMe.finish();
+//            thisIsMe.finish();
         } catch (Throwable t) {
             t.printStackTrace();
         }

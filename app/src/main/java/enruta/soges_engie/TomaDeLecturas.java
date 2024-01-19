@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 //import android.graphics.drawable.AnimationDrawable;
 import android.view.GestureDetector;
@@ -856,498 +857,507 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
      */
 
     private void iniciaCampos() {
-        // et_lectura=(EditText) findViewById(R.id.et_lectura);
-        // et_presion=(EditText) findViewById(R.id.et_presion);
+        try {
+            // et_lectura=(EditText) findViewById(R.id.et_lectura);
+            // et_presion=(EditText) findViewById(R.id.et_presion);
 
-        // tv_informacion= (TextView) findViewById(R.id.tv_informacion);
-        // et_lectura= (EditText) findViewById(R.id.et_lectura);
-        tv_caseta = (TextView) findViewById(R.id.tv_caseta);
-        tv_min = (TextView) findViewById(R.id.tv_min);
-        tv_max = (TextView) findViewById(R.id.tv_max);
-        tv_mensaje = (TextView) findViewById(R.id.tv_mensaje);
-        tv_mensaje2 = (TextView) findViewById(R.id.tv_mensaje2);
-        tv_respuesta = (TextView) findViewById(R.id.tv_respuesta);
-        tv_contador = (TextView) findViewById(R.id.tv_contador);
+            // tv_informacion= (TextView) findViewById(R.id.tv_informacion);
+            // et_lectura= (EditText) findViewById(R.id.et_lectura);
+            tv_caseta = (TextView) findViewById(R.id.tv_caseta);
+            tv_min = (TextView) findViewById(R.id.tv_min);
+            tv_max = (TextView) findViewById(R.id.tv_max);
+            tv_mensaje = (TextView) findViewById(R.id.tv_mensaje);
+            tv_mensaje2 = (TextView) findViewById(R.id.tv_mensaje2);
+            tv_respuesta = (TextView) findViewById(R.id.tv_respuesta);
+            tv_contador = (TextView) findViewById(R.id.tv_contador);
 //		tv_presion = (TextView) findViewById(R.id.tv_presion);
-        tv_comentarios = (TextView) findViewById(R.id.tv_comentarios);
-        tv_lectura = (TextView) findViewById(R.id.tv_lectura);
-        tv_anomalia = (TextView) findViewById(R.id.tv_anomalia);
-        tv_contadorOpcional = (TextView) findViewById(R.id.tv_contadorOpcional);
-        tv_advertencia = (TextView) findViewById(R.id.tv_advertencia);
-        tv_lecturaAnterior = (TextView) findViewById(R.id.tv_lecturaAnterior);
+            tv_comentarios = (TextView) findViewById(R.id.tv_comentarios);
+            tv_lectura = (TextView) findViewById(R.id.tv_lectura);
+            tv_anomalia = (TextView) findViewById(R.id.tv_anomalia);
+            tv_contadorOpcional = (TextView) findViewById(R.id.tv_contadorOpcional);
+            tv_advertencia = (TextView) findViewById(R.id.tv_advertencia);
+            tv_lecturaAnterior = (TextView) findViewById(R.id.tv_lecturaAnterior);
 
-        tv_nueva_datos_cliente = (TextView) findViewById(R.id.tv_nueva_datos_cliente);
-        tv_nueva_direccion = (TextView) findViewById(R.id.tv_nueva_direccion);
-        tv_nueva_datos_sap1 = (TextView) findViewById(R.id.tv_nueva_datos_sap1);
-        tv_nueva_datos_sap2 = (TextView) findViewById(R.id.tv_nueva_datos_sap2);
+            tv_nueva_datos_cliente = (TextView) findViewById(R.id.tv_nueva_datos_cliente);
 
-        tv_sap_medidor = (TextView) findViewById(R.id.tv_sap_medidor);
-        tv_sap_cuenta_contrato = (TextView) findViewById(R.id.tv_sap_cuenta_contrato);
-        tv_sap_interlocutor = (TextView) findViewById(R.id.tv_sap_interlocutor);
-        tv_sap_notificacion = (TextView) findViewById(R.id.tv_sap_notificacion);
+            tv_nueva_direccion = (TextView) findViewById(R.id.tv_nueva_direccion);
+            tv_nueva_direccion.setMovementMethod(new ScrollingMovementMethod());
 
-        cuadricula = (LinearLayout) findViewById(R.id.cuadricula);
+            tv_nueva_datos_sap1 = (TextView) findViewById(R.id.tv_nueva_datos_sap1);
+            tv_nueva_datos_sap2 = (TextView) findViewById(R.id.tv_nueva_datos_sap2);
 
-        tv_campo0 = (TextView) findViewById(R.id.campo0);
-        tv_campo1 = (TextView) findViewById(R.id.campo1);
-        tv_campo2 = (TextView) findViewById(R.id.campo2);
-        tv_campo3 = (TextView) findViewById(R.id.campo3);
-        tv_campo4 = (TextView) findViewById(R.id.campo4);
+            tv_sap_medidor = (TextView) findViewById(R.id.tv_sap_medidor);
+            tv_sap_cuenta_contrato = (TextView) findViewById(R.id.tv_sap_cuenta_contrato);
+            tv_sap_interlocutor = (TextView) findViewById(R.id.tv_sap_interlocutor);
+            tv_sap_notificacion = (TextView) findViewById(R.id.tv_sap_notificacion);
 
-        label_campo0 = (TextView) findViewById(R.id.label_campo0);
-        label_campo1 = (TextView) findViewById(R.id.label_campo1);
-        label_campo2 = (TextView) findViewById(R.id.label_campo2);
-        label_campo3 = (TextView) findViewById(R.id.label_campo3);
-        label_campo4 = (TextView) findViewById(R.id.label_campo4);
+            cuadricula = (LinearLayout) findViewById(R.id.cuadricula);
 
-        iv_gps = (ImageView) findViewById(R.id.iv_gps);// GPS
-        iv_button3 = (ImageView) findViewById(R.id.iv_button3);// Flechita
-        iv_button4 = (ImageView) findViewById(R.id.iv_button4);// Flechita
-        iv_button5 = (ImageView) findViewById(R.id.iv_button5);// Flechita
-        iv_button6 = (ImageView) findViewById(R.id.iv_button6);// Flechita
+            tv_campo0 = (TextView) findViewById(R.id.campo0);
+            tv_campo1 = (TextView) findViewById(R.id.campo1);
+            tv_campo2 = (TextView) findViewById(R.id.campo2);
+            tv_campo3 = (TextView) findViewById(R.id.campo3);
+            tv_campo4 = (TextView) findViewById(R.id.campo4);
 
-        button1 = (Button) findViewById(R.id.button1);// Lectura
-        button2 = (Button) findViewById(R.id.button3); // Presion
-        button3 = (Button) findViewById(R.id.button2);// Comentarios
-        button4 = (Button) findViewById(R.id.button4); // Anterior
-        button5 = (Button) findViewById(R.id.button5);// Fotos
-        button6 = (Button) findViewById(R.id.button6);// Siguiente
+            label_campo0 = (TextView) findViewById(R.id.label_campo0);
+            label_campo1 = (TextView) findViewById(R.id.label_campo1);
+            label_campo2 = (TextView) findViewById(R.id.label_campo2);
+            label_campo3 = (TextView) findViewById(R.id.label_campo3);
+            label_campo4 = (TextView) findViewById(R.id.label_campo4);
 
-        cv_button1 = (CardView) findViewById(R.id.cv_button1);// Lectura
-        cv_button2 = (CardView) findViewById(R.id.cv_button2); // Presion
+            iv_gps = (ImageView) findViewById(R.id.iv_gps);// GPS
+            iv_button3 = (ImageView) findViewById(R.id.iv_button3);// Flechita
+            iv_button4 = (ImageView) findViewById(R.id.iv_button4);// Flechita
+            iv_button5 = (ImageView) findViewById(R.id.iv_button5);// Flechita
+            iv_button6 = (ImageView) findViewById(R.id.iv_button6);// Flechita
 
-        cv_button1.setBackgroundTintList(getResources().getColorStateList(R.color.button_backgroud));;
-        cv_button2.setBackgroundTintList(getResources().getColorStateList(R.color.button_red));;
+            button1 = (Button) findViewById(R.id.button1);// Lectura
+            button2 = (Button) findViewById(R.id.button3); // Presion
+            button3 = (Button) findViewById(R.id.button2);// Comentarios
+            button4 = (Button) findViewById(R.id.button4); // Anterior
+            button5 = (Button) findViewById(R.id.button5);// Fotos
+            button6 = (Button) findViewById(R.id.button6);// Siguiente
 
-        b_repetir_anom = (Button) findViewById(R.id.b_repetir_anom);// Siguiente
+            cv_button1 = (CardView) findViewById(R.id.cv_button1);// Lectura
+            cv_button2 = (CardView) findViewById(R.id.cv_button2); // Presion
 
-        ll_limites = (LinearLayout) findViewById(R.id.ll_limites);
-        ll_linearLayout1 = (LinearLayout) findViewById(R.id.linearLayout1);
-        ll_linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
-        ll_generica = (LinearLayout) findViewById(R.id.ll_generica);
+            cv_button1.setBackgroundTintList(getResources().getColorStateList(R.color.button_backgroud));
+            ;
+            cv_button2.setBackgroundTintList(getResources().getColorStateList(R.color.button_red));
+            ;
 
-        ll_layoutTipoDeOrden = (RelativeLayout) findViewById(R.id.ll_layoutTipoDeOrden);
+            b_repetir_anom = (Button) findViewById(R.id.b_repetir_anom);// Siguiente
+
+            ll_limites = (LinearLayout) findViewById(R.id.ll_limites);
+            ll_linearLayout1 = (LinearLayout) findViewById(R.id.linearLayout1);
+            ll_linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
+            ll_generica = (LinearLayout) findViewById(R.id.ll_generica);
+
+            ll_layoutTipoDeOrden = (RelativeLayout) findViewById(R.id.ll_layoutTipoDeOrden);
 
 // CE, 11/10/23, Vamos a ocultar los botones del viejo diseño
-        ll_linearLayout1.setBackgroundResource(R.color.white);
-        tv_contador.setVisibility(View.GONE);
-        ll_generica.setVisibility(View.VISIBLE);
-        tv_caseta.setVisibility(View.GONE);
-        tv_lectura.setVisibility(View.GONE);
-        tv_anomalia.setVisibility(View.GONE);
+            ll_linearLayout1.setBackgroundResource(R.color.white);
+            tv_contador.setVisibility(View.GONE);
+            ll_generica.setVisibility(View.VISIBLE);
+            tv_caseta.setVisibility(View.GONE);
+            tv_lectura.setVisibility(View.GONE);
+            tv_anomalia.setVisibility(View.GONE);
 
-        OnGestureListener ogl = new OnGestureListener() {
+            OnGestureListener ogl = new OnGestureListener() {
 
-            @Override
-            public boolean onDown(MotionEvent e) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2,
-                                   float velocityX, float velocityY) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                    float distanceX, float distanceY) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-        };
-
-        // tv_presion=(TextView) findViewById(R.id.tv_presion);
-        final TomaDeLecturas parent = this;
-
-        View.OnClickListener clicGPS = new View.OnClickListener() {
-            public void onClick(View v) {
-                mostrarUbicacionGPS();
-            }
-        };
-
-        // Vamos a declarar los listeners ya que nos pueden servir mas adelante
-        // en otros objetos
-        View.OnClickListener clicLectura = new View.OnClickListener() {
-            public void onClick(View v) {
-                // Capturamos la lectura
-                globales.setEstadoDeLaRepercusion(true,false);
-                cancelaTimer();
-                if (button1.isEnabled()) {
-                    cancelaTimer();
-
-                    Intent intent = new Intent(parent, Input.class);
-                    intent.putExtra("tipo", Input.LECTURA);
-                    intent.putExtra("min", globales.il_lect_min);
-                    intent.putExtra("max", globales.il_lect_max);
-                    intent.putExtra("act", globales.is_lectura);
-                    intent.putExtra("validar", /*globales.validar*/true); //Siempre va a validar
-                    intent.putExtra("modo", modo);
-                    intent.putExtra("secuencia", globales.il_lect_act);
-
-                    secuencialAntesDeInput = globales.tll.getLecturaActual().secuencia;
-                    startActivityForResult(intent, LECTURA);
+                @Override
+                public boolean onDown(MotionEvent e) {
+                    // TODO Auto-generated method stub
+                    return false;
                 }
-            }
-        };
 
-        View.OnLongClickListener longClicLectura = new View.OnLongClickListener() {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2,
+                                       float velocityX, float velocityY) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
 
-            @Override
-            public boolean onLongClick(View v) {
-                globales.setEstadoDeLaRepercusion(true,true);
-                cancelaTimer();
-                // TODO Auto-generated method stub
-                if (button1.isEnabled()) {
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                        float distanceX, float distanceY) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                @Override
+                public void onShowPress(MotionEvent e) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+            };
+
+            // tv_presion=(TextView) findViewById(R.id.tv_presion);
+            final TomaDeLecturas parent = this;
+
+            View.OnClickListener clicGPS = new View.OnClickListener() {
+                public void onClick(View v) {
+                    mostrarUbicacionGPS();
+                }
+            };
+
+            // Vamos a declarar los listeners ya que nos pueden servir mas adelante
+            // en otros objetos
+            View.OnClickListener clicLectura = new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Capturamos la lectura
+                    globales.setEstadoDeLaRepercusion(true, false);
                     cancelaTimer();
-                    globales.is_lectura = "";
-                    globales.BorrarTodasLosCamposEngie();
-                    globales.tdlg.regresaDeBorrarLectura();
+                    if (button1.isEnabled()) {
+                        cancelaTimer();
 
-                    if (globales.tll.getLecturaActual().anomalias.size() == 0) {
-                        globales.modoCaptura = false;
-                        salirModoCaptura();
-                        // borramos fotos temporales anteriores
-                        openDatabase();
+                        Intent intent = new Intent(parent, Input.class);
+                        intent.putExtra("tipo", Input.LECTURA);
+                        intent.putExtra("min", globales.il_lect_min);
+                        intent.putExtra("max", globales.il_lect_max);
+                        intent.putExtra("act", globales.is_lectura);
+                        intent.putExtra("validar", /*globales.validar*/true); //Siempre va a validar
+                        intent.putExtra("modo", modo);
+                        intent.putExtra("secuencia", globales.il_lect_act);
 
-                        db.execSQL("delete from fotos where temporal="
-                                + CamaraActivity.TEMPORAL);
-
-                        closeDatabase();
-
-                        //tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+                        secuencialAntesDeInput = globales.tll.getLecturaActual().secuencia;
+                        startActivityForResult(intent, LECTURA);
                     }
-                    globales.is_presion = globales.tll.getLecturaActual().getAnomaliaAMostrar();
+                }
+            };
 
-                    if (globales.is_lectura.equals(""))
-                        tv_lectura.setText("");
-                    else
-                        tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
-                    if (globales.is_presion.equals(""))
-                        tv_anomalia.setText("");
-                    else
-                        tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + globales.is_presion);
+            View.OnLongClickListener longClicLectura = new View.OnLongClickListener() {
 
-                    setDatos(false);
-                    int requiereLectura = globales.tll.getLecturaActual().requiereLectura();
-                    if (!globales.is_lectura.equals("") &&
-                            (requiereLectura == Anomalia.LECTURA_AUSENTE))
-                        setModoCaptura();
-                    else {
-                        salirModoCaptura();
-                        if (!globales.bModificar && globales.tll.getLecturaActual().verDatos && !globales.modoCaptura) {
-                            setStyleDatosVistos();
+                @Override
+                public boolean onLongClick(View v) {
+                    globales.setEstadoDeLaRepercusion(true, true);
+                    cancelaTimer();
+                    // TODO Auto-generated method stub
+                    if (button1.isEnabled()) {
+                        cancelaTimer();
+                        globales.is_lectura = "";
+                        globales.BorrarTodasLosCamposEngie();
+                        globales.tdlg.regresaDeBorrarLectura();
+
+                        if (globales.tll.getLecturaActual().anomalias.size() == 0) {
+                            globales.modoCaptura = false;
+                            salirModoCaptura();
+                            // borramos fotos temporales anteriores
+                            openDatabase();
+
+                            db.execSQL("delete from fotos where temporal="
+                                    + CamaraActivity.TEMPORAL);
+
+                            closeDatabase();
+
+                            //tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
                         }
+                        globales.is_presion = globales.tll.getLecturaActual().getAnomaliaAMostrar();
+
+                        if (globales.is_lectura.equals(""))
+                            tv_lectura.setText("");
+                        else
+                            tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) + globales.is_lectura);
+                        if (globales.is_presion.equals(""))
+                            tv_anomalia.setText("");
+                        else
+                            tv_anomalia.setText(getString(R.string.lbl_tdl_indica_anomalia) + globales.is_presion);
+
+                        setDatos(false);
+                        int requiereLectura = globales.tll.getLecturaActual().requiereLectura();
+                        if (!globales.is_lectura.equals("") &&
+                                (requiereLectura == Anomalia.LECTURA_AUSENTE))
+                            setModoCaptura();
+                        else {
+                            salirModoCaptura();
+                            if (!globales.bModificar && globales.tll.getLecturaActual().verDatos && !globales.modoCaptura) {
+                                setStyleDatosVistos();
+                            }
+                        }
+                        verficarSiPuedoDejarAusente();
                     }
-                    verficarSiPuedoDejarAusente();
+                    return true;
                 }
-                return true;
-            }
-        };
+            };
 
-        View.OnClickListener clicAnomalia = new View.OnClickListener() {
+            View.OnClickListener clicAnomalia = new View.OnClickListener() {
 
-            public void onClick(View v) {
-                // mensajeInput(PRESION);
-                globales.setEstadoDeLaRepercusion(false,false);
-                cancelaTimer();
-                Intent anom = new Intent(parent, PantallaAnomaliasActivity.class);
-                anom.putExtra("secuencial", globales.il_lect_act);
-                anom.putExtra("lectura", globales.is_lectura);
-                anom.putExtra("anomalia", globales.tll.getLecturaActual().getAnomaliasCapturadas());
-                anom.putExtra("tipoAnomalia", globales.tll.getLecturaActual().is_tipoDeOrden);
-                startActivityForResult(anom, ANOMALIA);
-                // vengoDeAnomalias = true;
-            }
-            // tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) +globales.is_lectura);
-        };
+                public void onClick(View v) {
+                    // mensajeInput(PRESION);
+                    globales.setEstadoDeLaRepercusion(false, false);
+                    cancelaTimer();
+                    Intent anom = new Intent(parent, PantallaAnomaliasActivity.class);
+                    anom.putExtra("secuencial", globales.il_lect_act);
+                    anom.putExtra("lectura", globales.is_lectura);
+                    anom.putExtra("anomalia", globales.tll.getLecturaActual().getAnomaliasCapturadas());
+                    anom.putExtra("tipoAnomalia", globales.tll.getLecturaActual().is_tipoDeOrden);
+                    startActivityForResult(anom, ANOMALIA);
+                    // vengoDeAnomalias = true;
+                }
+                // tv_lectura.setText(getString(R.string.lbl_tdl_indica_lectura) +globales.is_lectura);
+            };
 
-        View.OnLongClickListener longClicAnomalia = new View.OnLongClickListener() {
+            View.OnLongClickListener longClicAnomalia = new View.OnLongClickListener() {
 
-            @Override
-            public boolean onLongClick(View v) {
-                // TODO Auto-generated method stub
-                globales.setEstadoDeLaRepercusion(false,true);
-                cancelaTimer();
+                @Override
+                public boolean onLongClick(View v) {
+                    // TODO Auto-generated method stub
+                    globales.setEstadoDeLaRepercusion(false, true);
+                    cancelaTimer();
 
 
-                if (/*globales.tll.getLecturaActual().anomalias.size()>1 && */globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() > 1) {
-                    //Muestra mensaje
-                    anomaliasABorrar(globales.tll.getLecturaActual().getAnomaliasABorrar());
-                } else if (globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() == 1) {
+                    if (/*globales.tll.getLecturaActual().anomalias.size()>1 && */globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() > 1) {
+                        //Muestra mensaje
+                        anomaliasABorrar(globales.tll.getLecturaActual().getAnomaliasABorrar());
+                    } else if (globales.tll.getLecturaActual().getAnomaliasABorrar().respuestas.size() == 1) {
 //					if (globales.tll.getLecturaActual().anomalias.get(0).is_activa.equals("I")){
 //						// si es inactiva, ni la toques.
 //						return true;
 //					}
-                    //Solo hay una, asi que la borramos
-                    if (globales.tll.getLecturaActual().deleteAnomalia(globales.tll.getLecturaActual().getAnomaliasAIngresadas()))
-                        Toast.makeText(parent, R.string.msj_anomalias_borrada, Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(parent, R.string.msj_anomalias_error_borrado, Toast.LENGTH_LONG).show();
+                        //Solo hay una, asi que la borramos
+                        if (globales.tll.getLecturaActual().deleteAnomalia(globales.tll.getLecturaActual().getAnomaliasAIngresadas()))
+                            Toast.makeText(parent, R.string.msj_anomalias_borrada, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(parent, R.string.msj_anomalias_error_borrado, Toast.LENGTH_LONG).show();
 
-                }
-                openDatabase();
-                db.execSQL("delete from fotos where temporal="
-                        + CamaraActivity.ANOMALIA);
-                closeDatabase();
+                    }
+                    openDatabase();
+                    db.execSQL("delete from fotos where temporal="
+                            + CamaraActivity.ANOMALIA);
+                    closeDatabase();
 
-                globales.BorrarTodasLosCamposEngie();
+                    globales.BorrarTodasLosCamposEngie();
 
-                regresaDeBorrar();
-                verficarSiPuedoDejarAusente();
+                    regresaDeBorrar();
+                    verficarSiPuedoDejarAusente();
 
-                return true;
-            }
-        };
-
-        View.OnClickListener clicMedidor = new View.OnClickListener() {
-            public void onClick(View v) {
-                // mensajeInput(PRESION);
-                /*
-                 * intent.putExtra("tipo", Input.COMENTARIOS);
-                 * intent.putExtra("comentarios", is_comentarios);
-                 * startActivityForResult(intent, COMENTARIOS);
-                 */
-                if (!button3.isEnabled())
-                    return;
-                cancelaTimer();
-                //Intent intent = new Intent(parent, BuscarMedidor.class);
-                buscarMedidor(BuscarMedidor.BUSCAR);
-                globales.moverPosicion = true;
-                globales.bEstabaModificando = globales.bModificar;
-                globales.tll.guardarDondeEstaba();
-            }
-        };
-
-        View.OnLongClickListener longClicMedidor = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View arg0) {
-                // mensajeInput(PRESION);
-                /*
-                 * intent.putExtra("tipo", Input.COMENTARIOS);
-                 * intent.putExtra("comentarios", is_comentarios);
-                 * startActivityForResult(intent, COMENTARIOS);
-                 */
-                if (!button3.isEnabled())
                     return true;
-                cancelaTimer();
-                //Intent intent = new Intent(parent, BuscarMedidor.class);
-                buscarMedidor(BuscarMedidor.MOVER);
-                return true;
-            }
-        };
+                }
+            };
 
-        tv_anomalia.setClickable(true);
-        tv_lectura.setClickable(true);
-        tv_caseta.setClickable(true);
+            View.OnClickListener clicMedidor = new View.OnClickListener() {
+                public void onClick(View v) {
+                    // mensajeInput(PRESION);
+                    /*
+                     * intent.putExtra("tipo", Input.COMENTARIOS);
+                     * intent.putExtra("comentarios", is_comentarios);
+                     * startActivityForResult(intent, COMENTARIOS);
+                     */
+                    if (!button3.isEnabled())
+                        return;
+                    cancelaTimer();
+                    //Intent intent = new Intent(parent, BuscarMedidor.class);
+                    buscarMedidor(BuscarMedidor.BUSCAR);
+                    globales.moverPosicion = true;
+                    globales.bEstabaModificando = globales.bModificar;
+                    globales.tll.guardarDondeEstaba();
+                }
+            };
 
-        tv_anomalia.setOnClickListener(clicAnomalia);
-        tv_lectura.setOnClickListener(clicLectura);
-        tv_caseta.setOnClickListener(clicMedidor);
+            View.OnLongClickListener longClicMedidor = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View arg0) {
+                    // mensajeInput(PRESION);
+                    /*
+                     * intent.putExtra("tipo", Input.COMENTARIOS);
+                     * intent.putExtra("comentarios", is_comentarios);
+                     * startActivityForResult(intent, COMENTARIOS);
+                     */
+                    if (!button3.isEnabled())
+                        return true;
+                    cancelaTimer();
+                    //Intent intent = new Intent(parent, BuscarMedidor.class);
+                    buscarMedidor(BuscarMedidor.MOVER);
+                    return true;
+                }
+            };
+
+            tv_anomalia.setClickable(true);
+            tv_lectura.setClickable(true);
+            tv_caseta.setClickable(true);
+
+            tv_anomalia.setOnClickListener(clicAnomalia);
+            tv_lectura.setOnClickListener(clicLectura);
+            tv_caseta.setOnClickListener(clicMedidor);
 
 // CE, 12/11/23, Vamos a quitar el funcionamiento del LongClick
 //        tv_caseta.setOnLongClickListener(longClicMedidor);
 //        tv_anomalia.setOnLongClickListener(longClicAnomalia);
 //        tv_lectura.setOnLongClickListener(longClicLectura);
 
-        iv_gps.setOnClickListener(clicGPS);
+            iv_gps.setOnClickListener(clicGPS);
 
-        button1.setOnClickListener(clicLectura);
-        button2.setOnClickListener(clicAnomalia);
-        button3.setOnClickListener(clicMedidor);
+            button1.setOnClickListener(clicLectura);
+            button2.setOnClickListener(clicAnomalia);
+            button3.setOnClickListener(clicMedidor);
 // CE, 12/11/23, Vamos a quitar el funcionamiento del LongClick
 //        button3.setOnLongClickListener(longClicMedidor);
 
-        button3.setOnTouchListener(new OnTouchListener() {
+            button3.setOnTouchListener(new OnTouchListener() {
 
-            @Override
-            public boolean onTouch(final View view, MotionEvent event) {
-                // TODO Auto-generated method stub
-                if (!globales.modoCaptura) {
+                @Override
+                public boolean onTouch(final View view, MotionEvent event) {
+                    // TODO Auto-generated method stub
+                    if (!globales.modoCaptura) {
 
 
-                    if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
 
-                        /*
-                         * Handler handler = new Handler();
-                         * handler.postDelayed(new Runnable() { public void
-                         * run() {
-                         */
-                        ((Button) view).setText(R.string.lbl_tdl_mover);
-                        /*
-                         * } },
-                         * android.view.ViewConfiguration.getLongPressTimeout
-                         * ());
-                         */
-                    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                        // button6.setText(R.string.m_str_siguiente);
-                        button3.setText(R.string.str_buscar);
+                            /*
+                             * Handler handler = new Handler();
+                             * handler.postDelayed(new Runnable() { public void
+                             * run() {
+                             */
+                            ((Button) view).setText(R.string.lbl_tdl_mover);
+                            /*
+                             * } },
+                             * android.view.ViewConfiguration.getLongPressTimeout
+                             * ());
+                             */
+                        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                            // button6.setText(R.string.m_str_siguiente);
+                            button3.setText(R.string.str_buscar);
 
+                        }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
+            });
 
-        });
+            button4.setOnTouchListener(new OnTouchListener() {
 
-        button4.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(final View view, MotionEvent event) {
+                    // TODO Auto-generated method stub
 
-            @Override
-            public boolean onTouch(final View view, MotionEvent event) {
-                // TODO Auto-generated method stub
+                    if (!globales.modoCaptura) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
 
-                if (!globales.modoCaptura) {
-                    if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-
-                        /*
-                         * Handler handler = new Handler();
-                         * handler.postDelayed(new Runnable() { public void
-                         * run() {
-                         */
-                        ((Button) view).setText(R.string.lbl_tdl_primera);
-                        /*
-                         * } },
-                         * android.view.ViewConfiguration.getLongPressTimeout
-                         * ());
-                         */
-                    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                        // button6.setText(R.string.m_str_siguiente);
-                        button4.setText(R.string.m_str_anterior);
-                        iv_button4.setVisibility(View.VISIBLE);
+                            /*
+                             * Handler handler = new Handler();
+                             * handler.postDelayed(new Runnable() { public void
+                             * run() {
+                             */
+                            ((Button) view).setText(R.string.lbl_tdl_primera);
+                            /*
+                             * } },
+                             * android.view.ViewConfiguration.getLongPressTimeout
+                             * ());
+                             */
+                        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                            // button6.setText(R.string.m_str_siguiente);
+                            button4.setText(R.string.m_str_anterior);
+                            iv_button4.setVisibility(View.VISIBLE);
+                        }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
+            });
 
-        });
-
-        button4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!globales.modoCaptura) {
-                    permiteCerrar();
-                    globales.moverPosicion = false;
-                    cancelaTimer();
-                    if (globales.bModificar)
-                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_antes);
-                    else
-                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_antes);
-                    getAntLect();
-                    // enviarAvance();
-                } else {
-                    procesoDeReiniciar();
-                }
-            }
-        });
-
-        button6.setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(final View view, MotionEvent event) {
-                // TODO Auto-generated method stub
-                if (!globales.modoCaptura) {
-                    if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                        /*
-                         * Handler handler = new Handler();
-                         * handler.postDelayed(new Runnable() { public void
-                         * run() {
-                         */
-                        ((Button) view).setText(R.string.lbl_tdl_ultima);
-                        /*
-                         * } },
-                         * android.view.ViewConfiguration.getLongPressTimeout
-                         * ());
-                         */
-
-                    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                        button6.setText(R.string.m_str_siguiente);
-                        iv_button6.setVisibility(View.VISIBLE);
-                    }
-                }
-
-
-                return false;
-            }
-
-        });
-        button6.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!globales.modoCaptura) {
-                    globales.moverPosicion = false;
-                    cancelaTimer();
-                    permiteCerrar();
-                    if (globales.bModificar)
-                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_despues);
-                    else
-                        is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_despues);
-                    getSigLect();
-                    // enviarAvance();
-                } else {
-                    capturar();
-                }
-            }
-        });
-
-        button4.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View arg0) {
-                if (button6.getText().equals("Finalizar")) {
-                    return true;
-                } else {
-                    cancelaTimer();
+            button4.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
                     if (!globales.modoCaptura) {
                         permiteCerrar();
-                        getPrimLect();
+                        globales.moverPosicion = false;
+                        cancelaTimer();
+                        if (globales.bModificar)
+                            is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_antes);
+                        else
+                            is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_antes);
+                        getAntLect();
+                        // enviarAvance();
+                    } else {
+                        procesoDeReiniciar();
+                    }
+                }
+            });
+
+            button6.setOnTouchListener(new OnTouchListener() {
+
+                @Override
+                public boolean onTouch(final View view, MotionEvent event) {
+                    // TODO Auto-generated method stub
+                    if (!globales.modoCaptura) {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                            /*
+                             * Handler handler = new Handler();
+                             * handler.postDelayed(new Runnable() { public void
+                             * run() {
+                             */
+                            ((Button) view).setText(R.string.lbl_tdl_ultima);
+                            /*
+                             * } },
+                             * android.view.ViewConfiguration.getLongPressTimeout
+                             * ());
+                             */
+
+                        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                            button6.setText(R.string.m_str_siguiente);
+                            iv_button6.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+
+                    return false;
+                }
+
+            });
+            button6.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (!globales.modoCaptura) {
+                        globales.moverPosicion = false;
+                        cancelaTimer();
+                        permiteCerrar();
+                        if (globales.bModificar)
+                            is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_ingr_despues);
+                        else
+                            is_mensaje_direccion = getString(R.string.msj_tdl_no_mas_lecturas_despues);
+                        getSigLect();
                         // enviarAvance();
                     } else {
                         capturar();
                     }
                 }
-                return true;
-            }
-        });
-        button6.setOnLongClickListener(new View.OnLongClickListener() {
+            });
 
-            public boolean onLongClick(View arg0) {
-                if (button6.getText().equals("Finalizar")) {
-                    return true;
-                } else {
-                    cancelaTimer();
-                    if (!globales.modoCaptura) {
-                        permiteCerrar();
-                        getUltLect();
+            button4.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View arg0) {
+                    if (button6.getText().equals("Finalizar")) {
+                        return true;
+                    } else {
+                        cancelaTimer();
+                        if (!globales.modoCaptura) {
+                            permiteCerrar();
+                            getPrimLect();
+                            // enviarAvance();
+                        } else {
+                            capturar();
+                        }
                     }
-                    // enviarAvance();
                     return true;
                 }
-            }
-        });
+            });
+            button6.setOnLongClickListener(new View.OnLongClickListener() {
 
-        button6.setWidth(button2.getWidth());
-        button5.setWidth(button3.getWidth());
-        button4.setWidth(button1.getWidth());
+                public boolean onLongClick(View arg0) {
+                    if (button6.getText().equals("Finalizar")) {
+                        return true;
+                    } else {
+                        cancelaTimer();
+                        if (!globales.modoCaptura) {
+                            permiteCerrar();
+                            getUltLect();
+                        }
+                        // enviarAvance();
+                        return true;
+                    }
+                }
+            });
+
+            button6.setWidth(button2.getWidth());
+            button5.setWidth(button3.getWidth());
+            button4.setWidth(button1.getWidth());
+        } catch (Throwable t) {
+            mostrarMensaje("Alerta", "Problema inesperado", t);
+        }
     }
 
     public void buscarMedidor(final int tipo) {
@@ -4006,5 +4016,13 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         }
 
         mDialogoMsg.mostrarMensaje(titulo, mensaje, "");
+    }
+
+    private void mostrarMensaje(String titulo, String mensaje, Throwable t) {
+        if (mDialogoMsg == null) {
+            mDialogoMsg = new DialogoMensaje(this);
+        }
+
+        mDialogoMsg.mostrarMensaje(titulo, mensaje, t.getMessage());
     }
 }
