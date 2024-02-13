@@ -10,12 +10,9 @@ public class GeneradorDatosEnvio {
     public String generarInfoOrdenes(Cursor c, long idEmpleado) throws Exception  {
         String dato;
         String tipoRegistro = "ORD";
-
         if (c == null)
             return "";
-
         mCursor = c;
-
         try {
             String strAnomalia = getString("anomalia");
             String strLectura = getString("lectura");
@@ -70,7 +67,8 @@ public class GeneradorDatosEnvio {
                 getString("SeQuitoTuberia"),
                 getString("TuberiaRetirada"),
                 getString("MarcaRetirada"),
-                getString("MedidorRetirado")
+                    getString("MedidorRetirado"),
+                    getString("MaterialRecuperado")
 //************************************************************************************************************************************
             );
             return dato;
@@ -81,12 +79,9 @@ public class GeneradorDatosEnvio {
 
     public String generarNoregistrado(Cursor c) throws Exception {
         String dato;
-
         if (c == null)
             return "";
-
         mCursor = c;
-
         dato = Utils.concatenarColumnas("|",
                 getString("TipoRegistro"),
                 getString("idLectura"),
@@ -100,16 +95,14 @@ public class GeneradorDatosEnvio {
                 getString("Observaciones"),
                 getString("rowid")
         );
-
         return dato;
     }
 
     private String getString(String columna) throws Exception {
         String dato;
-
         dato = Utils.getString(mCursor, columna, "");   // Obtener el dato de la base de datos SQL Lite
         dato = dato.replaceAll("\\|", " "); // Quitar el caracter pipe (|) por si se capturó
-
+        dato = dato.replaceAll("\n", " "); // Quitar el salto de linea por si se capturó
         return dato;
     }
 }

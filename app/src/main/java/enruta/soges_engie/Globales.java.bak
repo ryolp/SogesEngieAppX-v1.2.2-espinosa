@@ -380,6 +380,11 @@ public class Globales extends Application {
 					strMarbete = "1x EMPAQUE DN20";
 				else
 					strMarbete = "1x EMPAQUE DN20, MARBETE";
+			}else if (tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS")) {
+				if (tll.getLecturaActual().is_habitado.equals("1"))
+					strMarbete = "1x EMPAQUE DN20";
+				else
+					strMarbete = "1x EMPAQUE DN20, MARBETE";
 			}else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO")) {
 				if (tll.getLecturaActual().is_habitado.equals("1"))
 					strMarbete = "2x EMPAQUE DN20";
@@ -397,6 +402,8 @@ public class Globales extends Application {
 			else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 				strMarbete = "";
 			else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
+				strMarbete = "AVISO NUEVO RX";
+			else if (tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS"))
 				strMarbete = "AVISO NUEVO RX";
 			else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
 				strMarbete = "AVISO NUEVO RX";
@@ -551,6 +558,8 @@ public class Globales extends Application {
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REMOCION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_RECONEXION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_SIN_DATOS_REC_REMO;
 				else
@@ -574,6 +583,8 @@ public class Globales extends Application {
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REMOCION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN"))
+					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_RECONEXION;
+				else if (tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_RECONEXION;
 				else if (tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
 					nEstadoDeLaRepercusion = ENTRO_NO_EFECTIVA_CON_DATOS_REC_REMO;

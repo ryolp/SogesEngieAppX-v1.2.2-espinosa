@@ -47,6 +47,7 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
     MensajeEspecial mj_estaCortado;
     MensajeEspecial mj_sellos;
     MensajeEspecial mj_consumocero;
+    MensajeEspecial mj_consumoceroRecuperado;
     MensajeEspecial mj_ubicacionVacia;
     MensajeEspecial mj_anomalia_seis;
     MensajeEspecial mj_ver_datos;
@@ -104,6 +105,15 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //         respuesta.add(new Respuesta("LL", "L-Cierre de Llaves"));
         mj_consumocero = new MensajeEspecial("Seleccione el Material Utilizado", respuesta, PREGUNTAS_CONSUMO_CERO);
         mj_consumocero.cancelable = false;
+//*********************************************************************************************
+
+        respuesta = new Vector<Respuesta>();
+        respuesta.add(new Respuesta("EX", "X-Expander"));
+        respuesta.add(new Respuesta("JC", "J-Junta Ciega"));
+        respuesta.add(new Respuesta("DJ", "D-Doble Junta Ciega"));
+        respuesta.add(new Respuesta("TP", "T-Tapón de Bloqueo"));
+        mj_consumoceroRecuperado = new MensajeEspecial("Seleccione el Material Recuperado", respuesta, PREGUNTAS_CONSUMO_CERO);
+        mj_consumoceroRecuperado.cancelable = false;
 //*********************************************************************************************
 
 
@@ -1087,9 +1097,10 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 //		}
 
         if (!globales.tll.getLecturaActual().verDatos) {
-            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
-                return mj_ver_datosFotoDeLlegada;
-            else
+// CE, 02/02/24, Vamos a quitar la Foto de Llegada de las REC/REMO a solicitud de Cesar Chavez
+//            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))
+//                return mj_ver_datosFotoDeLlegada;
+//           else
                 return mj_ver_datos;
         }
         return null;
@@ -1266,6 +1277,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
 // CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el material utilizado. Siempre debe pedirlo
         if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO002"))
             return mj_consumocero;
+// CE, 29/01/24, También vamos a pedir el material utilizado si son RX Normal o RX Express
+        if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO003"))
+            return mj_consumoceroRecuperado;
+        if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO006"))
+            return mj_consumoceroRecuperado;
+
         return null;
 /*
         //Vamos a realizar una prueba... no se los estados del suministro, asi que si es par es 0 y non 4
@@ -1306,7 +1323,12 @@ public class TomaDeLecturasEngie extends TomaDeLecturasGenerica {
                 }
                 break;
             case PREGUNTAS_CONSUMO_CERO:
-                globales.tll.getLecturaActual().is_idMaterialUtilizado = me.regresaValor(respuesta);
+                if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO002"))
+                    globales.tll.getLecturaActual().is_idMaterialUtilizado = me.regresaValor(respuesta);
+                if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO003"))
+                    globales.tll.getLecturaActual().is_MaterialRecuperado = me.regresaValor(respuesta);
+                if (globales.tll.getLecturaActual().is_tipoDeOrden.equals("TO006"))
+                    globales.tll.getLecturaActual().is_MaterialRecuperado = me.regresaValor(respuesta);
 //**********************************************************
 // CE, 01/10/23, Vamos a usar la Encuesta de Consumo Cero para capturar el Material Utilizado
 /*

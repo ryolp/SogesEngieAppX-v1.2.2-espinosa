@@ -106,13 +106,16 @@ public class ResumenGridAdapter extends BaseAdapter {
             	descripcion.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)(fontSize));
 
 				if (resumen.descripcion.equals("Desconexiones")) {
-					descripcion.setBackgroundColor(Color.parseColor("#FDC300"));
+					descripcion.setBackgroundColor(Color.parseColor("#F39313"));
 				}
 				if (resumen.descripcion.equals("Remociones")) {
-					descripcion.setBackgroundColor(Color.parseColor("#F39313"));
+					descripcion.setBackgroundColor(Color.parseColor("#E73439"));
 				}
 				if (resumen.descripcion.equals("Reconexiones")) {
 					descripcion.setBackgroundColor(Color.parseColor("#67AE6E"));
+				}
+				if (resumen.descripcion.equals("RX Express")) {
+					descripcion.setBackgroundColor(Color.parseColor("#FDC300"));
 				}
 				if (resumen.descripcion.equals("Rec/Remos")) {
 					descripcion.setBackgroundColor(Color.parseColor("#4BB0B9"));

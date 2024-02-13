@@ -145,6 +145,8 @@ public class BuscarMedidorGridAdapter extends BaseAdapter {
                         layoutcuadro.setBackgroundResource(R.color.EngieDx);
                     if (lectura.getTipoDeOrden().equals("RECONEXIÓN"))
                         layoutcuadro.setBackgroundResource(R.color.EngieRx);
+                    if (lectura.getTipoDeOrden().equals("RX.EXPRESS"))
+                        layoutcuadro.setBackgroundResource(R.color.EngieEx);
                     if (lectura.getTipoDeOrden().equals("REMOCIÓN"))
                         layoutcuadro.setBackgroundResource(R.color.EngieRm);
                     if (lectura.getTipoDeOrden().equals("REC/REMO"))

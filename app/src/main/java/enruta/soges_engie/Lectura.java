@@ -100,6 +100,8 @@ public class Lectura {
 	String is_MedidorRetirado="";
 //************************************************************************************************************************************
 
+	String is_MaterialRecuperado = "";
+
 	private Resources res;
 
 	Globales globales;
@@ -126,6 +128,8 @@ public class Lectura {
 			strTipoDeOrden= "REC/REMO";
 		if (is_tipoDeOrden.equals("TO005"))
 			strTipoDeOrden= "REMOCIÓN";
+		if (is_tipoDeOrden.equals("TO006"))
+			strTipoDeOrden= "RX.EXPRESS";
 
 		return strTipoDeOrden;
 	}
@@ -273,6 +277,7 @@ public class Lectura {
 			is_TuberiaRetirada = Utils.getString(c, "TuberiaRetirada", "");
 			is_MarcaRetirada = Utils.getString(c, "MarcaRetirada", "");
 			is_MedidorRetirado = Utils.getString(c, "MedidorRetirado", "");
+			is_MaterialRecuperado = Utils.getString(c, "MaterialRecuperado", "");
 //************************************************************************************************************************************
 
 			ls_mensaje= Utils.getString(c, "mensaje", "");
@@ -511,6 +516,7 @@ public class Lectura {
 		cv_params.put("TuberiaRetirada", is_TuberiaRetirada);
 		cv_params.put("MarcaRetirada", is_MarcaRetirada);
 		cv_params.put("MedidorRetirado", is_MedidorRetirado);
+		cv_params.put("MaterialRecuperado", is_MaterialRecuperado);
 //************************************************************************************************************************************
 
 		String params[] = { String.valueOf(secuenciaReal) };

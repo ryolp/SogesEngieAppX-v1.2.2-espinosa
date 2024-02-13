@@ -299,10 +299,10 @@ public class Configuracion extends AppCompatActivity {
 	    			switch (ii_rol){
 		    		case CPL.LECTURISTA:
 		    			//spinner.setEnabled(false);
-		    			if (tmp.view_name.equals("tam_fotos") )
-		    				spinner.setEnabled(true);
-		    			else
-		    				spinner.setEnabled(false);
+						if (tmp.view_name.equals("tam_fotos") )
+							spinner.setEnabled(true);
+						else
+							spinner.setEnabled(false);
 		    			break;
 		    		}
 	    			c.close();
@@ -556,7 +556,6 @@ public class Configuracion extends AppCompatActivity {
 						 }
 						 else{
 							 if (!globales.mostrarMetodoDeTransmision && tmp.view_name.equals("modo_trans")) {
-
 					    			texto= globales.defaultTransmision;
 					    		}else if (!globales.mostrarTamañoFoto && tmp.view_name.equals("tam_fotos")){
 					    			texto= globales.defaultTamañoFoto;

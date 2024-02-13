@@ -830,16 +830,16 @@
 
 			<RelativeLayout
 				android:layout_width="match_parent"
-				android:layout_height="140dp"
+				android:layout_height="160dp"
 				android:layout_marginTop="15dp">
 
 				<RelativeLayout
 					android:layout_width="match_parent"
-					android:layout_height="120dp">
+					android:layout_height="140dp">
 
 					<androidx.cardview.widget.CardView
 						android:layout_width="match_parent"
-						android:layout_height="100dp"
+						android:layout_height="130dp"
 						android:layout_marginHorizontal="20dp"
 						android:layout_marginTop="10dp"
 						app:cardCornerRadius="10dp"
@@ -852,10 +852,10 @@
 							android:layout_marginStart="30dp"
 							android:gravity="center_vertical"
 							android:paddingHorizontal="40dp"
+							android:scrollbars="vertical"
 							android:text="Victoria Reyna#2231-D\nCintrika, Entre Victoria Imperial\nVictoria Emperatriz\nMaltos, 871972"
 							android:textColor="@color/black"
 							android:textSize="18sp"
-							android:scrollbars = "vertical"
 							app:fontFamily="@font/lato" />
 					</androidx.cardview.widget.CardView>
 

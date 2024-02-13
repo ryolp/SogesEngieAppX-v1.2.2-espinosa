@@ -567,7 +567,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                     if (globales.strUltimaBusquedaRealizada.equals("Campanita")) {
                         globales.strUltimaBusquedaRealizada = "";
                         openDatabase();
-                        db.execSQL("update ruta set balance=''");
+                        db.execSQL("update ruta set balance='' where tipoDeOrden <> 'TO006'");
                         closeDatabase();
                     }
                 }
@@ -1400,6 +1400,18 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
         startActivityForResult(intent, BUSCAR_MEDIDOR);
     }
 
+    public boolean HayReconexionesExpressPendientes(){
+        long ll_EngieReconexionesExpressPendientes;
+        Cursor c;
+        openDatabase();
+        c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO006' and trim(tipoLectura)=''", null);
+        c.moveToFirst();
+        ll_EngieReconexionesExpressPendientes=c.getLong(c.getColumnIndex("canti"));
+        c.close();
+        closeDatabase();
+        return (ll_EngieReconexionesExpressPendientes > 0);
+    }
+
     public void buscarMedidorCampanita(final int tipo) {
         globales.strUltimaBusquedaRealizada = "Campanita";
         Intent intent = new Intent(this, BuscarMedidorActivity.class);
@@ -1628,8 +1640,9 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             tv_nueva_datos_sap2.setText(globales.tll.getLecturaActual().getTipoDeOrden() + strTipoDeMaterial);
 
             String strContadorOrdenes = "";
-            if (globales.bPrenderCampana)
-                strContadorOrdenes = "TIENES UNA ACTUALIZACION\n\n";
+// CE, 02/02/24, Ya no vamos a mostrar este texto, pues ya esta prendiendo la Campanita
+//            if (globales.bPrenderCampana)
+//                strContadorOrdenes = "TIENES UNA ACTUALIZACION\n\n";
             strContadorOrdenes += (globales.mostrarRowIdSecuencia ? globales.tll.getLecturaActual().secuenciaReal : globales.il_lect_act) + " de " + globales.il_total;
             tv_contador.setText(strContadorOrdenes);
 
@@ -2444,11 +2457,14 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 solicitarEmergencia();
                 break;
             case R.id.m_CampanaNegra:
+// CE, 02/02/24, Vamos a dejar la campana prendida si hay Reconexiones Express Pendientes
+                globales.bPrenderCampana = HayReconexionesExpressPendientes();
                 if (globales.bPrenderCampana)
                     item.setIcon(R.drawable.campana_negra);
 //                else
 //                    item.setIcon(R.drawable.campana_amarilla);
-                globales.bPrenderCampana = false;
+// CE, 02/02/24, Vamos a dejar la campana prendida si hay Reconexiones Express Pendientes
+//                globales.bPrenderCampana = false;
                 buscarMedidorCampanita(BuscarMedidor.BUSCAR);
                 break;
             case R.id.m_MostrarUbicacionGPS:
@@ -3339,6 +3355,8 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
                 ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieDx);
             } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
                 ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieRx);
+            } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS")) {
+                ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieEx);
             } else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN")) {
                 ll_layoutTipoDeOrden.setBackgroundResource(R.color.EngieRm);
             } else {
@@ -3669,6 +3687,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
 //**********************************************************************************************
 // CE, 04/10/2023, Vamos a preguntar si esta el Cliente Presente solamente en las Rx y RecRemo
             if ((globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) ||
+                    (globales.tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS")) ||
                     (globales.tll.getLecturaActual().getTipoDeOrden().equals("REC/REMO"))) {
                 preguntaSiNo(globales.tdlg.mj_habitado);
             } else {
@@ -3715,7 +3734,7 @@ public class TomaDeLecturas extends TomaDeLecturasPadre implements
             puedeVerDatosAlRegresar = true;
             globales.puedoCancelarFotos = true;
             globales.tll.getLecturaActual().is_habitado = "" + (respuesta+1);
-            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+            if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN") || globales.tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS")) {
                 if (respuesta==0)
                     globales.setEstadoDeLaRepercusion(Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_CLIENTE_PRESENTE_ANTES);
                 else

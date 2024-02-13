@@ -45,14 +45,17 @@ public class Resumen extends Fragment {
 			long ll_porEnviar;
 			long ll_EngieDesconexiones;
 			long ll_EngieReconexiones;
+			long ll_EngieReconexionesExpress;
 			long ll_EngieRemociones;
 			long ll_EngieRecRemos;
 			long ll_EngieDesconexionesPendientes;
 			long ll_EngieReconexionesPendientes;
+			long ll_EngieReconexionesExpressPendientes;
 			long ll_EngieRemocionesPendientes;
 			long ll_EngieRecRemosPendientes;
 			long ll_EngieDesconexionesEfectivas;
 			long ll_EngieReconexionesEfectivas;
+			long ll_EngieReconexionesExpressEfectivas;
 			long ll_EngieRemocionesEfectivas;
 			long ll_EngieRecRemosEfectivas;
 
@@ -104,9 +107,24 @@ public class Resumen extends Fragment {
 				ll_EngieReconexionesPendientes=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO006'", null);
+				c.moveToFirst();
+				ll_EngieReconexionesExpress=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO006' and trim(tipoLectura)=''", null);
+				c.moveToFirst();
+				ll_EngieReconexionesExpressPendientes=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO003' and trim(repercusion)='A'", null);
 				c.moveToFirst();
 				ll_EngieReconexionesEfectivas=c.getLong(c.getColumnIndex("canti"));
+				c.close();
+
+				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO006' and trim(repercusion)='A'", null);
+				c.moveToFirst();
+				ll_EngieReconexionesExpressEfectivas=c.getLong(c.getColumnIndex("canti"));
 				c.close();
 
 				c=db.rawQuery("Select count(*) canti from ruta where trim(tipoDeOrden)='TO004'", null);
@@ -185,6 +203,11 @@ public class Resumen extends Fragment {
 				else
 					porcentaje = (((float)ll_EngieReconexionesEfectivas*100 / (float)(ll_EngieReconexiones - ll_EngieReconexionesPendientes)));
 				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_reconexiones), String.valueOf(ll_EngieReconexionesPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
+				if (ll_EngieReconexionesExpress == ll_EngieReconexionesExpressPendientes)
+					porcentaje = (float)100.0;
+				else
+					porcentaje = (((float)ll_EngieReconexionesExpressEfectivas*100 / (float)(ll_EngieReconexionesExpress - ll_EngieReconexionesExpressPendientes)));
+				resumen.add(new EstructuraResumen(getString(R.string.msj_main_engie_reconexiones_express), String.valueOf(ll_EngieReconexionesExpressPendientes), String.format(Locale.US, "%.0f", porcentaje) + "%   "));
 				if (ll_EngieRemociones == ll_EngieRemocionesPendientes)
 					porcentaje = (float)100.0;
 				else

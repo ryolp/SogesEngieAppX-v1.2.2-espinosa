@@ -174,13 +174,13 @@ public class BuscarMedidorActivity extends Activity {
                     if (strTextoBuscado.equals("DX")) {
                         strTextoBuscado = " and tipoDeOrden = 'TO002'";
                     } else if (strTextoBuscado.equals("RX")) {
-                        strTextoBuscado = " and tipoDeOrden = 'TO003'";
+                        strTextoBuscado = " and (tipoDeOrden = 'TO003' or tipoDeOrden = 'TO006')";
                     } else if (strTextoBuscado.equals("RM")) {
                         strTextoBuscado = " and tipoDeOrden = 'TO005'";
                     } else if (strTextoBuscado.equals("RR")) {
                         strTextoBuscado = " and tipoDeOrden = 'TO004'";
                     } else if (strTextoBuscado.equals("EX")) {
-                        strTextoBuscado = " and tipoDeOrden = 'TO103'";
+                        strTextoBuscado = " and tipoDeOrden = 'TO006'";
                     } else {
                         strTextoBuscado = "and ((upper(colonia || ' ' || calle || ' ' || entrecalles) like '%" + et_medidor.getText().toString().trim().toUpperCase() + "%') or (serieMedidor like '%" + et_medidor.getText().toString().trim() + "%')) ";
                     }
@@ -256,6 +256,7 @@ public class BuscarMedidorActivity extends Activity {
             double longitud = 0;
             String latitudStr = "";
             String longitudStr = "";
+            String strTipoDeOrden = "";
             int cant = 0;
 
             if (globales.location == null)
@@ -274,9 +275,13 @@ public class BuscarMedidorActivity extends Activity {
                     // RL, 2023-12-19, Se guarda el valor de la latitud y longitud en una variable string.
                     latitudStr = Utils.getString(c, "miLatitud", "");
                     longitudStr = Utils.getString(c, "miLongitud", "");
-
+                    strTipoDeOrden = Utils.getString(c, "tipoDeOrden", "");
+// CE, 02/02/24, Vamos a poner primero a todas las Reconexiones Express
+//                    if ((!latitudStr.equals("0.0")) && (!longitudStr.equals("0.0")) &&
+//                            (!latitudStr.equals("")) && (!longitudStr.equals(""))) {
                     if ((!latitudStr.equals("0.0")) && (!longitudStr.equals("0.0")) &&
-                            (!latitudStr.equals("")) && (!longitudStr.equals(""))) {
+                            (!latitudStr.equals("")) && (!longitudStr.equals("")) &&
+                            (!strTipoDeOrden.equals("TO006"))) {
                         try {
                             Location origen = new Location("Origen");
                             origen.setLatitude(latitud);

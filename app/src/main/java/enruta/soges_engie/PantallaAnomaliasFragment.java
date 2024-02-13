@@ -89,7 +89,7 @@ public class PantallaAnomaliasFragment extends Fragment {
 		tipo = bu_params.getInt("tipo");
 		tipoAnomalia=pa_papa.globales.tll.getLecturaActual().is_tipoDeOrden;
 		
-		if (tipoAnomalia.equals("TO003")){   // Reconexion
+		if (tipoAnomalia.equals("TO003") || tipoAnomalia.equals("TO006")){   // Reconexion o RX Express
 			tipoAnomalia="I";
 		}
 		else if (tipoAnomalia.equals("TO004")){   // Rec-Remo

@@ -188,9 +188,9 @@
     <string name="msj_camara_volverATomar">"Volver a Tomar"</string>
     <string name="lbl_camara_otra">Otra Foto</string>
 
-    <string name="lbl_configuracion_modo_trans">Modo de transmisión predeterminado</string>
-    <string name="lbl_configuracion_modo_WIFI">WIFI</string>
-    <string name="lbl_configuracion_modo_GPRS">GPRS</string>
+    <string name="lbl_configuracion_modo_trans">Modo de transmisión de los Videos</string>
+    <string name="lbl_configuracion_modo_WIFI">Solo por WiFi</string>
+    <string name="lbl_configuracion_modo_GPRS">Por WiFi y por Datos</string>
     <string name="lbl_configuracion_modo_BT">Bluetooth</string>
     <string name="lbl_configuracion_modo_USB">USB</string>
     <string name="lbl_configuracion_modo_preguntar">Preguntar Siempre</string>
@@ -223,6 +223,7 @@
 
     <string name="msj_main_engie_desconexiones">"Desconexiones"</string>
     <string name="msj_main_engie_reconexiones">"Reconexiones"</string>
+    <string name="msj_main_engie_reconexiones_express">"RX Express"</string>
     <string name="msj_main_engie_remociones">"Remociones"</string>
     <string name="msj_main_engie_recremos">"Rec/Remos"</string>
     <string name="msj_main_no_hay_itinerarios">"No hay órdenes cargadas"</string>

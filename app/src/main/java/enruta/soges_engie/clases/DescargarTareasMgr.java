@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -161,17 +163,56 @@ public class DescargarTareasMgr implements Runnable {
     */
 
     public TareasResponse descargarTareas() {
+        List<Long> listadoIdTareas;
         mRequest = new TareasRequest();
         mRequest.idEmpleado = mGlobales.getIdEmpleado();
         mRequest.FechaOperacion = Utils.getDateTime();
         TareasResponse resp;
 
         try {
+            listadoIdTareas = obtenerIdsTareas();
+
+            mRequest.listadoIdsTareas = listadoIdTareas;
+
             resp = WebApiManager.getInstance(mContext).descargarTareas(mRequest);
             return resp;
         } catch (Throwable t) {
             notificarError("No hay conexión a internet. Intente nuevamente.", t);
             return null;
+        }
+    }
+
+    /*
+    * obtenerIdsTareas().
+    *
+    * Función que obtiene los Ids de todas las tareas registradas.
+    */
+    private ArrayList<Long> obtenerIdsTareas() {
+        ArrayList<Long> listado = new ArrayList<>();
+        Cursor c = null;
+
+        try {
+            String query;
+            int cantidad;
+            Long idTarea;
+
+            query = "SELECT idTarea FROM Ruta GROUP BY idTarea";
+
+            c = mDb.rawQuery(query, null);
+
+            cantidad = c.getCount();
+
+            while (c.moveToNext()) {
+                idTarea = Utils.getLong(c, "idTarea", 0);
+                listado.add(idTarea);
+            }
+        } catch (Throwable t) {
+            Log.e("SOGES", t.getMessage());
+        }
+        finally {
+            if (c != null)
+                c.close();
+            return listado;
         }
     }
 
@@ -416,7 +457,7 @@ public class DescargarTareasMgr implements Runnable {
 
             // Buscar si ya existe una orden con el mismo idOrden
 
-            c = mDb.rawQuery("Select idOrden, MensajeOut, vencido from ruta WHERE CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
+            c = mDb.rawQuery("Select idOrden, MensajeOut, vencido, tipoDeOrden, balance from ruta WHERE CAST(idOrden as INTEGER) = CAST(? as INTEGER) limit 1", new String [] {String.valueOf(orden.idOrden)});
 
             if (c.getCount() > 0) {
                 c.moveToFirst();
@@ -430,6 +471,8 @@ public class DescargarTareasMgr implements Runnable {
 //                if (c.getCount() > 0) {
                 String strMensajeApp = Utils.getString(c, "MensajeOut", "");
                 String strVencidoApp = Utils.getString(c, "vencido", "");
+                String strTipoDeOrden = Utils.getString(c, "tipoDeOrden", "");
+                String strBalanceAnterior = Utils.getString(c, "balance", "");
                 String strBalance = "3";
 // CE, 06/12/23, Vamos a marcar las que llegaron como nuevas
 //                String strEnvio = Utils.getString(c, "envio", "");
@@ -438,6 +481,17 @@ public class DescargarTareasMgr implements Runnable {
                 if ((!strMensajeApp.equals(orden.MensajeOut)) || (!strVencidoApp.equals(orden.Vencido))) {
                     mDb.execSQL("update ruta set MensajeOut='" + orden.MensajeOut + "', vencido='" + orden.Vencido + "', balance='" + strBalance + "' where CAST(idOrden as INTEGER) = CAST(" + String.valueOf(orden.idOrden) + " as INTEGER)");
                     mGlobales.bPrenderCampana = true;
+// CE, 02/02/24, Vamos a marcar las que no tuvieron cambio, para borrar al final todas las que no se hayan vuelto a recibir
+                } else {
+                    if (strTipoDeOrden.equals("TO006"))
+                        strBalance = "1";
+                    else {
+                        if (strBalanceAnterior.equals(""))
+                           strBalance = "4";
+                        else
+                            strBalance = strBalanceAnterior;
+                    }
+                    mDb.execSQL("update ruta set balance='" + strBalance + "' where CAST(idOrden as INTEGER) = CAST(" + String.valueOf(orden.idOrden) + " as INTEGER)");
                 }
 //                }
             } else {

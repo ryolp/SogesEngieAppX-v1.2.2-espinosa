@@ -609,7 +609,7 @@ public class Input extends TomaDeLecturasPadre {
                             is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
                         else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("REMOCIÓN"))
                             is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";
-                        else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN")) {
+                        else if (globales.tll.getLecturaActual().getTipoDeOrden().equals("RECONEXIÓN") || globales.tll.getLecturaActual().getTipoDeOrden().equals("RX.EXPRESS")) {
                             if ((globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_RECONEXION_LITRAJE) ||
                                     (globales.getEstadoDeLaRepercusion() == Globales.ENTRO_EFECTIVA_SIN_DATOS_REC_REMO_LITRAJE)) {
                                 is_NuevoMensajePorMostrar = "\nESCRIBA SUS OBSERVACIONES\n";

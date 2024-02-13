@@ -21,6 +21,7 @@ import enruta.soges_engie.clases.FotosMgr;
 import enruta.soges_engie.clases.Utils;
 import enruta.soges_engie.entities.DatosEnvioEntity;
 import enruta.soges_engie.entities.OrdenEntity;
+import enruta.soges_engie.entities.OrdenEstatusEntity;
 import enruta.soges_engie.entities.ParametrosCelular;
 import enruta.soges_engie.entities.SubirDatosRequest;
 import enruta.soges_engie.entities.SubirDatosResponse;
@@ -34,6 +35,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -41,6 +43,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -515,6 +518,7 @@ public class trasmisionDatos extends TransmisionesPadre {
         Cursor c = null;
         String nombreArchivo = "";
         String serieMedidor = "";
+        String errorMsg = "";
         byte[] image;
         DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
 
@@ -618,7 +622,6 @@ public class trasmisionDatos extends TransmisionesPadre {
 //                    }
                     // closeDatabase();
                     // Marcar como enviada
-                    c.moveToNext();
                     mostrarMensaje(MENSAJE, (i + 1) + " "
                             + getString(R.string.de) + " "
                             + cantFotos + " "
@@ -628,19 +631,26 @@ public class trasmisionDatos extends TransmisionesPadre {
                 } catch (Throwable t) {
                     numErrores++;
                     t.printStackTrace();
+                    errorMsg = Utils.concatenar("\n", errorMsg, t.getMessage());
+                } finally {
+                    c.moveToNext();
                 }
             }
         } catch (Throwable t) {
             throw new Exception("Error al enviar fotos. (" + t.getMessage() + ")");
         } finally {
-            if (numErrores == 1)
-                throw new Exception("No se pudo enviar 1 fotografía. Revise la conexión a internet.");
-            else if (numErrores > 1)
-                throw new Exception("No se pudieron enviar " + String.valueOf(numErrores) + " fotografías. Revise la conexión a internet.");
+            if (numErrores == 1) {
+                errorMsg = Utils.concatenar("\n", "No se pudo enviar 1 fotografía. Revise la conexión a internet.", errorMsg);
+                throw new Exception(errorMsg);
+            }
+            else if (numErrores > 1) {
+                errorMsg = Utils.concatenar("\n","No se pudieron enviar " + String.valueOf(numErrores) + " fotografías. Revise la conexión a internet.", errorMsg);
+                throw new Exception(errorMsg);
+            }
             return cantFotos;
         }
     }
-    
+
     private void validarTipoConexion(int enviarPor) {
         if (enviarPor == ParametrosCelular.SOLO_WIFI) {
             if (mTipoConexionInternet == CONEXION_WIFI) {
@@ -659,7 +669,7 @@ public class trasmisionDatos extends TransmisionesPadre {
                     getString(R.string.str_enviando_videos));
             mostrarMensaje(MENSAJE, getString(R.string.str_espere));
         }
-    }    
+    }
 
     private int transmitirVideos(trasmisionDatos context) throws Exception {
         int cantVideos = 0;
@@ -672,6 +682,7 @@ public class trasmisionDatos extends TransmisionesPadre {
         Cursor c = null;
         String nombreArchivo = "";
         String serieMedidor = "";
+        String errorMsg = "";
         Uri uri;
         String uriStr;
         DatosEnvioEntity datosEnvio = new DatosEnvioEntity();
@@ -746,7 +757,6 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     // borrarVideo(uri);
 
-                    c.moveToNext();
                     mostrarMensaje(MENSAJE, (i + 1) + " "
                             + getString(R.string.de) + " "
                             + cantVideos + " "
@@ -756,6 +766,11 @@ public class trasmisionDatos extends TransmisionesPadre {
                 } catch (Throwable t) {
                     numErrores++;
                     t.printStackTrace();
+                    errorMsg = Utils.concatenar("\n", errorMsg, t.getMessage());
+
+                }
+                finally {
+                    c.moveToNext();
                 }
             }
         } catch (AppSinWifi t) {
@@ -764,9 +779,9 @@ public class trasmisionDatos extends TransmisionesPadre {
             throw new Exception("Error al enviar videos. (" + t.getMessage() + ")");
         } finally {
             if (numErrores == 1)
-                throw new Exception("No se pudo enviar 1 video. Revise la conexión a internet.");
+                throw new Exception("No se pudo enviar 1 video. Revise la conexión a internet.\n" + errorMsg);
             else if (numErrores > 1)
-                throw new Exception("No se pudieron enviar " + String.valueOf(numErrores) + " videos. Revise la conexión a internet.");
+                throw new Exception("No se pudieron enviar " + String.valueOf(numErrores) + " videos. Revise la conexión a internet.\n" + errorMsg);
             return cantVideos;
         }
     }
@@ -952,283 +967,283 @@ public class trasmisionDatos extends TransmisionesPadre {
         recepcionPorPipes();
     }
 
-    private void recepcionPorAnchoFijo() {
-        final trasmisionDatos context = this;
-        puedoCerrar = false;
-        final trasmisionDatos td = this;
-        hilo = new Thread() {
-            int cantidad;
-
-            public void run() {
-                int secuenciaReal = 0;
-
-                // TODO Auto-generated method stub
-                serial = new Serializacion(Serializacion.WIFI);
-                String ls_cadena = "";
-                byte[] lby_cadena;
-                String[] lineas;
-                String[] ls_cambios;
-
-                String mPhoneNumber;
-                boolean recibiOrdenes = false;
-                int numRegistros;
-                String ls_linea2 = "";
-
-                TareasResponse resp;
-
-                puedoCerrar = true;
-
-                /*
-                 * TelephonyManager tMgr
-                 * =(TelephonyManager)context.getSystemService
-                 * (Context.TELEPHONY_SERVICE); String mPhoneNumber =
-                 * tMgr.getLine1Number();
-                 */
-                // ProgressDialog dialog = ProgressDialog.show(context,
-                // "Exportar", "Se esta exportando el archivo, espere", true);
-
-                mostrarMensaje(MENSAJE,
-                        getString(R.string.msj_trans_recibiendo));
-                mostrarMensaje(PROGRESO, getString(R.string.str_espere));
-                int i = 0;
-
-                try {
-
-                    openDatabase();
-
-                    //db.execSQL("Delete from ruta where envio=0 and estadoDeLaOrden in ('EO004', 'EO002', 'EO012')");
-
-                    db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< " + getFechaServidor() + " ");
-
-                    resp = mDescargarTareas.descargarTareas();
-
-                    context.stop();
-                    // lby_cadena= new
-                    // byte[context.getResources().getInteger(R.integer.LONG_DATOS_MEDIDOR)];
-
-                    vLecturas = new Vector<String>();
-
-//					if (serial.longitudDelArchivo == 0) {
-//						// no se encontro el archivo
-//						serial.close();
-//						muere(true,
-//								"");
-//						return;
-//					}
-
-                    if (resp == null) {
-                        muere(true, "");
-                        return;
-                    }
-
-                    if (!resp.EsUsuarioValido) {
-                        throw new AppUsuarioBloqueadoException();
-                    }
-
-                    if (resp.Contenido == null) {
-                        muere(true, "");
-                        return;
-                    }
-
-                    numRegistros = resp.Contenido.size();
-
-                    if (numRegistros == 0) {
-                        muere(true, "");
-                        return;
-                    }
-
-                    // Obtenemos el archivo recibido completo
-//					lby_cadena = new byte[serial.longitudDelArchivo];
-//					serial.read(lby_cadena);
-//					ls_cadena = new String(lby_cadena);
-
-                    // Hacemos split con el salto de linea
-                    //lineas = ls_cadena.split("\\r\\n");
-
-                    //tope(Integer.parseInt(String.valueOf(lineas.length)));
-                    tope(numRegistros);
-
-                    // db.execSQL("delete from Lecturas ");
-
-                    /*
-                     * db.execSQL("delete from ruta ");
-                     * db.execSQL("delete from fotos ");
-                     * db.execSQL("delete from Anomalia ");
-                     * db.execSQL("delete from encabezado ");
-                     * db.execSQL("delete from NoRegistrados ");
-                     */
-                    //borrarRuta(db);
-                    // serial.close();
-
-                    //recibiOrdenes=lineas.length>0;
-
-
-                    recibiOrdenes = (numRegistros > 0);
-
-                    puedoCerrar = false;
-                    db.beginTransaction();
-
-                    int j = 0;
-
-                    for (String ls_linea : resp.Contenido) {
-
-                        ls_linea2 = resp.Contenido2.get(j);
-                        j++;
-
-                        context.stop();
-
-                        // Comprobamos que las lineas son las que esperamos
-                        if (ls_linea.length() == 0) {
-                            // no se encontro el archivo
-                            serial.close();
-                            db.execSQL("delete from Lecturas ");
-                            closeDatabase();
-                            // db.setTransactionSuccessful();
-                            // db.endTransaction();
-                            algunError = true;
-                            // muere(false,
-                            // "No se encontro algun archivo exportado.");
-                            muere(true,
-                                    "");
-                        }
-
-                        if (ls_linea.toUpperCase().startsWith("<HTML>")) {
-                            // Error general
-                            serial.close();
-                            // db.execSQL("delete from Lecturas ");
-                            db.endTransaction();
-                            closeDatabase();
-                            // db.setTransactionSuccessful();
-
-                            algunError = true;
-                            muere(false,
-                                    getString(R.string.msj_trans_connection_problem));
-
-                        }
-
-//						if (ls_linea.length() != globales.tdlg.long_registro) {
-//							// Error general
-//							serial.close();
-//							// db.setTransactionSuccessful();
-//							db.endTransaction();
-//							// db.execSQL("delete from Lecturas ");
-//							closeDatabase();
-//							algunError = true;
-//							muere(false,
-//									getString(R.string.msj_trans_file_doesnt_match));
+//    private void recepcionPorAnchoFijo() {
+//        final trasmisionDatos context = this;
+//        puedoCerrar = false;
+//        final trasmisionDatos td = this;
+//        hilo = new Thread() {
+//            int cantidad;
 //
-//						}
-
-                        // Agregamos mientras verificamos...
-                        // vLecturas.add(ls_cadena);
-                        // db.execSQL("Insert into lecturas(registro) values ('"+ls_linea+"')");
-                        if (/*i != 0 && */!ls_linea.startsWith("#")
-                                && !ls_linea.startsWith("!")) {
-                            secuenciaReal++;
-                            globales.tlc.byteToBD(globales.getApplicationContext(), db,
-                                    ls_linea.getBytes("ISO-8859-1"), secuenciaReal);// Esta
-                            // clase
-                            // ahora
-                            // guarda
-                            // new Lectura(context,
-                            // ls_linea.getBytes("ISO-8859-1"), db);
-                        } else if (ls_linea.startsWith("#")) {// Esto indica que
-                            // es una
-                            // anomalia
-                            new Anomalia(context,
-                                    ls_linea.getBytes("ISO-8859-1"), db);
-                        } else if (ls_linea.startsWith("!")) { // un usuario
-                            new Usuario(context,
-                                    ls_linea.getBytes("ISO-8859-1"), db);
-                        } /*else if (i == 0) {
-							// la primera
-							ContentValues cv = new ContentValues();
-							cv.put("registro", ls_linea.getBytes());
-
-							db.insert("encabezado", null, cv);
-						}*/
-
-                        int porcentaje = (i * 100) / numRegistros;
-                        mostrarMensaje(MENSAJE, (i + 1) + " "
-                                + getString(R.string.de) + " " + numRegistros
-                                + " " + getString(R.string.registros) + "\n"
-                                + String.valueOf(porcentaje) + "%");
-                        mostrarMensaje(BARRA, String.valueOf(1));
-                        i++;
-
-                    }
-
-                    // Una vez verificado que todos los registros fueron
-                    // recibidos ahora si tenemos la seguridad de borrar
-
-                    // Una vez que borramos insertamos cada uno de los registros
-                    // recibidos
-
-                    // for(String ls_lectura:vLecturas)
-
-                    if (!algunError)
-                        db.setTransactionSuccessful();
-
-                    mostrarMensaje(MENSAJE, getString(R.string.str_espere));
-                    serial.close();
-
-
-                    if (recibiOrdenes && !algunError) {
-                        //Si hay un error al recibir o no recibí, mover el archivo no tiene sentido
-                        // enviarBackup(ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA));
-
-                        //Reordenamos la secuenciaReal
-                        //asignarSecuenciasReales();
-
-                    }
-
-
-//					closeDatabase();
-
-                    //Enviamos si acaso recibimos un pago
-//					Intent lrs = new Intent(td, trasmisionDatos.class);
-//					  lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
-//		           		lrs.putExtra("transmiteFotos", true);
-//		           		lrs.putExtra("transmitirTodo", false);
-//		           		startActivity(lrs);
-
-                    yaAcabo = true;
-
-                    muere(true, String.format(
-                            getString(R.string.msj_trans_correcta),
-                            getString(R.string.str_importado)));
-                } catch (AppUsuarioBloqueadoException eb) {
-                    mostrarMensaje("Alerta", getString(R.string.str_usuario_bloqueado), "", new DialogoMensaje.Resultado() {
-                        @Override
-                        public void Aceptar(boolean EsOk) {
-                            globales.cerrarSesion();
-                            muere(true, getString(R.string.str_usuario_bloqueado));
-                        }
-                    });
-                } catch (Throwable e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    // db.endTransaction();
-                    // db.execSQL("delete from lecturas ");
-                    muere(true,
-                            String.format(getString(R.string.msj_trans_error),
-                                    getString(R.string.str_importar_lowercase))
-                                    + i + " " + e.getMessage());
-                } finally {
-                    try {
-                        db.endTransaction();
-                    } catch (Throwable e) {
-
-                        e.printStackTrace();
-                    }
-                    closeDatabase();
-                    // dialog.cancel();
-                }
-            }
-        };
-
-        hilo.start();
-    }
+//            public void run() {
+//                int secuenciaReal = 0;
+//
+//                // TODO Auto-generated method stub
+//                serial = new Serializacion(Serializacion.WIFI);
+//                String ls_cadena = "";
+//                byte[] lby_cadena;
+//                String[] lineas;
+//                String[] ls_cambios;
+//
+//                String mPhoneNumber;
+//                boolean recibiOrdenes = false;
+//                int numRegistros;
+//                String ls_linea2 = "";
+//
+//                TareasResponse resp;
+//
+//                puedoCerrar = true;
+//
+//                /*
+//                 * TelephonyManager tMgr
+//                 * =(TelephonyManager)context.getSystemService
+//                 * (Context.TELEPHONY_SERVICE); String mPhoneNumber =
+//                 * tMgr.getLine1Number();
+//                 */
+//                // ProgressDialog dialog = ProgressDialog.show(context,
+//                // "Exportar", "Se esta exportando el archivo, espere", true);
+//
+//                mostrarMensaje(MENSAJE,
+//                        getString(R.string.msj_trans_recibiendo));
+//                mostrarMensaje(PROGRESO, getString(R.string.str_espere));
+//                int i = 0;
+//
+//                try {
+//
+//                    openDatabase();
+//
+//                    //db.execSQL("Delete from ruta where envio=0 and estadoDeLaOrden in ('EO004', 'EO002', 'EO012')");
+//
+//                    db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< " + getFechaServidor() + " ");
+//
+//                    resp = mDescargarTareas.descargarTareas();
+//
+//                    context.stop();
+//                    // lby_cadena= new
+//                    // byte[context.getResources().getInteger(R.integer.LONG_DATOS_MEDIDOR)];
+//
+//                    vLecturas = new Vector<String>();
+//
+////					if (serial.longitudDelArchivo == 0) {
+////						// no se encontro el archivo
+////						serial.close();
+////						muere(true,
+////								"");
+////						return;
+////					}
+//
+//                    if (resp == null) {
+//                        muere(true, "");
+//                        return;
+//                    }
+//
+//                    if (!resp.EsUsuarioValido) {
+//                        throw new AppUsuarioBloqueadoException();
+//                    }
+//
+//                    if (resp.Contenido == null) {
+//                        muere(true, "");
+//                        return;
+//                    }
+//
+//                    numRegistros = resp.Contenido.size();
+//
+//                    if (numRegistros == 0) {
+//                        muere(true, "");
+//                        return;
+//                    }
+//
+//                    // Obtenemos el archivo recibido completo
+////					lby_cadena = new byte[serial.longitudDelArchivo];
+////					serial.read(lby_cadena);
+////					ls_cadena = new String(lby_cadena);
+//
+//                    // Hacemos split con el salto de linea
+//                    //lineas = ls_cadena.split("\\r\\n");
+//
+//                    //tope(Integer.parseInt(String.valueOf(lineas.length)));
+//                    tope(numRegistros);
+//
+//                    // db.execSQL("delete from Lecturas ");
+//
+//                    /*
+//                     * db.execSQL("delete from ruta ");
+//                     * db.execSQL("delete from fotos ");
+//                     * db.execSQL("delete from Anomalia ");
+//                     * db.execSQL("delete from encabezado ");
+//                     * db.execSQL("delete from NoRegistrados ");
+//                     */
+//                    //borrarRuta(db);
+//                    // serial.close();
+//
+//                    //recibiOrdenes=lineas.length>0;
+//
+//
+//                    recibiOrdenes = (numRegistros > 0);
+//
+//                    puedoCerrar = false;
+//                    db.beginTransaction();
+//
+//                    int j = 0;
+//
+//                    for (String ls_linea : resp.Contenido) {
+//
+//                        ls_linea2 = resp.Contenido2.get(j);
+//                        j++;
+//
+//                        context.stop();
+//
+//                        // Comprobamos que las lineas son las que esperamos
+//                        if (ls_linea.length() == 0) {
+//                            // no se encontro el archivo
+//                            serial.close();
+//                            db.execSQL("delete from Lecturas ");
+//                            closeDatabase();
+//                            // db.setTransactionSuccessful();
+//                            // db.endTransaction();
+//                            algunError = true;
+//                            // muere(false,
+//                            // "No se encontro algun archivo exportado.");
+//                            muere(true,
+//                                    "");
+//                        }
+//
+//                        if (ls_linea.toUpperCase().startsWith("<HTML>")) {
+//                            // Error general
+//                            serial.close();
+//                            // db.execSQL("delete from Lecturas ");
+//                            db.endTransaction();
+//                            closeDatabase();
+//                            // db.setTransactionSuccessful();
+//
+//                            algunError = true;
+//                            muere(false,
+//                                    getString(R.string.msj_trans_connection_problem));
+//
+//                        }
+//
+////						if (ls_linea.length() != globales.tdlg.long_registro) {
+////							// Error general
+////							serial.close();
+////							// db.setTransactionSuccessful();
+////							db.endTransaction();
+////							// db.execSQL("delete from Lecturas ");
+////							closeDatabase();
+////							algunError = true;
+////							muere(false,
+////									getString(R.string.msj_trans_file_doesnt_match));
+////
+////						}
+//
+//                        // Agregamos mientras verificamos...
+//                        // vLecturas.add(ls_cadena);
+//                        // db.execSQL("Insert into lecturas(registro) values ('"+ls_linea+"')");
+//                        if (/*i != 0 && */!ls_linea.startsWith("#")
+//                                && !ls_linea.startsWith("!")) {
+//                            secuenciaReal++;
+//                            globales.tlc.byteToBD(globales.getApplicationContext(), db,
+//                                    ls_linea.getBytes("ISO-8859-1"), secuenciaReal);// Esta
+//                            // clase
+//                            // ahora
+//                            // guarda
+//                            // new Lectura(context,
+//                            // ls_linea.getBytes("ISO-8859-1"), db);
+//                        } else if (ls_linea.startsWith("#")) {// Esto indica que
+//                            // es una
+//                            // anomalia
+//                            new Anomalia(context,
+//                                    ls_linea.getBytes("ISO-8859-1"), db);
+//                        } else if (ls_linea.startsWith("!")) { // un usuario
+//                            new Usuario(context,
+//                                    ls_linea.getBytes("ISO-8859-1"), db);
+//                        } /*else if (i == 0) {
+//							// la primera
+//							ContentValues cv = new ContentValues();
+//							cv.put("registro", ls_linea.getBytes());
+//
+//							db.insert("encabezado", null, cv);
+//						}*/
+//
+//                        int porcentaje = (i * 100) / numRegistros;
+//                        mostrarMensaje(MENSAJE, (i + 1) + " "
+//                                + getString(R.string.de) + " " + numRegistros
+//                                + " " + getString(R.string.registros) + "\n"
+//                                + String.valueOf(porcentaje) + "%");
+//                        mostrarMensaje(BARRA, String.valueOf(1));
+//                        i++;
+//
+//                    }
+//
+//                    // Una vez verificado que todos los registros fueron
+//                    // recibidos ahora si tenemos la seguridad de borrar
+//
+//                    // Una vez que borramos insertamos cada uno de los registros
+//                    // recibidos
+//
+//                    // for(String ls_lectura:vLecturas)
+//
+//                    if (!algunError)
+//                        db.setTransactionSuccessful();
+//
+//                    mostrarMensaje(MENSAJE, getString(R.string.str_espere));
+//                    serial.close();
+//
+//
+//                    if (recibiOrdenes && !algunError) {
+//                        //Si hay un error al recibir o no recibí, mover el archivo no tiene sentido
+//                        // enviarBackup(ls_carpeta, globales.tdlg.getNombreArchvio(TomaDeLecturasGenerica.ENTRADA));
+//
+//                        //Reordenamos la secuenciaReal
+//                        //asignarSecuenciasReales();
+//
+//                    }
+//
+//
+////					closeDatabase();
+//
+//                    //Enviamos si acaso recibimos un pago
+////					Intent lrs = new Intent(td, trasmisionDatos.class);
+////					  lrs.putExtra("tipo", trasmisionDatos.TRANSMISION);
+////		           		lrs.putExtra("transmiteFotos", true);
+////		           		lrs.putExtra("transmitirTodo", false);
+////		           		startActivity(lrs);
+//
+//                    yaAcabo = true;
+//
+//                    muere(true, String.format(
+//                            getString(R.string.msj_trans_correcta),
+//                            getString(R.string.str_importado)));
+//                } catch (AppUsuarioBloqueadoException eb) {
+//                    mostrarMensaje("Alerta", getString(R.string.str_usuario_bloqueado), "", new DialogoMensaje.Resultado() {
+//                        @Override
+//                        public void Aceptar(boolean EsOk) {
+//                            globales.cerrarSesion();
+//                            muere(true, getString(R.string.str_usuario_bloqueado));
+//                        }
+//                    });
+//                } catch (Throwable e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                    // db.endTransaction();
+//                    // db.execSQL("delete from lecturas ");
+//                    muere(true,
+//                            String.format(getString(R.string.msj_trans_error),
+//                                    getString(R.string.str_importar_lowercase))
+//                                    + i + " " + e.getMessage());
+//                } finally {
+//                    try {
+//                        db.endTransaction();
+//                    } catch (Throwable e) {
+//
+//                        e.printStackTrace();
+//                    }
+//                    closeDatabase();
+//                    // dialog.cancel();
+//                }
+//            }
+//        };
+//
+//        hilo.start();
+//    }
 
     private void recepcionPorPipes() {
         final trasmisionDatos context = this;
@@ -1259,6 +1274,8 @@ public class trasmisionDatos extends TransmisionesPadre {
                 List<String> contenido;
                 String registro;
 
+                List<Long> listadoIdTareas;        // RL, 2024-01-24, Se tiene el listado de tareas asignadas al técnico
+
                 puedoCerrar = true;
 
                 mostrarMensaje(MENSAJE,
@@ -1274,9 +1291,14 @@ public class trasmisionDatos extends TransmisionesPadre {
 
                     db.execSQL("Delete from ruta where envio=0 and tipoLectura<>'' and cast(substr(fechaEnvio, 1, 8) as integer)< " + getFechaServidor() + " ");
 
+                    // RL, 2024-01-24, Obtener el listado de tareas
+
                     descargarTareasMgr.setDatabase(db);
 
                     resp = descargarTareasMgr.descargarTareas();
+
+                    borrarTareasDesasignadas(db, resp.ListadoTareasBorrar);
+                    borrarOrdenesEjecutadas(db, resp.ListadoOrdenesBorrar);
 
                     context.stop();
                     // lby_cadena= new
@@ -1433,6 +1455,10 @@ public class trasmisionDatos extends TransmisionesPadre {
                                 + String.valueOf(porcentaje) + "%");
                         mostrarMensaje(BARRA, String.valueOf(1));
                     }
+// CE, 02/02/24, Al final, vamos a borrar las que no me vlvieron a llegar
+                    db.execSQL("Delete from ruta where balance = ''");
+// CE, 02/02/24, Y vamos a marcar las que si llegaron como normales
+                    db.execSQL("update ruta set balance = '' where balance = '4'");
 
                     // Una vez verificado que todos los registros fueron
                     // recibidos ahora si tenemos la seguridad de borrar
@@ -1483,6 +1509,58 @@ public class trasmisionDatos extends TransmisionesPadre {
             }
         };
         hilo.start();
+    }
+
+    private void borrarTareasDesasignadas(SQLiteDatabase db, List<Long> listado) {
+        try {
+            int cant;
+            long idTarea;
+
+            if (listado == null)
+                return;
+
+            cant = listado.size();
+
+            for(int i = 0; i < cant; i++) {
+                idTarea = listado.get(i);
+
+                // RL, 2024-01-24, Aquí agregar la condición para solo borrrar las órdenes no realizadas
+
+                db.execSQL("delete from ruta where idTarea=" + String.valueOf(idTarea));
+                globales.bPrenderCampana = true;
+            }
+        } catch (Throwable t) {
+            Log.e("SOGES", "Error al borrar órdenes de tarea");
+        }
+    }
+
+    private void borrarOrdenesEjecutadas(SQLiteDatabase db, List<OrdenEstatusEntity> listado) {
+        try {
+            int cant;
+            long idTarea;
+            OrdenEstatusEntity orden;
+
+            if (listado == null)
+                return;
+
+            cant = listado.size();
+
+            for(int i = 0; i < cant; i++) {
+                orden = listado.get(i);
+
+                // RL, 2024-01-24, Aquí agregar la condición que aplique para borrar la orden
+
+                if (orden.idEmpleadoAsignado != orden.idEmpleadoEjecuto) {       // Si el empleado asignado es diferente que el que ejecutó
+                    db.execSQL("delete from ruta where idOrden=" + String.valueOf(orden.idOrden));
+                    globales.bPrenderCampana = true;
+                } else if (orden.idEmpleadoAsignado != orden.idEmpleadoEjecuto) {       // Si el empleado asignado es igual que el que ejecutó
+                    db.execSQL("delete from ruta where idOrden=" + String.valueOf(orden.idOrden));  // Por el momento también se borra
+                    globales.bPrenderCampana = true;
+                }
+            }
+        } catch (Throwable t) {
+            Log.e("SOGES", "Error al borrar órdenes de tarea");
+        }
     }
 
     private void terminarRecepcion(Throwable t, int i) {
@@ -1909,7 +1987,7 @@ public class trasmisionDatos extends TransmisionesPadre {
             }
         });
     }
-    
+
    private void verificarConectividad() {
         ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -1940,5 +2018,5 @@ public class trasmisionDatos extends TransmisionesPadre {
         } else {
             throw new AppSinInternet("No hay internt");
         }
-    }    
+    }
 }
